@@ -1,0 +1,67 @@
+:root {
+    --color1: #dff6fa;
+}
+
+body {
+    font-family: Calibri, sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td,
+th {
+    border: 1px solid var(--color1);
+    text-align: left;
+    padding: 8px;
+}
+
+
+tr:nth-child(even) {
+    background-color: var(--color1);
+}
+
+.keyword {
+    border: solid black 1px;
+    padding: 3px;
+}
+
+.sum_value,
+.total_title {
+    font-weight: bold;
+}
+
+.total_title {
+    text-align: right;
+}
+
+h1,
+section {
+    padding: 20px;
+    margin: 0;
+}
+
+h1 {
+    border-top: solid black 2px;
+    font-size: 20px;
+}
+
+section {
+    border-top: none;
+    padding-top: 0;
+
+}
+
+.toogle_img {
+    height: 30px;
+    float: right;
+    vertical-align: bottom;
+}
+
+.app_title {
+    font-size: 30px;
+    border: none;
+    text-align: center;
+}
