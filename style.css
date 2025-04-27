@@ -61,20 +61,7 @@ section {
 }
 
 .header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-
-#menu_popup {
-    display: none;
-}
-
-.img_burger_menu {
-    position: absolute;
-    left: 20px;
-    height: 40px;
+    text-align: center;
 }
 
 .app_title {
@@ -101,4 +88,13 @@ a {
 
 .img_row_action {
     height: 25px;
+}
+
+td>input {
+    background-color: var(--color1);
+    box-sizing: border-box;
+    border: solid #e6e6e6 2px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
 }
