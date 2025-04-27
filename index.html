@@ -132,12 +132,22 @@
 
         <h1>Gestion des prévisions <img class="toogle_img" id="vueGestionPrevisionTitle"
                 onclick="toggle(event, 'vueGestionPrevision')" src="img/icons8-on-50.png" /> </h1>
-        <section id="vueGestionPrevision"></section>
+        <section id="vueGestionPrevision">
+            <p>
+                Importer CSV : <input type="file" id="inputImportPrevisions" accept=".csv" /> Dernier import : <span
+                    id="dateImportPrevisions"></span>
+            </p>
+            <p>
+                <button onclick="exportPrevisionCSV()">Exporter les prévsions</button> (importable)
+            </p>
+            <table id="tablePrevisions"></table>
+        </section>
 
     </div>
 
 
 
+    <script src="previsions.js"></script>
     <script src="main.js"></script>
     <!-- <script src="test.js"></script> -->
 </body>

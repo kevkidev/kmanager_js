@@ -4,6 +4,7 @@ let DATA = [];
 // DEBUT 
 document.getElementById('csvFileInput').addEventListener('change', importerCSV);
 document.getElementById('keywordsCsvFileInput').addEventListener('change', importerKeywordsCSV);
+document.getElementById('inputImportPrevisions').addEventListener('change', actionImportCSVPrevision);
 load();
 // FIN 
 
@@ -12,17 +13,21 @@ load();
 // functions -----------------------------------------------------------------------------
 
 function load() {
-    // netoyer les autres données du storage
+    // netoyer les autres données du storage pour le bon fonctionnement
     const date = localStorage.getItem("date_import_data");
     const data = localStorage.getItem("data");
     const categories = localStorage.getItem("catergorie_keywords");
     const dateImportKeywords = localStorage.getItem("date_import_cat_key");
+    const previsions = Previsions().Storage().get();
+
     localStorage.clear();
+
     // remettre les données persistentes
     localStorage.setItem("date_import_data", date);
     localStorage.setItem("data", data);
     localStorage.setItem("catergorie_keywords", categories);
     localStorage.setItem("date_import_cat_key", dateImportKeywords);
+    Previsions().Storage().update(previsions);
 
     $("dateImportData").innerText = (date != "null") ? date : "inconnue";
     $("dateImportKeywords").innerText = (dateImportKeywords != "null") ? dateImportKeywords : "inconnue";
@@ -56,6 +61,9 @@ function load() {
 
     afficherSumParCategory(sumParCategory(EXPENSES, CATEGORIES));
     afficherSumParKeyword(sumParKeyword(EXPENSES, KEYWORDS));
+
+    Previsions().Storage().init();
+    Previsions().View().display();
 }
 
 function popup(message) {
@@ -70,6 +78,10 @@ function $(id) {
 
 function $create(type) {
     return document.createElement(type);
+}
+
+function actionImportCSVPrevision() {
+    Previsions().IO().import(this);
 }
 
 function importerCSV() {
@@ -246,6 +258,10 @@ function exportKeywordsCSV() {
 }
 
 
+
+
+
+
 // DISPLAY FUNCTIONS ------------------------
 
 function afficherTableSimple(data, parent) {
@@ -338,4 +354,23 @@ function afficherSumParKeyword(data) {
 
     const sum = data.map(e => e.sum * 1000).reduce((a, b) => a + b) / 1000;
     afficherTrSum(sum, $("tableResumeKeywords"), 1);
+}
+
+
+function updadeStorage(id, value) {
+    localStorage.removeItem(id);
+    localStorage.setItem(id, JSON.stringify(value));
+}
+
+function getFromStorage(id) {
+    return JSON.parse(localStorage.getItem(id));
+}
+
+
+function newId() {
+    return Date.now();
+}
+
+function exportPrevisionCSV() {
+    Previsions().IO().export();
 }

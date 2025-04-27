@@ -98,3 +98,7 @@ a {
     text-decoration: none;
     color: black;
 }
+
+.img_row_action {
+    height: 25px;
+}
