@@ -55,9 +55,11 @@ section {
 }
 
 .toogle_img {
-    height: 30px;
+    position: relative;
+    height: 50px;
     float: right;
-    vertical-align: bottom;
+    right: 5px;
+    bottom: 12px;
 }
 
 .header {
