@@ -9,97 +9,134 @@
 </head>
 
 <body>
-    <h1 class="app_title">RDMP : Rapport des Dépenses Mensuelles Personnelles</h1>
+    <div class="header">
+        <img class="img_burger_menu" src="img/icons8-menu-64.png" onclick="toggle(event, 'menu_popup', true)">
+        <h1 class="app_title"> RDMP : Rapport des Dépenses Mensuelles Personnelles</h1>
+    </div>
+    <div id="menu_popup">
+        <ul>
+            <li><a href="#vueConfigTitle" onclick="toggle(event, 'menu_popup', true)">Import / Export</a></li>
+            <li><a href="#vueSyntheseTitle" onclick="toggle(event, 'menu_popup', true)">Synthèse</a></li>
+            <li><a href="#vueGlobaleTitle" onclick="toggle(event, 'menu_popup', true)">Vue d'ensemble</a></li>
+            <li><a href="#vueResumeParCategorieTitle" onclick="toggle(event, 'menu_popup', true)">Resumé par
+                    categories</a></li>
+            <li><a href="#vueDetailsCategoriesTitle" onclick="toggle(event, 'menu_popup', true)">Détail par
+                    catégorie</a></li>
+            <li><a href="#vueGestionPrevisionTitle" onclick="toggle(event, 'menu_popup', true)">Gestion de prévision</a>
+            </li>
+        </ul>
+    </div>
 
-    <h1>Import/Export <img class="toogle_img" id="toggleOverview" onclick="toggle(event, 'vueConfig')"
-            src="img/icons8-on-50.png" /> </h1>
-    <section id="vueConfig">
-        <h2>Importer les transactions en CSV </h2>
-        <p>Un fichier CSV mensuel exporté depuis la banque (ou depuis un autre rapport).
-            Les données du dernier fichier selectionné sont chargées automatiquement depuis le local storage!</p>
-        <input type="file" id="csvFileInput" accept=".csv" /> Dernier import : <span id="dateImportData"></span>
-
-        <h2>Importer les catégories et mots-clés associés </h2>
-        <p>C'est un fichier CSV. Il faut le mettre à jour et l'importer à chaque nouveau creancier.</p>
-        <input type="file" id="keywordsCsvFileInput" accept=".csv" /> Dernier import : <span
-            id="dateImportKeywords"></span>
-
-        <h2>Exporter en CSV</h2>
-        <p>
-            Export des données de base pour régenerer le rapport : la liste des entrées et sorties et la liste de
-            categories et keywords associés.</p>
-        <p>
-            <button onclick="exportDataCSV()">Exporter transactions</button> (importable)
-        </p>
-        <p>
-            <button onclick="exportKeywordsCSV()">Exporter catégories et mots-clés</button> (importable)
-        </p>
-
-        <h2>Sauvegarder</h2>
-        <p>
-            Pour une sauvegrade complète du rapport il faut juste imprimer la page en PDF pour avoir un snapshot du
-            rapport (CTRL P).</p>
-        <p>
-            <button onclick="window.print()">Capturer la vue actuelle</button>
-        </p>
-
-    </section>
+    <div class="container">
 
 
-    <h1>Synthèse <img class="toogle_img" id="toggleOverview" onclick="toggle(event, 'vueGlobale')"
-            src="img/icons8-on-50.png" /> </h1>
+        <h1>Import/Export <img class="toogle_img" id="vueConfigTitle" onclick="toggle(event, 'vueConfig')"
+                src="img/icons8-on-50.png" /> </h1>
+        <section id="vueConfig">
+            <h2>Importer les transactions en CSV </h2>
+            <p>Un fichier CSV mensuel exporté depuis la banque (ou depuis un autre rapport).
+                Les données du dernier fichier selectionné sont chargées automatiquement depuis le local storage!</p>
+            <input type="file" id="csvFileInput" accept=".csv" /> Dernier import : <span id="dateImportData"></span>
+
+            <h2>Importer les catégories et mots-clés associés </h2>
+            <p>C'est un fichier CSV. Il faut le mettre à jour et l'importer à chaque nouveau creancier.</p>
+            <input type="file" id="keywordsCsvFileInput" accept=".csv" /> Dernier import : <span
+                id="dateImportKeywords"></span>
+
+            <h2>Exporter en CSV</h2>
+            <p>
+                Export des données de base pour régenerer le rapport : la liste des entrées et sorties et la liste de
+                categories et keywords associés.</p>
+            <p>
+                <button onclick="exportDataCSV()">Exporter transactions</button> (importable)
+            </p>
+            <p>
+                <button onclick="exportKeywordsCSV()">Exporter catégories et mots-clés</button> (importable)
+            </p>
+
+            <h2>Sauvegarder</h2>
+            <p>
+                Pour une sauvegrade complète du rapport il faut juste imprimer la page en PDF pour avoir un snapshot du
+                rapport (CTRL P).</p>
+            <p>
+                <button onclick="window.print()">Capturer la vue actuelle</button>
+            </p>
+
+        </section>
 
 
-    <h1>Vue d'ensemble <img class="toogle_img" id="toggleOverview" onclick="toggle(event, 'vueGlobale')"
-            src="img/icons8-on-50.png" /> </h1>
-    <section id="vueGlobale">
-        <h2>Entrées <span></span></h2>
-        <table id="tableIn">
-            <tr>
-                <th id="sortByDate">Quand</th>
-                <th id="sortByKeyword">Quoi</th>
-                <th id="sortbyAmount">Combien</th>
-            </tr>
-        </table>
-
-        <h2>Sorties</h2>
-        <table id="tableOut">
-            <tr>
-                <th id="sortByDate">Quand</th>
-                <th id="sortByKeyword">Quoi</th>
-                <th id="sortbyAmount">Combien</th>
-            </tr>
-        </table>
-    </section>
 
 
-    <h1>Résumé par catégorie <img class="toogle_img" id="toggleOverview"
-            onclick="toggle(event, 'vueResumeParCategorie')" src="img/icons8-on-50.png" /> </h1>
-    <section id="vueResumeParCategorie">
-        <table id="tableResumeCategorie">
-            <tr>
-                <th>Catégorie</th>
-                <th>Somme</th>
-            </tr>
-        </table>
-    </section>
+        <h1>Synthèse <img class="toogle_img" id="vueSyntheseTitle" onclick="toggle(event, 'vueSynthese')"
+                src="img/icons8-on-50.png" /> </h1>
 
-    <h1>Détail par catégorie <img class="toogle_img" id="toggleByCategory"
-            onclick="toggle(event, 'vueDetailsCategories')" src="img/icons8-on-50.png" /> </h1>
-    <section id="vueDetailsCategories">
 
-    </section>
 
-    <h1>Resumé par mot clé <img class="toogle_img" id="toggleByCategory" onclick="toggle(event, 'vueResumeKeywords')"
-            src="img/icons8-on-50.png" /> </h1>
-    <section id="vueResumeKeywords">
-        <table id="tableResumeKeywords">
-            <tr>
-                <th>Keyword</th>
-                <th>Somme</th>
-            </tr>
-        </table>
-    </section>
+
+
+
+        <h1>Vue d'ensemble <img class="toogle_img" id="vueGlobaleTitle" onclick="toggle(event, 'vueGlobale')"
+                src="img/icons8-on-50.png" /> </h1>
+        <section id="vueGlobale">
+            <h2>Entrées <span></span></h2>
+            <table id="tableIn">
+                <tr>
+                    <th id="sortByDate">Quand</th>
+                    <th id="sortByKeyword">Quoi</th>
+                    <th id="sortbyAmount">Combien</th>
+                </tr>
+            </table>
+
+            <h2>Sorties</h2>
+            <table id="tableOut">
+                <tr>
+                    <th id="sortByDate">Quand</th>
+                    <th id="sortByKeyword">Quoi</th>
+                    <th id="sortbyAmount">Combien</th>
+                </tr>
+            </table>
+        </section>
+
+
+
+
+        <h1>Résumé par catégorie <img class="toogle_img" id="vueResumeParCategorieTitle"
+                onclick="toggle(event, 'vueResumeParCategorie')" src="img/icons8-on-50.png" /> </h1>
+        <section id="vueResumeParCategorie">
+            <table id="tableResumeCategorie">
+                <tr>
+                    <th>Catégorie</th>
+                    <th>Somme</th>
+                </tr>
+            </table>
+        </section>
+
+
+
+        <h1>Détail par catégorie <img class="toogle_img" id="vueDetailsCategoriesTitle"
+                onclick="toggle(event, 'vueDetailsCategories')" src="img/icons8-on-50.png" /> </h1>
+        <section id="vueDetailsCategories"></section>
+
+        <h1>Resumé par mot clé <img class="toogle_img" id="toggleByCategory"
+                onclick="toggle(event, 'vueResumeKeywords')" src="img/icons8-on-50.png" /> </h1>
+        <section id="vueResumeKeywords">
+            <table id="tableResumeKeywords">
+                <tr>
+                    <th>Keyword</th>
+                    <th>Somme</th>
+                </tr>
+            </table>
+        </section>
+
+
+
+        <h1>Gestion des prévisions <img class="toogle_img" id="vueGestionPrevisionTitle"
+                onclick="toggle(event, 'vueGestionPrevision')" src="img/icons8-on-50.png" /> </h1>
+        <section id="vueGestionPrevision"></section>
+
+    </div>
+
+
 
     <script src="main.js"></script>
     <!-- <script src="test.js"></script> -->

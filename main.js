@@ -311,16 +311,15 @@ function afficherTrSum(sum, table, colspan) {
     table.append(trSum);
 }
 
-function toggle(event, id) {
+function toggle(event, id, noImage) {
     const status = localStorage.getItem(id);
-
-    if (status == "off") {
+    if (!status || status == "off") {
         $(id).style.display = 'block';
-        event.target.setAttribute("src", "img/icons8-on-50.png");
+        if (!noImage) event.target.setAttribute("src", "img/icons8-on-50.png");
         localStorage.setItem(id, "on");
-    } else if (!status || status == "on") {
+    } else if (status == "on") {
         $(id).style.display = 'none';
-        event.target.setAttribute("src", "img/icons8-off-50.png");
+        if (!noImage) event.target.setAttribute("src", "img/icons8-off-50.png");
         localStorage.setItem(id, "off");
     }
 }

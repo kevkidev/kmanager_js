@@ -51,7 +51,7 @@ h1 {
 section {
     border-top: none;
     padding-top: 0;
-
+    display: none;
 }
 
 .toogle_img {
@@ -60,8 +60,41 @@ section {
     vertical-align: bottom;
 }
 
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#menu_popup {
+    display: none;
+}
+
+.img_burger_menu {
+    position: absolute;
+    left: 20px;
+    height: 40px;
+}
+
 .app_title {
-    font-size: 30px;
     border: none;
-    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 15px;
+    padding-left: 40%;
+    border: solid rgb(143, 143, 143) 2px;
+    font-size: 20px;
+    margin: 3px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
 }
