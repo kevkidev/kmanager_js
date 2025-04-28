@@ -35,10 +35,10 @@
                 Export des données de base pour régenerer le rapport : la liste des entrées et sorties et la liste de
                 categories et keywords associés.</p>
             <p>
-                <button onclick="exportDataCSV()">Exporter transactions</button> (importable)
+                <button onclick="actionExportCSVTransactions()">Exporter transactions</button> (importable)
             </p>
             <p>
-                <button onclick="exportKeywordsCSV()">Exporter catégories et mots-clés</button> (importable)
+                <button onclick="actionExportCSVCategories()">Exporter catégories et mots-clés</button> (importable)
             </p>
 
             <h2>Sauvegarder</h2>
@@ -125,18 +125,21 @@
                     id="dateImportPrevisions"></span>
             </p>
             <p>
-                <button onclick="exportPrevisionCSV()">Exporter les prévsions</button> (importable)
+                <button onclick="actionExportCSVPrevisions()">Exporter les prévsions</button> (importable)
             </p>
             <table id="tablePrevisions"></table>
         </section>
 
     </div>
 
-
-
+    <!-- scripts -->
+    <script src="common.js"></script>
+    <script src="storage.js"></script>
+    <script src="transactions.js"></script>
+    <script src="categories.js"></script>
     <script src="previsions.js"></script>
     <script src="main.js"></script>
-    <!-- <script src="test.js"></script> -->
+    <script src="test.js"></script>
 </body>
 
 </html>

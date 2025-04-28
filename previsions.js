@@ -1,41 +1,29 @@
-function Previsions() {
+function AppPrevisions() {
 
-    const IO = function () {
-
-        function importData(context) {
-            const file = context.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const text = e.target.result;
-                Storage().update(extractCSV(text));
-                Storage().recordImportDate();
-                location.reload();
-            };
-            reader.readAsText(file);
-        }
+    function importCSV(text) {
 
         function extractCSV(text) {
-            const lines = text.split('\n');
-            const data = [];
-            for (let i = 1; i < lines.length; i++) {
-                if (lines[i].trim() === '') continue; // Ignorer les lignes vides
-                const currentLine = lines[i].split(';');
-                const object = {
+            return AppCommon().extractCSV(text, function (currentLine) {
+                const previsions = {
                     id: currentLine[0],
                     quoi: currentLine[1],
                     frequence: currentLine[2],
                     combien: currentLine[3],
                 };
-                data.push(object);
-            }
-            return data;
+                return previsions;
+            });
         }
 
-        const exportData = function () {
-            const array = Previsions().Storage().get();
+        AppStorage().update(ID, extractCSV(text));
+        AppStorage().recordImportDate(ID);
+    }
+
+    const exportCSV = function () {
+        AppCommon().exportCSV("previsions", function () {
+
+            const array = AppStorage().get(AppPrevisions().ID);
             if (!array) {
-                popup("Pas de donnés à exporter!");
+                AppCommon().popup("Pas de données à exporter!");
                 return;
             }
 
@@ -47,71 +35,33 @@ function Previsions() {
                 rows.push([e.id, e.quoi, e.frequence, e.combien]);
             });
 
-            const csvContent = "data:text/csv;charset=utf-8,"
-                + rows.map(e => e.join(";")).join("\n");
-
-            var link = $create("a");
-            link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", `RDMP_previsions_${(new Date()).toLocaleString()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-        }
-
-        return { import: importData, export: exportData }
+            return rows;
+        });
     }
 
-    const Storage = function () {
 
-        const ID = "previsions";
-        const DATE_IMPORT_ID = "date_import_previsions";
-
-        const init = function () {
-            if (!get()) {
-                update([]);
-            }
-        }
-
-        function recordImportDate() {
-            localStorage.setItem(DATE_IMPORT_ID, (new Date()).toLocaleString());
-        }
-
-        const add = function (newItem) {
-            const array = get();
-            array.push(newItem);
-            updadeStorage(this.ID, array);
-        }
-
-        const get = function () {
-            return getFromStorage(ID); // array
-        }
-
-        const update = function (newArray) {
-            updadeStorage(ID, newArray);
-        }
-
-        return { ID, add, get, update, init, recordImportDate }
-    }
+    const ID = "previsions";
 
     function Controller() {
 
         const add = function () {
-            const quoi = $("prevQuoi").value;
-            const frequence = $("prevFrequence").value;
-            const combien = $("prevCombien").value;
-            const newItem = { id: newId(), quoi, frequence, combien };
+            const quoi = AppCommon().$("prevQuoi").value;
+            const frequence = AppCommon().$("prevFrequence").value;
+            const combien = AppCommon().$("prevCombien").value;
+            const newItem = { id: AppStorage().newId(), quoi, frequence, combien };
 
-            Previsions().Storage().add(newItem);
-            Previsions().View().display();
+            AppStorage().add(AppPrevisions().ID, newItem);
+            AppPrevisions().View().display();
         }
 
         const deleteItem = function (id) {
-            const array = Previsions().Storage().get();
+            const array = AppStorage().get(AppPrevisions().ID);
             const index = array.findIndex(e => e.id == id);
             const confirmation = confirm(`Confirmer suppression de ${array[index].quoi} ?`);
             if (confirmation) {
                 array.splice(index, 1);
-                Previsions().Storage().update(array);
-                Previsions().View().display();
+                AppStorage().update(AppPrevisions().ID, array);
+                AppPrevisions().View().display();
             }
         }
 
@@ -125,13 +75,13 @@ function Previsions() {
 
         const display = function () {
 
-            const data = Previsions().Storage().get();
+            const data = AppStorage().get(AppPrevisions().ID);
 
-            const trHead = $create("tr");
-            const th1 = $create("th");
-            const th2 = $create("th");
-            const th3 = $create("th");
-            const th4 = $create("th");
+            const trHead = AppCommon().$create("tr");
+            const th1 = AppCommon().$create("th");
+            const th2 = AppCommon().$create("th");
+            const th3 = AppCommon().$create("th");
+            const th4 = AppCommon().$create("th");
 
             th1.innerText = "";
             th2.innerText = "Quoi";
@@ -139,14 +89,14 @@ function Previsions() {
             th4.innerText = "Combien";
 
             trHead.replaceChildren(th1, th2, th3, th4);
-            $("tablePrevisions").replaceChildren(trHead);
+            AppCommon().$("tablePrevisions").replaceChildren(trHead);
 
             if (data) {
                 data.forEach(e => {
                     const tr = document.createElement("tr");
 
                     const td0 = document.createElement("td");
-                    td0.innerHTML = `<img class="img_row_action" src="img/icons8-remove-50.png" onclick="Previsions().Controller().delete(${e.id})"/>`;
+                    td0.innerHTML = `<img class="img_row_action" src="img/icons8-remove-50.png" onclick="AppPrevisions().Controller().delete(${e.id})"/>`;
                     tr.append(td0);
 
                     const td1 = document.createElement("td");
@@ -161,37 +111,34 @@ function Previsions() {
                     td3.innerText = e.combien;
                     tr.append(td3);
 
-                    $("tablePrevisions").append(tr);
+                    AppCommon().$("tablePrevisions").append(tr);
                 });
             }
 
             // generer la derniere ligne du tableau sont forme de formulaire pour l'ajout d'une prévision
 
-            const trForm = $create("tr");
+            const trForm = AppCommon().$create("tr");
 
-            const td1 = $create("td");
-            td1.innerHTML = `<img class="img_row_action" src="img/icons8-add-50.png" onclick="Previsions().Controller().add()"/>`;
+            const td1 = AppCommon().$create("td");
+            td1.innerHTML = `<img class="img_row_action" src="img/icons8-add-50.png" onclick="AppPrevisions().Controller().add()"/>`;
 
-            const td2 = $create("td");
+            const td2 = AppCommon().$create("td");
             td2.innerHTML = `<input id="prevQuoi" type="text"/>`;
 
-            const td3 = $create("td");
+            const td3 = AppCommon().$create("td");
             td3.innerHTML = `<input id="prevFrequence" type="number" />`;
 
-            const td4 = $create("td");
+            const td4 = AppCommon().$create("td");
             td4.innerHTML = `<input id="prevCombien" type="number" />`;
 
             trForm.replaceChildren(td1, td2, td3, td4);
-            $("tablePrevisions").append(trForm);
+            AppCommon().$("tablePrevisions").append(trForm);
         }
 
         return { display };
     }
 
     return {
-        IO,
-        Storage,
-        Controller,
-        View
+        Controller, View, importCSV, exportCSV, ID
     }
 }

@@ -1,117 +1,114 @@
-let CATEGORIES = [];
-let DATA = [];
+let categories = [];
+let transactions = [];
+
 
 // DEBUT 
-document.getElementById('csvFileInput').addEventListener('change', importerCSV);
-document.getElementById('keywordsCsvFileInput').addEventListener('change', importerKeywordsCSV);
-document.getElementById('inputImportPrevisions').addEventListener('change', actionImportCSVPrevision);
+initImportListener();
 load();
 // FIN 
 
 
 
-// functions -----------------------------------------------------------------------------
+
+function initImportListener() {
+    document.getElementById('csvFileInput').addEventListener('change', actionImportCSVTransactions);
+    document.getElementById('keywordsCsvFileInput').addEventListener('change', actionImportCSVCategories);
+    document.getElementById('inputImportPrevisions').addEventListener('change', actionImportCSVPrevision);
+}
 
 function load() {
+
     // netoyer les autres données du storage pour le bon fonctionnement
-    const date = localStorage.getItem("date_import_data");
-    const data = localStorage.getItem("data");
-    const categories = localStorage.getItem("catergorie_keywords");
-    const dateImportKeywords = localStorage.getItem("date_import_cat_key");
-    const previsions = Previsions().Storage().get();
+    AppStorage().clearSession();
 
-    localStorage.clear();
+    transactions = AppStorage().get(AppTransactions().ID);
+    categories = AppStorage().get(AppCategories().ID);
+    const date = localStorage.getItem("date_import_transactions");
+    const dateImportKeywords = localStorage.getItem("date_import_categories");
 
-    // remettre les données persistentes
-    localStorage.setItem("date_import_data", date);
-    localStorage.setItem("data", data);
-    localStorage.setItem("catergorie_keywords", categories);
-    localStorage.setItem("date_import_cat_key", dateImportKeywords);
-    Previsions().Storage().update(previsions);
 
-    $("dateImportData").innerText = (date != "null") ? date : "inconnue";
-    $("dateImportKeywords").innerText = (dateImportKeywords != "null") ? dateImportKeywords : "inconnue";
-    DATA = JSON.parse(data);
-    CATEGORIES = JSON.parse(categories);
+    AppCommon().$("dateImportData").innerText = (date != "null") ? date : "inconnue";
+    AppCommon().$("dateImportKeywords").innerText = (dateImportKeywords != "null") ? dateImportKeywords : "inconnue";
 
-    if (!DATA) {
-        popup("Impossible de charger les données: pas de transactions!");
+    if (!transactions) {
+        AppCommon().popup("Veuillez importer des transactions!");
         return;
     }
 
-    if (!CATEGORIES) {
-        popup("Impossible de charger les données: pas de catégorie et mot-clés!");
-        return;
+    if (!categories) {
+        AppCommon().popup("Info : Le rapport a été généré mais vous n'avez pas importer de categories!");
+        categories = [{
+            name: "inconnue",
+            keywords: ["inconnu"]
+        }];
     }
 
-    const KEYWORDS = getKeywords(CATEGORIES);
+    const KEYWORDS = getKeywords(categories);
 
-    associerKeyword(DATA, KEYWORDS);
-    associerCategory(DATA, CATEGORIES);
+    associerKeyword(transactions, KEYWORDS);
+    associerCategory(transactions, categories);
 
-    const INCOMES = getIncomes(DATA);
-    const inTable = $("tableIn");
+    const INCOMES = getIncomes(transactions);
+    const inTable = AppCommon().$("tableIn");
     afficherTableSimple(INCOMES, inTable);
     afficherTrSum(sum(INCOMES), inTable, 2);
 
-    const EXPENSES = getDepenses(DATA);
-    const outTable = $("tableOut");
+    const EXPENSES = getDepenses(transactions);
+    const outTable = AppCommon().$("tableOut");
     afficherTableSimple(EXPENSES, outTable);
     afficherTrSum(sum(EXPENSES), outTable, 2);
 
-    afficherSumParCategory(sumParCategory(EXPENSES, CATEGORIES));
+    afficherSumParCategory(sumParCategory(EXPENSES, categories));
     afficherSumParKeyword(sumParKeyword(EXPENSES, KEYWORDS));
 
-    Previsions().Storage().init();
-    Previsions().View().display();
-}
-
-function popup(message) {
-    console.warn(message);
-    alert(message);
+    AppPrevisions().View().display();
 }
 
 
-function $(id) {
-    return document.getElementById(id);
+// UI actions import
+function actionImportCSVTransactions() {
+    AppCommon().importCSV(this, function (text) {
+        localStorage.setItem("transactions", JSON.stringify(filtrerCSV(text)));
+        AppStorage().recordImportDate("transactions");
+    });
 }
 
-function $create(type) {
-    return document.createElement(type);
+function actionImportCSVCategories() {
+    AppCommon().importCSV(this, function (text) {
+        AppCategories().importCSV(text);
+    });
 }
 
 function actionImportCSVPrevision() {
-    Previsions().IO().import(this);
+    AppCommon().importCSV(this, function (text) {
+        AppPrevisions().importCSV(text);
+    });
 }
 
-function importerCSV() {
-    const file = this.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const text = e.target.result;
-        localStorage.setItem("data", JSON.stringify(filtrerCSV(text)));
-        localStorage.setItem("date_import_data", (new Date()).toLocaleString());
-        load();
-        location.reload();
-    };
-    reader.readAsText(file);
+// actions export
+function actionExportCSVTransactions() {
+    AppCommon().exportCSV("transactions", function () {
+        const rows = [
+            ["quand", null, "quoi", null, null, null, "combien"]
+        ];
+
+        transactions.forEach(e => {
+            rows.push([e.quand, null, e.quoi, null, null, null, e.combien]);
+        });
+        return rows;
+    });
 }
 
-function importerKeywordsCSV() {
-    const file = this.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const text = e.target.result;
-        localStorage.setItem("catergorie_keywords", JSON.stringify(filtrerKeywordsCSV(text)));
-        localStorage.setItem("date_import_cat_key", (new Date()).toLocaleString());
-        load();
-        location.reload();
-    };
-    reader.readAsText(file);
-
+function actionExportCSVCategories() {
+    AppCategories().exportCSV();
 }
+
+function actionExportCSVPrevisions() {
+    AppPrevisions().exportCSV();
+}
+
+//
+
 
 function filtrerCSV(text) {
     const lines = text.split('\n');
@@ -129,20 +126,7 @@ function filtrerCSV(text) {
     return data;
 }
 
-function filtrerKeywordsCSV(text) {
-    const lines = text.split('\n');
-    const data = [];
-    for (let i = 1; i < lines.length; i++) {
-        if (lines[i].trim() === '') continue; // Ignorer les lignes vides
-        const currentLine = lines[i].split(';');
-        const categories = {
-            name: currentLine[0],
-            keywords: currentLine[1].split(','),
-        };
-        data.push(categories);
-    }
-    return data;
-}
+
 
 function getIncomes(data) {
     return data.filter(e => parseFloat(e.combien) > 0);
@@ -214,48 +198,6 @@ function sumParKeyword(data, keywords) {
     return maps.sort((a, b) => a.sum - b.sum);
 }
 
-function exportDataCSV() {
-    const rows = [
-        ["quand", null, "quoi", null, null, null, "combien"]
-    ];
-
-    DATA.forEach(e => {
-        rows.push([e.quand, null, e.quoi, null, null, null, e.combien]);
-    });
-
-    const csvContent = "data:text/csv;charset=utf-8,"
-        + rows.map(e => e.join(";")).join("\n");
-
-    var link = $create("a");
-    link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", `RDMP_data_${(new Date()).toLocaleString()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-}
-
-function exportKeywordsCSV() {
-    if (!CATEGORIES) {
-        popup("Pas de donnés à exporter!");
-        return;
-    }
-
-    const rows = [
-        ["name", "keywords"]
-    ];
-
-    CATEGORIES.forEach(e => {
-        rows.push([e.name, e.keywords]); // keywords separés par des virgules
-    });
-
-    const csvContent = "data:text/csv;charset=utf-8,"
-        + rows.map(e => e.join(";")).join("\n");
-
-    var link = $create("a");
-    link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", `RDMP_categorie_keywords_${(new Date()).toLocaleString()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-}
 
 
 
@@ -287,41 +229,41 @@ function afficherTableSimple(data, parent) {
 function afficherSumParCategory(data) {
     data.forEach(e => {
         if (e.list.length > 0) {
-            const h3 = $create("h3");
+            const h3 = AppCommon().$create("h3");
             h3.innerText = e.category.name;
-            const table = $create("table");
-            $("vueDetailsCategories").append(h3);
-            $("vueDetailsCategories").append(table);
+            const table = AppCommon().$create("table");
+            AppCommon().$("vueDetailsCategories").append(h3);
+            AppCommon().$("vueDetailsCategories").append(table);
             afficherTableSimple(e.list, table);
 
             afficherTrSum(e.category.sum, table, 2);
 
             // vue resume
 
-            const tr = $create("tr");
-            const tdCat = $create('td');
+            const tr = AppCommon().$create("tr");
+            const tdCat = AppCommon().$create('td');
             tdCat.innerText = e.category.name;
             tr.append(tdCat);
-            const tdSum = $create('td');
+            const tdSum = AppCommon().$create('td');
             tdSum.innerText = e.category.sum;
             tr.append(tdSum);
-            $("tableResumeCategorie").append(tr);
+            AppCommon().$("tableResumeCategorie").append(tr);
 
         }
     });
 
     const sum = data.map(e => e.category.sum * 1000).reduce((a, b) => a + b) / 1000;
-    afficherTrSum(sum, $("tableResumeCategorie"), 1);
+    afficherTrSum(sum, AppCommon().$("tableResumeCategorie"), 1);
 }
 
 function afficherTrSum(sum, table, colspan) {
-    const trSum = $create("tr");
-    const tdTitle = $create("td");
+    const trSum = AppCommon().$create("tr");
+    const tdTitle = AppCommon().$create("td");
     tdTitle.innerText = "Total";
     tdTitle.setAttribute("colspan", colspan);
     tdTitle.setAttribute("class", "total_title");
     trSum.append(tdTitle);
-    const tdSum = $create("td");
+    const tdSum = AppCommon().$create("td");
     tdSum.innerHTML = `<span class="sum_value">${sum}</span>`;
     trSum.append(tdSum);
     table.append(trSum);
@@ -330,11 +272,11 @@ function afficherTrSum(sum, table, colspan) {
 function toggle(event, id, noImage) {
     const status = localStorage.getItem(id);
     if (!status || status == "off") {
-        $(id).style.display = 'block';
+        AppCommon().$(id).style.display = 'block';
         if (!noImage) event.target.setAttribute("src", "img/icons8-on-50.png");
         localStorage.setItem(id, "on");
     } else if (status == "on") {
-        $(id).style.display = 'none';
+        AppCommon().$(id).style.display = 'none';
         if (!noImage) event.target.setAttribute("src", "img/icons8-off-50.png");
         localStorage.setItem(id, "off");
     }
@@ -342,35 +284,22 @@ function toggle(event, id, noImage) {
 
 function afficherSumParKeyword(data) {
     data.forEach(e => {
-        const tr = $create("tr");
-        const tdKey = $create('td');
+        const tr = AppCommon().$create("tr");
+        const tdKey = AppCommon().$create('td');
         tdKey.innerText = e.keyword;
         tr.append(tdKey);
-        const tdSum = $create('td');
+        const tdSum = AppCommon().$create('td');
         tdSum.innerText = e.sum;
         tr.append(tdSum);
-        $("tableResumeKeywords").append(tr);
+        AppCommon().$("tableResumeKeywords").append(tr);
     })
 
     const sum = data.map(e => e.sum * 1000).reduce((a, b) => a + b) / 1000;
-    afficherTrSum(sum, $("tableResumeKeywords"), 1);
+    afficherTrSum(sum, AppCommon().$("tableResumeKeywords"), 1);
 }
 
 
-function updadeStorage(id, value) {
-    localStorage.removeItem(id);
-    localStorage.setItem(id, JSON.stringify(value));
-}
-
-function getFromStorage(id) {
-    return JSON.parse(localStorage.getItem(id));
-}
 
 
-function newId() {
-    return Date.now();
-}
 
-function exportPrevisionCSV() {
-    Previsions().IO().export();
-}
+
