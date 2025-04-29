@@ -87,9 +87,13 @@ function AppTransactions() {
         });
     }
 
+    function displayLastImportDate() {
+        AppCommon().displayLastImportDate(ID);
+    }
+
     return {
         ID, importCSV, getIncomes, getDepenses, associerKeyword,
         associerCategory, sumParKeyword, sumParCategory,
-        afficherTableSimple
+        afficherTableSimple, displayLastImportDate
     }
 }

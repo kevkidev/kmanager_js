@@ -70,7 +70,16 @@ function AppCommon() {
         return td;
     }
 
+    function getLastImportDate(id) {
+        return AppStorage().get("date_import_" + id);
+    }
+
     // display
+
+    function displayLastImportDate(id) {
+        const date = getLastImportDate(id);
+        AppCommon().$("lastImportDate_" + id).innerText = (date != "null") ? date : "inconnue";
+    }
 
     function afficherTrSum(sum, table, colspan) {
         const trSum = AppCommon().$create("tr");
@@ -103,6 +112,6 @@ function AppCommon() {
 
     return {
         popup, $, $create, importCSV, exportCSV, extractCSV,
-        getDateString, sum, $td, afficherTrSum, toggle
+        getDateString, sum, $td, afficherTrSum, toggle, displayLastImportDate
     }
 }

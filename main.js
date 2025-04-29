@@ -1,6 +1,3 @@
-let categories = [];
-let transactions = [];
-
 // DEBUT 
 initImportListener();
 load();
@@ -15,16 +12,14 @@ function initImportListener() {
 function load() {
 
     // netoyer les autres données du storage pour le bon fonctionnement
-    AppStorage().clearSession();
+    AppStorage().cleanSession();
 
-    transactions = AppStorage().get(AppTransactions().ID);
-    categories = AppStorage().get(AppCategories().ID);
-    const date = localStorage.getItem("date_import_transactions");
-    const dateImportKeywords = localStorage.getItem("date_import_categories");
+    let transactions = AppStorage().get(AppTransactions().ID);
+    let categories = AppStorage().get(AppCategories().ID);
 
-
-    AppCommon().$("dateImportData").innerText = (date != "null") ? date : "inconnue";
-    AppCommon().$("dateImportKeywords").innerText = (dateImportKeywords != "null") ? dateImportKeywords : "inconnue";
+    AppTransactions().displayLastImportDate();
+    AppCategories().displayLastImportDate();
+    AppPrevisions().displayLastImportDate();
 
     if (!transactions) {
         AppCommon().popup("Veuillez importer des transactions!");

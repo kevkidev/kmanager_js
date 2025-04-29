@@ -76,5 +76,9 @@ function AppCategories() {
         AppCommon().afficherTrSum(sum, table, 1);
     }
 
-    return { importCSV, exportCSV, ID, afficherSumParCategory, afficherSumParKeyword, getKeywords }
+    function displayLastImportDate() {
+        AppCommon().displayLastImportDate(ID);
+    }
+
+    return { importCSV, exportCSV, ID, afficherSumParCategory, afficherSumParKeyword, getKeywords, displayLastImportDate }
 }

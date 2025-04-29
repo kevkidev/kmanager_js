@@ -138,7 +138,11 @@ function AppPrevisions() {
         return { display };
     }
 
+    function displayLastImportDate() {
+        AppCommon().displayLastImportDate(ID);
+    }
+
     return {
-        Controller, View, importCSV, exportCSV, ID
+        Controller, View, importCSV, exportCSV, ID, displayLastImportDate
     }
 }

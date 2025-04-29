@@ -6,7 +6,7 @@ function AppStorage() {
 
     function get(id) {
         const found = localStorage.getItem(id);
-        return found ? JSON.parse(found) : null;
+        return JSON.parse(found);
     }
 
     function add(id, newItem) {
@@ -24,10 +24,10 @@ function AppStorage() {
     }
 
     function recordImportDate(id) {
-        localStorage.setItem("date_import_" + id, AppCommon().getDateString());
+        update("date_import_" + id, AppCommon().getDateString());
     }
 
-    function clearSession() {
+    function cleanSession() {
         const keeptIds = [
             AppCategories().ID,
             AppPrevisions().ID,
@@ -45,5 +45,5 @@ function AppStorage() {
         }
     }
 
-    return { newId, get, update, add, recordImportDate, clearSession }
+    return { newId, get, update, add, recordImportDate, cleanSession }
 }
