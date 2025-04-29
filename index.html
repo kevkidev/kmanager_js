@@ -17,7 +17,7 @@
     <div class="container">
 
 
-        <h1>Import/Export <img class="toogle_img" id="vueConfigTitle" onclick="toggle(event, 'vueConfig')"
+        <h1>Import/Export <img class="toogle_img" id="vueConfigTitle" onclick="actionToggle(event, 'vueConfig')"
                 src="img/icons8-off-50.png" /> </h1>
         <section id="vueConfig">
             <h2>Importer les transactions en CSV </h2>
@@ -54,7 +54,7 @@
 
 
 
-        <h1>Synthèse <img class="toogle_img" id="vueSyntheseTitle" onclick="toggle(event, 'vueSynthese')"
+        <h1>Synthèse <img class="toogle_img" id="vueSyntheseTitle" onclick="actionToggle(event, 'vueSynthese')"
                 src="img/icons8-off-50.png" /> </h1>
 
 
@@ -62,7 +62,7 @@
 
 
 
-        <h1>Vue d'ensemble <img class="toogle_img" id="vueGlobaleTitle" onclick="toggle(event, 'vueGlobale')"
+        <h1>Vue d'ensemble <img class="toogle_img" id="vueGlobaleTitle" onclick="actionToggle(event, 'vueGlobale')"
                 src="img/icons8-off-50.png" /> </h1>
         <section id="vueGlobale">
             <h2>Entrées <span></span></h2>
@@ -88,7 +88,7 @@
 
 
         <h1>Résumé par catégorie <img class="toogle_img" id="vueResumeParCategorieTitle"
-                onclick="toggle(event, 'vueResumeParCategorie')" src="img/icons8-off-50.png" /> </h1>
+                onclick="actionToggle(event, 'vueResumeParCategorie')" src="img/icons8-off-50.png" /> </h1>
         <section id="vueResumeParCategorie">
             <table id="tableResumeCategorie">
                 <tr>
@@ -101,11 +101,11 @@
 
 
         <h1>Détail par catégorie <img class="toogle_img" id="vueDetailsCategoriesTitle"
-                onclick="toggle(event, 'vueDetailsCategories')" src="img/icons8-off-50.png" /> </h1>
+                onclick="actionToggle(event, 'vueDetailsCategories')" src="img/icons8-off-50.png" /> </h1>
         <section id="vueDetailsCategories"></section>
 
         <h1>Resumé par mot clé <img class="toogle_img" id="toggleByCategory"
-                onclick="toggle(event, 'vueResumeKeywords')" src="img/icons8-off-50.png" /> </h1>
+                onclick="actionToggle(event, 'vueResumeKeywords')" src="img/icons8-off-50.png" /> </h1>
         <section id="vueResumeKeywords">
             <table id="tableResumeKeywords">
                 <tr>
@@ -118,7 +118,7 @@
 
 
         <h1>Gestion des prévisions <img class="toogle_img" id="vueGestionPrevisionTitle"
-                onclick="toggle(event, 'vueGestionPrevision')" src="img/icons8-off-50.png" /> </h1>
+                onclick="actionToggle(event, 'vueGestionPrevision')" src="img/icons8-off-50.png" /> </h1>
         <section id="vueGestionPrevision">
             <p>
                 Importer CSV : <input type="file" id="inputImportPrevisions" accept=".csv" /> Dernier import : <span

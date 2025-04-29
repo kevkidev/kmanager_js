@@ -5,11 +5,15 @@ function AppStorage() {
     }
 
     function get(id) {
-        return JSON.parse(localStorage.getItem(id));
+        const found = localStorage.getItem(id);
+        return found ? JSON.parse(found) : null;
     }
 
     function add(id, newItem) {
-        const array = get(id);
+        let array = get(id);
+        if (!array) {
+            array = [];
+        }
         array.push(newItem);
         update(id, array);
     }
@@ -27,10 +31,10 @@ function AppStorage() {
         const keeptIds = [
             AppCategories().ID,
             AppPrevisions().ID,
-            "transactions",
+            AppTransactions().ID,
             `date_import_${AppCategories().ID}`,
             `date_import_${AppPrevisions().ID}`,
-            `date_import_transactions`,
+            `date_import_${AppTransactions().ID}`,
         ];
 
         for (let i = 0; i < localStorage.length; i++) {
