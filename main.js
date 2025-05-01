@@ -10,73 +10,80 @@ function initImportListener() {
 }
 
 function load() {
-    AppStorage().cleanSession();
-    let transactions = AppStorage().get(AppTransactions().ID);
-    let categories = AppStorage().get(AppCategories().ID);
+    storage_cleanSession([
+        categories_ID,
+        budget_ID,
+        transanctions_ID,
+        `date_import_${categories_ID}`,
+        `date_import_${budget_ID}`,
+        `date_import_${transanctions_ID}`,
+    ]);
+    let transactions = storage_get(transanctions_ID);
+    let categories = storage_get(categories_ID);
 
-    AppTransactions().displayLastImportDate();
-    AppCategories().displayLastImportDate();
-    AppPrevisions().displayLastImportDate();
+    transanctions_displayLastImportDate();
+    categories_displayLastImportDate();
+    budget_displayLastImportDate();
 
     if (!transactions) {
-        AppCommon().popup("Veuillez importer des transactions!");
+        display_popup("Veuillez importer des transactions!");
         return;
     }
 
     if (!categories) {
-        AppCommon().popup("Info : Le rapport a été généré mais vous n'avez pas importer de categories!");
+        display_popup("Info : Le rapport a été généré mais vous n'avez pas importer de categories!");
         categories = [{
             name: "inconnue",
             keywords: ["inconnu"]
         }];
     }
 
-    const KEYWORDS = AppCategories().getKeywords(categories);
+    const KEYWORDS = categories_getKeywords(categories);
 
-    AppTransactions().associerKeyword(transactions, KEYWORDS);
-    AppTransactions().associerCategory(transactions, categories);
+    transanctions_associerKeyword(transactions, KEYWORDS);
+    transanctions_associerCategory(transactions, categories);
 
-    const INCOMES = AppTransactions().getIncomes(transactions);
-    const inTable = AppCommon().$("tableIn");
-    AppTransactions().afficherTableSimple(INCOMES, inTable);
-    AppCommon().afficherTrSum(AppCommon().sum(INCOMES), inTable, 2);
+    const INCOMES = transanctions_incomes(transactions);
+    const inTable = dom_get("tableIn");
+    transanctions_displayTableSimple(INCOMES, inTable);
+    display_trSum(util_sum(INCOMES), inTable, 2);
 
-    const EXPENSES = AppTransactions().getDepenses(transactions);
-    const outTable = AppCommon().$("tableOut");
-    AppTransactions().afficherTableSimple(EXPENSES, outTable);
-    AppCommon().afficherTrSum(AppCommon().sum(EXPENSES), outTable, 2);
+    const EXPENSES = transanctions_expences(transactions);
+    const outTable = dom_get("tableOut");
+    transanctions_displayTableSimple(EXPENSES, outTable);
+    display_trSum(util_sum(EXPENSES), outTable, 2);
 
-    AppCategories().afficherSumParCategory(AppTransactions().sumParCategory(EXPENSES, categories));
-    AppCategories().afficherSumParKeyword(AppTransactions().sumParKeyword(EXPENSES, KEYWORDS));
+    categories_afficherSumParCategory(transanctions_sumParCategory(EXPENSES, categories));
+    categories_afficherSumParKeyword(transanctions_sumParKeyword(EXPENSES, KEYWORDS));
 
-    AppPrevisions().View().display();
-    // Synthese.Vue.afficher();
+    budget_display();
+    synthese_display();
 }
 
 
 // UI actions import
 function actionImportCSVTransactions() {
-    AppCommon().importCSV(this, function (text) {
-        AppTransactions().importCSV(text);
+    io_importCSV(this, function (text) {
+        transanctions_importCSV(text);
     });
 }
 
 function actionImportCSVCategories() {
-    AppCommon().importCSV(this, function (text) {
-        AppCategories().importCSV(text);
+    io_importCSV(this, function (text) {
+        categories_importCSV(text);
     });
 }
 
 function actionImportCSVPrevision() {
-    AppCommon().importCSV(this, function (text) {
-        AppPrevisions().importCSV(text);
+    io_importCSV(this, function (text) {
+        budget_importCSV(text);
     });
 }
 
 // actions export
 function actionExportCSVTransactions() {
-    AppCommon().exportCSV("transactions", function () {
-        let transactions = AppStorage().get(AppTransactions().ID);
+    io_exportCSV("transactions", function () {
+        let transactions = storage_get(transanctions_ID);
 
         if (!transactions) return [];
         const rows = [
@@ -91,13 +98,21 @@ function actionExportCSVTransactions() {
 }
 
 function actionExportCSVCategories() {
-    AppCategories().exportCSV();
+    categories_exportCSV();
 }
 
 function actionExportCSVPrevisions() {
-    AppPrevisions().exportCSV();
+    budget_exportCSV();
 }
 
 function actionToggle(event, id) {
-    AppCommon().toggle(event, id);
+    display_toggle(event, id);
+}
+
+function actionBudgetDeleteItem(id) {
+    budget_deleteItem(id);
+}
+
+function actionBudgetAddItem() {
+    budget_add();
 }

@@ -1,185 +1,128 @@
-function AppPrevisions() {
+const budget_ID = "previsions";
 
-    const ID = "previsions";
+function budget_importCSV(text) {
 
-    function importCSV(text) {
-
-        function extractCSV(text) {
-            return AppCommon().extractCSV(text, function (currentLine) {
-                const previsions = {
-                    id: currentLine[0],
-                    quoi: currentLine[1],
-                    frequence: currentLine[2],
-                    combien: currentLine[3],
-                };
-                return previsions;
-            });
-        }
-
-        AppStorage().update(ID, extractCSV(text));
-        AppStorage().recordImportDate(ID);
-    }
-
-    const exportCSV = function () {
-        AppCommon().exportCSV("previsions", function () {
-
-            const array = AppStorage().get(AppPrevisions().ID);
-            if (!array) {
-                AppCommon().popup("Pas de données à exporter!");
-                return;
-            }
-
-            const rows = [
-                ["id", "quoi", "frequence", "combien"]
-            ];
-
-            array.forEach(e => {
-                rows.push([e.id, e.quoi, e.frequence, e.combien]);
-            });
-
-            return rows;
+    function extractCSV(text) {
+        return io_extractCSV(text, function (currentLine) {
+            const previsions = {
+                id: currentLine[0],
+                quoi: currentLine[1],
+                frequence: currentLine[2],
+                combien: currentLine[3],
+            };
+            return previsions;
         });
     }
 
+    storage_update(budget_ID, extractCSV(text));
+    storage_recordImportDate(budget_ID);
+}
 
+function budget_exportCSV() {
+    io_exportCSV("previsions", function () {
 
-    function Controller() {
-
-        const add = function () {
-            const quoi = AppCommon().$("prevQuoi").value;
-            const frequence = AppCommon().$("prevFrequence").value;
-            const combien = AppCommon().$("prevCombien").value;
-
-            if (!quoi || !frequence || !combien) return;
-            if (frequence < 0 || combien < 0) return;
-
-            const newItem = { id: AppStorage().newId(), quoi, frequence, combien };
-            AppStorage().add(AppPrevisions().ID, newItem);
-            AppPrevisions().View().display();
+        const array = storage_get(budget_ID);
+        if (!array) {
+            display_popup("Pas de données à exporter!");
+            return;
         }
 
-        const deleteItem = function (id) {
-            const array = AppStorage().get(AppPrevisions().ID);
-            const index = array.findIndex(e => e.id == id);
-            const confirmation = confirm(`Confirmer suppression de ${array[index].quoi} ?`);
-            if (confirmation) {
-                array.splice(index, 1);
-                AppStorage().update(AppPrevisions().ID, array);
-                AppPrevisions().View().display();
-            }
-        }
+        const rows = [
+            ["id", "quoi", "frequence", "combien"]
+        ];
 
-        return {
-            add,
-            delete: deleteItem
-        };
-    }
+        array.forEach(e => {
+            rows.push([e.id, e.quoi, e.frequence, e.combien]);
+        });
 
-    const View = function () {
+        return rows;
+    });
+}
 
-        const display = function () {
+function budget_add() {
+    const quoi = dom_get("prevQuoi").value;
+    const frequence = dom_get("prevFrequence").value;
+    const combien = dom_get("prevCombien").value;
 
-            const data = AppStorage().get(AppPrevisions().ID);
+    if (!quoi || !frequence || !combien) return;
+    if (frequence < 0 || combien < 0) return;
 
-            const trHead = AppCommon().$create("tr");
-            const th1 = AppCommon().$create("th");
-            const th2 = AppCommon().$create("th");
-            const th3 = AppCommon().$create("th");
-            const th4 = AppCommon().$create("th");
+    const newItem = { id: storage_newId(), quoi, frequence, combien };
+    storage_add(budget_ID, newItem);
+    budget_display();
+}
 
-            th1.innerText = "";
-            th2.innerText = "Quoi";
-            th3.innerText = "Fréquence";
-            th4.innerText = "Combien";
-
-            trHead.replaceChildren(th1, th2, th3, th4);
-            AppCommon().$("tablePrevisions").replaceChildren(trHead);
-
-            if (data) {
-                data.forEach(e => {
-                    const tr = document.createElement("tr");
-
-                    const td0 = document.createElement("td");
-                    td0.innerHTML = `<img class="img_row_action" src="img/icons8-remove-50.png" onclick="AppPrevisions().Controller().delete(${e.id})"/>`;
-                    tr.append(td0);
-
-                    const td1 = document.createElement("td");
-                    td1.innerText = e.quoi;
-                    tr.append(td1);
-
-                    const td2 = document.createElement("td");
-                    td2.innerHTML = e.frequence;
-                    tr.append(td2);
-
-                    const td3 = document.createElement("td");
-                    td3.innerText = e.combien;
-                    tr.append(td3);
-
-                    AppCommon().$("tablePrevisions").append(tr);
-                });
-            }
-
-            // generer la derniere ligne du tableau sont forme de formulaire pour l'ajout d'une prévision
-
-            const trForm = AppCommon().$create("tr");
-
-            const td1 = AppCommon().$create("td");
-            td1.innerHTML = `<img class="img_row_action" src="img/icons8-add-50.png" onclick="AppPrevisions().Controller().add()"/>`;
-
-            const td2 = AppCommon().$create("td");
-            td2.innerHTML = `<input id="prevQuoi" type="text"/>`;
-
-            const td3 = AppCommon().$create("td");
-            td3.innerHTML = `<input id="prevFrequence" type="number" />`;
-
-            const td4 = AppCommon().$create("td");
-            td4.innerHTML = `<input id="prevCombien" type="number" />`;
-
-            trForm.replaceChildren(td1, td2, td3, td4);
-            AppCommon().$("tablePrevisions").append(trForm);
-        }
-
-        return { display };
-    }
-
-    function displayLastImportDate() {
-        AppCommon().displayLastImportDate(ID);
-    }
-
-    return {
-        Controller, View, importCSV, exportCSV, ID, displayLastImportDate
+function budget_deleteItem(id) {
+    const array = storage_get(budget_ID);
+    const index = array.findIndex(e => e.id == id);
+    const confirmation = confirm(`Confirmer suppression de ${array[index].quoi} ?`);
+    if (confirmation) {
+        array.splice(index, 1);
+        storage_update(budget_ID, array);
+        budget_display();
     }
 }
 
-const Budget = {
+function budget_displayLastImportDate() {
+    display_lastImportDate(budget_ID);
+}
 
-    totalEntreeMensuelles: 750, // à recuper dans storage , import 
+function budget_display() {
+    const data = storage_get(budget_ID);
+    const trHead = dom_tr();
+    dom_th(trHead, "");
+    dom_th(trHead, "Quoi");
+    dom_th(trHead, "Fréquence");
+    dom_th(trHead, "Combien");
+    dom_get("tablePrevisions").replaceChildren(trHead);
 
-    totalAnnee() {
-        const entier = Budget.totalParFrequence(1) * 1000 * 12 +
-            Budget.totalParFrequence(3) * 1000 * 4 +
-            Budget.totalParFrequence(12) * 1000;
-        return entier / 1000;
-    },
-
-    totalParFrequence(frequence) {
-        const array = AppStorage().get(AppPrevisions().ID);
-        if (!array && array.length == 0) return 0;
-        const filtered = array.filter(e => e.frequence == frequence);
-        if (filtered.length == 0) return 0;
-        const sum = AppCommon().sum(filtered);
-        return sum;
-    },
-
-    totalMensuel() {
-        return this.totalAnnee() * 1000 / 12 / 1000;
-    },
-
-    totalApportMensuel() {
-        return (this.totalMensuel() * 1000 - this.totalEntreeMensuelles * 1000) / 1000;
-    },
-
-    totalApportAnnuel() {
-        return this.totalApportMensuel() * 1000 * 12 / 1000;
+    if (data) {
+        data.forEach(e => {
+            const tr = dom_tr();
+            dom_td(tr, `<img class="img_row_action" src="img/icons8-remove-50.png" onclick="actionBudgetDeleteItem(${e.id})"/>`, true);
+            dom_td(tr, e.quoi);
+            dom_td(tr, e.frequence);
+            dom_td(tr, e.combien);
+            dom_get("tablePrevisions").append(tr);
+        });
     }
+
+    // generer la derniere ligne du tableau sont forme de formulaire pour l'ajout d'une prévision
+    const trForm = dom_tr();
+    dom_td(trForm, `<img class="img_row_action" src="img/icons8-add-50.png" onclick="actionBudgetAddItem()"/>`, true);
+    dom_td(trForm, dom_input("prevQuoi", "text").outerHTML, true);
+    dom_td(trForm, dom_input("prevFrequence", "number").outerHTML, true);
+    dom_td(trForm, dom_input("prevCombien", "number").outerHTML, true);
+    dom_get("tablePrevisions").append(trForm);
+}
+
+
+const budget_sumMonthIncomes = 750; // à recuper dans storage , import 
+
+function budget_sumYear() {
+    const entier = budget_sumPerFrequence(1) * 1000 * 12 +
+        budget_sumPerFrequence(3) * 1000 * 4 +
+        budget_sumPerFrequence(12) * 1000;
+    return entier / 1000;
+}
+
+function budget_sumPerFrequence(frequence) {
+    const array = storage_get(budget_ID);
+    if (!array && array.length == 0) return 0;
+    const filtered = array.filter(e => e.frequence == frequence);
+    if (filtered.length == 0) return 0;
+    const sum = util_sum(filtered);
+    return sum;
+}
+
+function budget_sumMonth() {
+    return budget_sumYear() * 1000 / 12 / 1000;
+}
+
+function budget_sumMonthProvision() {
+    return (budget_sumMonth() * 1000 - budget_sumMonthIncomes * 1000) / 1000;
+}
+
+function budget_sumYearProvision() {
+    return budget_sumMonthProvision() * 1000 * 12 / 1000;
 }

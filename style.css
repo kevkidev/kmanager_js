@@ -1,5 +1,6 @@
 :root {
-    --color1: #dff6fa;
+    --color1: #faf3ff;
+    --color2: #e2b9ff;
 }
 
 body {
@@ -62,12 +63,17 @@ section {
     display: none;
 }
 
+.visible {
+    display: block;
+}
+
 .toogle_img {
     position: relative;
     height: 50px;
     float: right;
     right: 5px;
     bottom: 12px;
+    cursor: pointer;
 }
 
 .header {
@@ -98,6 +104,7 @@ a {
 
 .img_row_action {
     height: 25px;
+    cursor: pointer;
 }
 
 td>input {
@@ -107,4 +114,15 @@ td>input {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
+}
+
+input::file-selector-button,
+button {
+    content: none;
+    padding: 10px;
+    background-color: var(--color2);
+    border: solid black 3px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
 }
