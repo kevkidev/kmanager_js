@@ -1,5 +1,7 @@
 function AppPrevisions() {
 
+    const ID = "previsions";
+
     function importCSV(text) {
 
         function extractCSV(text) {
@@ -40,7 +42,6 @@ function AppPrevisions() {
     }
 
 
-    const ID = "previsions";
 
     function Controller() {
 
@@ -48,8 +49,11 @@ function AppPrevisions() {
             const quoi = AppCommon().$("prevQuoi").value;
             const frequence = AppCommon().$("prevFrequence").value;
             const combien = AppCommon().$("prevCombien").value;
-            const newItem = { id: AppStorage().newId(), quoi, frequence, combien };
 
+            if (!quoi || !frequence || !combien) return;
+            if (frequence < 0 || combien < 0) return;
+
+            const newItem = { id: AppStorage().newId(), quoi, frequence, combien };
             AppStorage().add(AppPrevisions().ID, newItem);
             AppPrevisions().View().display();
         }
@@ -144,5 +148,38 @@ function AppPrevisions() {
 
     return {
         Controller, View, importCSV, exportCSV, ID, displayLastImportDate
+    }
+}
+
+const Budget = {
+
+    totalEntreeMensuelles: 750, // à recuper dans storage , import 
+
+    totalAnnee() {
+        const entier = Budget.totalParFrequence(1) * 1000 * 12 +
+            Budget.totalParFrequence(3) * 1000 * 4 +
+            Budget.totalParFrequence(12) * 1000;
+        return entier / 1000;
+    },
+
+    totalParFrequence(frequence) {
+        const array = AppStorage().get(AppPrevisions().ID);
+        if (!array && array.length == 0) return 0;
+        const filtered = array.filter(e => e.frequence == frequence);
+        if (filtered.length == 0) return 0;
+        const sum = AppCommon().sum(filtered);
+        return sum;
+    },
+
+    totalMensuel() {
+        return this.totalAnnee() * 1000 / 12 / 1000;
+    },
+
+    totalApportMensuel() {
+        return (this.totalMensuel() * 1000 - this.totalEntreeMensuelles * 1000) / 1000;
+    },
+
+    totalApportAnnuel() {
+        return this.totalApportMensuel() * 1000 * 12 / 1000;
     }
 }

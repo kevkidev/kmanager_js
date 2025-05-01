@@ -33,6 +33,14 @@ tr:nth-child(even) {
     font-weight: bold;
 }
 
+.gras {
+    font-weight: bold;
+}
+
+.surligne {
+    background-color: greenyellow;
+}
+
 .total_title {
     text-align: right;
 }

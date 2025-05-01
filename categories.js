@@ -16,6 +16,7 @@ function AppCategories() {
     }
 
     function exportCSV() {
+        let categories = AppStorage().get(AppCategories().ID);
         AppCommon().exportCSV("categories", function () {
 
             if (!categories) {

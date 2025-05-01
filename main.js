@@ -4,16 +4,13 @@ load();
 // FIN 
 
 function initImportListener() {
-    document.getElementById('csvFileInput').addEventListener('change', actionImportCSVTransactions);
-    document.getElementById('keywordsCsvFileInput').addEventListener('change', actionImportCSVCategories);
-    document.getElementById('inputImportPrevisions').addEventListener('change', actionImportCSVPrevision);
+    document.getElementById('triggerImportCSVTransactions').addEventListener('change', actionImportCSVTransactions);
+    document.getElementById('triggerImportCSVCategories').addEventListener('change', actionImportCSVCategories);
+    document.getElementById('triggerImportCSVPrevisions').addEventListener('change', actionImportCSVPrevision);
 }
 
 function load() {
-
-    // netoyer les autres données du storage pour le bon fonctionnement
     AppStorage().cleanSession();
-
     let transactions = AppStorage().get(AppTransactions().ID);
     let categories = AppStorage().get(AppCategories().ID);
 
@@ -53,6 +50,7 @@ function load() {
     AppCategories().afficherSumParKeyword(AppTransactions().sumParKeyword(EXPENSES, KEYWORDS));
 
     AppPrevisions().View().display();
+    // Synthese.Vue.afficher();
 }
 
 
@@ -78,6 +76,9 @@ function actionImportCSVPrevision() {
 // actions export
 function actionExportCSVTransactions() {
     AppCommon().exportCSV("transactions", function () {
+        let transactions = AppStorage().get(AppTransactions().ID);
+
+        if (!transactions) return [];
         const rows = [
             ["quand", null, "quoi", null, null, null, "combien"]
         ];

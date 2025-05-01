@@ -9,18 +9,19 @@ function AppStorage() {
         return JSON.parse(found);
     }
 
-    function add(id, newItem) {
-        let array = get(id);
+    function add(arrayId, newItem) {
+        let array = get(arrayId);
         if (!array) {
             array = [];
         }
         array.push(newItem);
-        update(id, array);
+        update(arrayId, array);
     }
 
     function update(id, value) {
         localStorage.removeItem(id);
         localStorage.setItem(id, JSON.stringify(value));
+        AppCommon().updateLastChangeDate();
     }
 
     function recordImportDate(id) {
@@ -28,7 +29,7 @@ function AppStorage() {
     }
 
     function cleanSession() {
-        const keeptIds = [
+        const idsToKeep = [
             AppCategories().ID,
             AppPrevisions().ID,
             AppTransactions().ID,
@@ -39,7 +40,7 @@ function AppStorage() {
 
         for (let i = 0; i < localStorage.length; i++) {
             const id = localStorage.key(i);
-            if (!keeptIds.includes(id)) {
+            if (!idsToKeep.includes(id)) {
                 localStorage.removeItem(id);
             }
         }

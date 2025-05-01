@@ -15,32 +15,42 @@
 
 
     <div class="container">
-
-
         <h1>Import/Export <img class="toogle_img" id="vueConfigTitle" onclick="actionToggle(event, 'vueConfig')"
                 src="img/icons8-off-50.png" /> </h1>
         <section id="vueConfig">
-            <h2>Importer les transactions en CSV </h2>
+
+            <h2>Transactions en CSV </h2>
             <p>Un fichier CSV mensuel exporté depuis la banque (ou depuis un autre rapport).
-                Les données du dernier fichier selectionné sont chargées automatiquement depuis le local storage!</p>
-            <input type="file" id="csvFileInput" accept=".csv" /> Dernier import : <span
+                Les données du dernier fichier selectionné sont chargées automatiquement depuis le local storage! Les
+                colonnes 1, 3 et 7 sont respectivement : quand, quoi et combien.</p>
+            <input type="file" id="triggerImportCSVTransactions" accept=".csv" /> Dernier import : <span
                 id="lastImportDate_transactions"></span>
-
-            <h2>Importer les catégories et mots-clés associés </h2>
-            <p>C'est un fichier CSV. Il faut le mettre à jour et l'importer à chaque nouveau creancier.</p>
-            <input type="file" id="keywordsCsvFileInput" accept=".csv" /> Dernier import : <span
-                id="lastImportDate_categories"></span>
-
-            <h2>Exporter en CSV</h2>
             <p>
                 Export des données de base pour régenerer le rapport : la liste des entrées et sorties et la liste de
                 categories et keywords associés.</p>
             <p>
                 <button onclick="actionExportCSVTransactions()">Exporter transactions</button> (importable)
             </p>
+
+
+            <h2>Catégories et mots-clés associés en CSV</h2>
+            <p>C'est un fichier CSV. Il faut le mettre à jour à chaque nouveau créancier et l'importer.</p>
+            <input type="file" id="triggerImportCSVCategories" accept=".csv" /> Dernier import : <span
+                id="lastImportDate_categories"></span>
             <p>
                 <button onclick="actionExportCSVCategories()">Exporter catégories et mots-clés</button> (importable)
             </p>
+
+
+            <h2>Prévisions en CSV</h2>
+            <p>
+                Importer CSV : <input type="file" id="triggerImportCSVPrevisions" accept=".csv" /> Dernier import :
+                <span id="lastImportDate_previsions"></span>
+            </p>
+            <p>
+                <button onclick="actionExportCSVPrevisions()">Exporter les prévsions</button> (importable)
+            </p>
+
 
             <h2>Sauvegarder</h2>
             <p>
@@ -56,8 +66,14 @@
 
 
         <h1>Synthèse <img class="toogle_img" id="vueSyntheseTitle" onclick="actionToggle(event, 'vueSynthese')"
-                src="img/icons8-off-50.png" /> </h1>
+                src="img/icons8-off-50.png" /></h1>
 
+        <section id="vueSynthese">
+            <h2>Totaux budget</h2>
+            <table id="tableSynthese1"></table>
+            <h2>Totaux mois</h2>
+            <table id="tableSynthese2"></table>
+        </section>
 
 
 
@@ -69,18 +85,18 @@
             <h2>Entrées <span></span></h2>
             <table id="tableIn">
                 <tr>
-                    <th id="sortByDate">Quand</th>
-                    <th id="sortByKeyword">Quoi</th>
-                    <th id="sortbyAmount">Combien</th>
+                    <th>Quand</th>
+                    <th>Quoi</th>
+                    <th>Combien</th>
                 </tr>
             </table>
 
             <h2>Sorties</h2>
             <table id="tableOut">
                 <tr>
-                    <th id="sortByDate">Quand</th>
-                    <th id="sortByKeyword">Quoi</th>
-                    <th id="sortbyAmount">Combien</th>
+                    <th>Quand</th>
+                    <th>Quoi</th>
+                    <th>Combien</th>
                 </tr>
             </table>
         </section>
@@ -121,13 +137,6 @@
         <h1>Gestion des prévisions <img class="toogle_img" id="vueGestionPrevisionTitle"
                 onclick="actionToggle(event, 'vueGestionPrevision')" src="img/icons8-off-50.png" /> </h1>
         <section id="vueGestionPrevision">
-            <p>
-                Importer CSV : <input type="file" id="inputImportPrevisions" accept=".csv" /> Dernier import : <span
-                    id="lastImportDate_previsions"></span>
-            </p>
-            <p>
-                <button onclick="actionExportCSVPrevisions()">Exporter les prévsions</button> (importable)
-            </p>
             <table id="tablePrevisions"></table>
         </section>
 
@@ -139,6 +148,7 @@
     <script src="transactions.js"></script>
     <script src="categories.js"></script>
     <script src="previsions.js"></script>
+    <script src="synthese.js"></script>
     <script src="main.js"></script>
     <script src="test.js"></script>
 </body>

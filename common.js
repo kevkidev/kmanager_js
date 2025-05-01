@@ -27,10 +27,14 @@ function AppCommon() {
 
     function exportCSV(fileName, callback) {
         const rows = callback();
+        if (!rows) {
+            AppCommon().popup("Rien a exporter!");
+            return;
+        }
         const csvContent = "data:text/csv;charset=utf-8,"
             + rows.map(e => e.join(";")).join("\n");
 
-        var link = AppCommon().$create("a");
+        const link = AppCommon().$create("a");
         link.setAttribute("href", encodeURI(csvContent));
         link.setAttribute("download", `RDMP_${fileName}_${(new Date()).toLocaleString()}.csv`);
         document.body.appendChild(link);
@@ -52,11 +56,12 @@ function AppCommon() {
         return (new Date()).toLocaleString();
     }
 
-    function sum(data) {
-
-        const map = data.map(e => parseFloat(e.combien) * 1000);
-        if (map.length > 0)
-            return map.reduce((a, b) => a + b) / 1000;
+    function sum(array) {
+        const map = array.map(e => parseFloat(e.combien) * 1000);
+        if (map.length > 0) {
+            const result = map.reduce((a, b) => a + b) / 1000;
+            return result;
+        }
     }
 
     function $td(tr, value, isHtml) {
@@ -72,6 +77,10 @@ function AppCommon() {
 
     function getLastImportDate(id) {
         return AppStorage().get("date_import_" + id);
+    }
+
+    function updateLastChangeDate() {
+        return localStorage.setItem("date_modiditaction", getDateString());
     }
 
     // display
@@ -112,6 +121,6 @@ function AppCommon() {
 
     return {
         popup, $, $create, importCSV, exportCSV, extractCSV,
-        getDateString, sum, $td, afficherTrSum, toggle, displayLastImportDate
+        getDateString, sum, $td, afficherTrSum, toggle, displayLastImportDate, updateLastChangeDate
     }
 }
