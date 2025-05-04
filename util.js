@@ -15,3 +15,7 @@ function util_sum(array) {
 function util_round_100(value) {
     return Math.round(value * 100) / 100;
 }
+
+function util_initImportListener(id, action) {
+    document.getElementById(id).addEventListener('change', action);
+}

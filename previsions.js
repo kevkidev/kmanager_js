@@ -1,7 +1,7 @@
 const budget_ID = "previsions";
+const budget_sumMonthIncomes = 750; // à recuper dans storage , import //todo
 
 function budget_importCSV(text) {
-
     function extractCSV(text) {
         return io_extractCSV(text, function (currentLine) {
             const previsions = {
@@ -63,10 +63,6 @@ function budget_deleteItem(id) {
     }
 }
 
-function budget_displayLastImportDate() {
-    display_lastImportDate(budget_ID);
-}
-
 function budget_display() {
     const data = storage_get(budget_ID);
     const trHead = dom_tr();
@@ -94,10 +90,9 @@ function budget_display() {
     dom_td(trForm, dom_input("prevFrequence", "number").outerHTML, true);
     dom_td(trForm, dom_input("prevCombien", "number").outerHTML, true);
     dom_get("tablePrevisions").append(trForm);
+
+    display_lastImportDate(budget_ID);
 }
-
-
-const budget_sumMonthIncomes = 750; // à recuper dans storage , import 
 
 function budget_sumYear() {
     const entier = budget_sumPerFrequence(1) * 1000 * 12 +

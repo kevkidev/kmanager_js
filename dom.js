@@ -24,11 +24,12 @@ function dom_td(tr, value, isHtml, isBold, highlight) {
     } else {
         td.innerText = value;
     }
-    if (isBold) td.style.fontWeight = "bold";
-    if (highlight && isHtml) td.setAttribute("class", "highlight");
+    if (isBold) td.setAttribute("class", "bold");
+    const clazz = td.getAttribute("class");
+    if (highlight && isHtml) td.setAttribute("class", clazz + " highlight");
     if (highlight && typeof value == "number") {
-        if (value >= 0) td.setAttribute("class", "highlight");
-        if (value < 0) td.setAttribute("class", "highlight_danger");
+        if (value >= 0) td.setAttribute("class", clazz + " highlight");
+        if (value < 0) td.setAttribute("class", clazz + " highlight_danger");
     }
     tr.append(td);
     return td;

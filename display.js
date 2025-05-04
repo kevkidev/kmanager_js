@@ -28,7 +28,6 @@ function display_toggle(event, id) {
     let status = storage_get(id);
     const ON = "on";
     const OFF = "off";
-
     if (!status || status == OFF) {
         dom_get(id).style.display = 'block';
         storage_update(id, ON);
@@ -53,7 +52,6 @@ function display_simpleTableHeader(table) {
     dom_th(tr, "Combien");
     table.replaceChildren(tr);
 }
-
 
 function display_changeDate() {
     dom_get("changeDate").innerText = storage_getChangeDate();

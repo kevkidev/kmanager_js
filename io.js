@@ -6,7 +6,6 @@ function io_importCSV(context, handle) {
     reader.onload = function (e) {
         const text = e.target.result;
         handle(text);
-        location.reload();
     };
     reader.readAsText(file);
 }

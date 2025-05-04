@@ -65,9 +65,9 @@ function _synthese_displaySumMonth() {
         });
     }
 
-    const trans = storage_get(transanctions_ID);
-    const expenses = util_sum(transanctions_expences(trans));
-    const incomes = util_sum(transanctions_incomes(trans));
+    const trans = storage_get(transactions_ID);
+    const expenses = util_sum(transactions_expences(trans));
+    const incomes = util_sum(transactions_incomes(trans));
 
     const table = dom_get("tableSynthese2");
 

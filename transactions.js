@@ -1,7 +1,6 @@
-const transanctions_ID = "transactions";
+const transactions_ID = "transactions";
 
-function transanctions_importCSV(text) {
-
+function transactions_importCSV(text) {
     const value = io_extractCSV(text, function (currentLine) {
         const transaction = {
             quand: currentLine[0],
@@ -10,72 +9,71 @@ function transanctions_importCSV(text) {
         }
         return transaction;
     });
-
-    storage_update(transanctions_ID, value);
-    storage_recordImportDate(transanctions_ID);
+    storage_update(transactions_ID, value);
+    storage_recordImportDate(transactions_ID);
 }
 
-function transanctions_incomes(transactions) {
+function transactions_incomes(transactions) {
     return transactions.filter(e => parseFloat(e.combien) > 0);
 }
 
-function transanctions_expences(transactions) {
+function transactions_expences(transactions) {
     return transactions.filter(e => parseFloat(e.combien) < 0);
 }
 
-function transanctions_associerKeyword(transactions, keywords) {
-    return transactions.forEach(e => {
+function _transactions_associerKeyword(transactions, keywords) {
+    return transactions.map(e => {
         e.keyword = "inconnu";
         for (let i = 0; i < keywords.length; i++) {
             const k = keywords[i];
             if (k && e.quoi.includes(k)) {
                 e.keyword = k;
-                break;
+                return e;
             }
         }
     });
 }
 
-function transanctions_associerCategory(data, categories) {
-    data.forEach(e => {
+function _transactions_associerCategory(data, categories) {
+    data.map(e => {
         for (let i = 0; i < categories.length; i++) {
             const c = categories[i];
             if (c.keywords.includes(e.keyword)) {
                 e.category = c.name;
-                break;
+                return e;
             }
         };
     });
 }
 
-function transanctions_sumParCategory(transactions, categories) {
-    const maps = [];
-    for (let i = 0; i < categories.length; i++) {
-        const c = categories[i];
-        const list = transactions.filter(e => c.name == e.category).sort((a, b) => a.combien - b.combien);
-        c.count = list.length;
-        if (list.length > 0) {
-            c.sum = util_sum(list);
-            maps.push({ list: list, category: c });
-        }
-    }
-    return maps.sort((a, b) => a.category.sum - b.category.sum);
-}
+function transactions_build() {
+    let transactions = storage_get(transactions_ID);
 
-function transanctions_sumParKeyword(transactions, keywords) {
-    const maps = [];
-    keywords.forEach(k => {
-        const list = transactions.filter(e => e.keyword == k);
-        if (list.length > 0) {
-            maps.push({ keyword: k, sum: util_sum(list) });
-        }
-    });
-    return maps.sort((a, b) => a.sum - b.sum);
+    if (!transactions) {
+        display_popup("Veuillez importez des transactions!");
+        return { undefined, undefined };
+    }
+
+    let categories = storage_get(categories_ID);
+    if (!categories) {
+        display_popup("Info : Le rapport a été généré mais vous n'avez pas importer de categories!");
+        categories = [{
+            name: "inconnue",
+            keywords: ["inconnu"]
+        }];
+    }
+    const keywords = categories_getKeywords(categories);
+    _transactions_associerKeyword(transactions, keywords); // !!! 
+    _transactions_associerCategory(transactions, categories); // !!!
+    const incomes = transactions_incomes(transactions);
+    const expenses = transactions_expences(transactions);
+
+    return { incomes, expenses };
 }
 
 // display
 
-function transanctions_displayTableSimple(array, table) {
+function transactions_displayTableSimple(array, table) {
     display_simpleTableHeader(table);
     array.forEach(e => {
         const tr = dom_tr();
@@ -86,7 +84,14 @@ function transanctions_displayTableSimple(array, table) {
     });
 }
 
-function transanctions_displayLastImportDate() {
-    display_lastImportDate(transanctions_ID);
-}
+function transactions_display({ incomes, expenses }) {
+    const inTable = dom_get("tableIn");
+    transactions_displayTableSimple(incomes, inTable);
+    display_trSum(util_sum(incomes), inTable, 2);
 
+    const outTable = dom_get("tableOut");
+    transactions_displayTableSimple(expenses, outTable);
+    display_trSum(util_sum(expenses), outTable, 2);
+
+    display_lastImportDate(transactions_ID);
+}
