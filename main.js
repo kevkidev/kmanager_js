@@ -17,6 +17,7 @@ function load() {
         `date_import_${categories_ID}`,
         `date_import_${budget_ID}`,
         `date_import_${transanctions_ID}`,
+        storage_ID_DATE_CHANGE,
     ]);
     let transactions = storage_get(transanctions_ID);
     let categories = storage_get(categories_ID);
@@ -58,6 +59,7 @@ function load() {
 
     budget_display();
     synthese_display();
+    display_changeDate();
 }
 
 
@@ -111,8 +113,12 @@ function actionToggle(event, id) {
 
 function actionBudgetDeleteItem(id) {
     budget_deleteItem(id);
+    synthese_display();
+    display_changeDate();
 }
 
 function actionBudgetAddItem() {
     budget_add();
+    synthese_display();
+    display_changeDate();
 }

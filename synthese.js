@@ -1,16 +1,4 @@
-function synthese_sumIncomes() {
-    const array = transanctions_incomes();
-    if (!array && array.length < 0) return 0;
-    const somme = util_sum(array);
-    return util_round_100(somme);
-}
 
-function synthese_sumExpenses() {
-    const array = transanctions_expences();
-    if (!array && array.length < 0) return 0;
-    const somme = util_sum(array);
-    return util_round_100(somme);
-}
 
 function _synthese_displaySumBudget() {
     const table = dom_get("tableSynthese1");
@@ -68,7 +56,35 @@ function _synthese_displaySumBudget() {
 
 function _synthese_displaySumMonth() {
 
+    function _trSub({ title, value }) {
+        display_trSub({
+            value,
+            table,
+            colapse: 1,
+            title
+        });
+    }
 
+    const trans = storage_get(transanctions_ID);
+    const expenses = util_sum(transanctions_expences(trans));
+    const incomes = util_sum(transanctions_incomes(trans));
+
+    const table = dom_get("tableSynthese2");
+
+    const tr2 = dom_tr();
+    dom_td(tr2, "Sorties", false);
+    dom_td(tr2, util_round_100(expenses), false, true);
+
+    const tr1 = dom_tr();
+    dom_td(tr1, "Entrées", false);
+    dom_td(tr1, util_round_100(incomes), false, true);
+
+    const deffExpenses = (expenses * 1000 + budget_sumMonth() * 1000) / 1000;
+    const tr3 = dom_tr();
+    dom_td(tr3, "Différence entrées", false);
+    dom_td(tr3, util_round_100(deffExpenses), false, true, true);
+
+    table.replaceChildren(tr2, tr1, tr3);
 }
 
 function synthese_display() {

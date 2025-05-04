@@ -108,7 +108,7 @@ function budget_sumYear() {
 
 function budget_sumPerFrequence(frequence) {
     const array = storage_get(budget_ID);
-    if (!array && array.length == 0) return 0;
+    if (!array || array.length == 0) return 0;
     const filtered = array.filter(e => e.frequence == frequence);
     if (filtered.length == 0) return 0;
     const sum = util_sum(filtered);

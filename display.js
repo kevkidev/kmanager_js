@@ -1,18 +1,27 @@
-
 function display_lastImportDate(id) {
     const date = storage_getLastImportDate(id);
     dom_get("lastImportDate_" + id).innerText = (date != "null") ? date : "inconnue";
 }
 
-function display_trSum(sum, table, colspan, title, surligne) {
+function display_trSum(sum, table, colspan, title, highlight) {
     const trSum = dom_tr();
     title = title ? title : "Total";
     const tdTitle = dom_td(trSum, title);
     tdTitle.setAttribute("colspan", colspan);
     tdTitle.setAttribute("class", "total_title");
-    surligne = surligne ? "surligne" : "";
-    dom_td(trSum, `<span class="sum_value ${surligne}">${sum}</span>`, true);
+    dom_td(trSum, `<span class="sum_value">${sum}</span>`, true, true, highlight);
     table.append(trSum);
+    return trSum;
+}
+
+function display_trSub({ value, table, colspan, title }) {
+    const tr = dom_tr();
+    const tdTitle = dom_td(tr, title);
+    tdTitle.setAttribute("colspan", colspan);
+    tdTitle.setAttribute("class", "tr_sub_title");
+    dom_td(tr, `<span class="tr_sub_value">${value}</span>`, true);
+    table.append(tr);
+    return tr;
 }
 
 function display_toggle(event, id) {
@@ -43,4 +52,9 @@ function display_simpleTableHeader(table) {
     dom_th(tr, "Quoi");
     dom_th(tr, "Combien");
     table.replaceChildren(tr);
+}
+
+
+function display_changeDate() {
+    dom_get("changeDate").innerText = storage_getChangeDate();
 }

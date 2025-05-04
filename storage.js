@@ -1,3 +1,5 @@
+const storage_ID_DATE_CHANGE = "date_change";
+
 function storage_newId() {
     return Date.now();
 }
@@ -19,7 +21,7 @@ function storage_add(arrayId, newItem) {
 function storage_update(id, value) {
     localStorage.removeItem(id);
     localStorage.setItem(id, JSON.stringify(value));
-    storage_updateLastChangeDate();
+    storage_updateChangeDate();
 }
 
 function storage_recordImportDate(id) {
@@ -39,6 +41,10 @@ function storage_getLastImportDate(id) {
     return storage_get("date_import_" + id);
 }
 
-function storage_updateLastChangeDate() {
-    return localStorage.setItem("date_modiditaction", util_getDateString());
+function storage_updateChangeDate() {
+    return localStorage.setItem(storage_ID_DATE_CHANGE, JSON.stringify(util_getDateString()));
+}
+
+function storage_getChangeDate() {
+    return storage_get(storage_ID_DATE_CHANGE);
 }

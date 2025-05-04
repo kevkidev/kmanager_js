@@ -38,8 +38,12 @@ tr:nth-child(even) {
     font-weight: bold;
 }
 
-.surligne {
+.highlight {
     background-color: greenyellow;
+}
+
+.highlight_danger {
+    background-color: #ff9b94;
 }
 
 .total_title {
@@ -125,4 +129,9 @@ button {
     font-weight: bold;
     font-size: 15px;
     cursor: pointer;
+}
+
+.tr_sub_title {
+    text-align: right;
+    font-style: italic;
 }

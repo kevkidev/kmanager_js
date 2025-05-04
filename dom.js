@@ -17,12 +17,18 @@ function dom_th(tr, value) {
     return th;
 }
 
-function dom_td(tr, value, isHtml) {
+function dom_td(tr, value, isHtml, isBold, highlight) {
     const td = dom_create("td");
     if (isHtml) {
         td.innerHTML = value;
     } else {
         td.innerText = value;
+    }
+    if (isBold) td.style.fontWeight = "bold";
+    if (highlight && isHtml) td.setAttribute("class", "highlight");
+    if (highlight && typeof value == "number") {
+        if (value >= 0) td.setAttribute("class", "highlight");
+        if (value < 0) td.setAttribute("class", "highlight_danger");
     }
     tr.append(td);
     return td;
