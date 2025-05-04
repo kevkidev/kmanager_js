@@ -10,14 +10,14 @@ function categories_importCSV(text) {
     });
     storage_update(categories_ID, value);
     storage_recordImportDate(categories_ID);
-    display_popup("Catégories importées avec succés!");
+    storage_addMessage("Catégories importées avec succés!");
 }
 
 function categories_exportCSV() {
     let categories = storage_get(categories_ID);
     io_exportCSV("categories", function () {
         if (!categories) {
-            display_popup("Pas de données à exporter!");
+            storage_addMessage("Pas de données à exporter!");
             return;
         }
         const rows = [["name", "keywords"]];
@@ -32,9 +32,21 @@ function categories_getKeywords(categories) {
     return categories.map(e => e.keywords).reduce((a, b) => a.concat(b));
 }
 
+function categories_get() {
+    let categories = storage_get(categories_ID);
+    if (!categories) {
+        storage_addMessage("Pas de catégories!");
+        categories = [{
+            name: "inconnue",
+            keywords: ["inconnu"]
+        }];
+    }
+    return categories;
+}
+
 function categories_sumPerCategory(transactions) {
     const maps = [];
-    const categories = storage_get(categories_ID);
+    const categories = categories_get();
     for (let i = 0; i < categories.length; i++) {
         const c = categories[i];
         const list = transactions.filter(e => c.name == e.category).sort((a, b) => a.combien - b.combien);
@@ -48,9 +60,9 @@ function categories_sumPerCategory(transactions) {
 }
 
 function categories_sumPerKeyword(transactions) {
-    const categories = storage_get(categories_ID);
-    const keywords = categories_getKeywords(categories);
     const maps = [];
+    const categories = categories_get();
+    const keywords = categories_getKeywords(categories);
     keywords.forEach(k => {
         const list = transactions.filter(e => e.keyword == k);
         if (list.length > 0) {
@@ -63,37 +75,47 @@ function categories_sumPerKeyword(transactions) {
 // display
 
 function categories_displaySumPerCategory(data) {
+    const table = dom_get("tableResumeCategorie");
+    const tr = dom_tr();
+    dom_th(tr, "Catégorie");
+    dom_th(tr, "Somme");
+    table.replaceChildren(tr);
+
+    const view = dom_get("viewDetailsCategories");
+    view.replaceChildren(); // vider la vue
     data.forEach(e => {
         if (e.list.length > 0) {
+            // vue details
             const h3 = dom_create("h3");
             h3.innerText = e.category.name;
             const table = dom_create("table");
-            const view = dom_get("viewDetailsCategories");
             view.append(h3);
             view.append(table);
             transactions_displayTableSimple(e.list, table);
             display_trSum(e.category.sum, table, 2);
+
             // vue resume
             const tr = dom_tr();
             dom_td(tr, e.category.name)
-            dom_td(tr, e.category.sum)
+            dom_td(tr, display_decimal(e.category.sum))
             dom_get("tableResumeCategorie").append(tr);
         }
     });
-    const sum = data.map(e => e.category.sum * 1000).reduce((a, b) => a + b) / 1000;
-    display_trSum(sum, dom_get("tableResumeCategorie"), 1);
+    const sum = data.map(e => e.category.sum).reduce((a, b) => a + b);
+    display_trSum(sum, table, 1);
     display_lastImportDate(categories_ID);
 }
 
 function categories_displaySumPerKeyword(array) {
+    const table = dom_get("tableResumeKeywords");
+    table.replaceChildren(); // vider la table
     array.forEach(e => {
         const tr = dom_tr();
         dom_td(tr, e.keyword);
-        dom_td(tr, e.sum);
-        dom_get("tableResumeKeywords").append(tr);
+        dom_td(tr, display_decimal(e.sum));
+        table.append(tr);
     });
-    const sum = array.map(e => e.sum * 1000).reduce((a, b) => a + b) / 1000;
-    const table = dom_get("tableResumeKeywords");
+    const sum = array.map(e => e.sum).reduce((a, b) => a + b);
     display_trSum(sum, table, 1);
 }
 

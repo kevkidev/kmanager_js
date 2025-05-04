@@ -5,7 +5,7 @@ function transactions_importCSV(text) {
         const transaction = {
             quand: currentLine[0],
             quoi: currentLine[2].split('"').join('').toLowerCase(),
-            combien: currentLine[6].replace(",", ".")
+            combien: util_withPrecision(currentLine[6].replace(",", ".")), // x1000 pour plus de precision dans les futurs calculs
         }
         return transaction;
     });
@@ -14,11 +14,11 @@ function transactions_importCSV(text) {
 }
 
 function transactions_incomes(transactions) {
-    return transactions.filter(e => parseFloat(e.combien) > 0);
+    return transactions.filter(e => e.combien > 0);
 }
 
 function transactions_expences(transactions) {
-    return transactions.filter(e => parseFloat(e.combien) < 0);
+    return transactions.filter(e => e.combien < 0);
 }
 
 function _transactions_associerKeyword(transactions, keywords) {
@@ -50,18 +50,11 @@ function transactions_build() {
     let transactions = storage_get(transactions_ID);
 
     if (!transactions) {
-        display_popup("Veuillez importez des transactions!");
+        storage_addMessage("Veuillez importez des transactions!");
         return { undefined, undefined };
     }
 
-    let categories = storage_get(categories_ID);
-    if (!categories) {
-        display_popup("Info : Le rapport a été généré mais vous n'avez pas importer de categories!");
-        categories = [{
-            name: "inconnue",
-            keywords: ["inconnu"]
-        }];
-    }
+    let categories = categories_get();
     const keywords = categories_getKeywords(categories);
     _transactions_associerKeyword(transactions, keywords); // !!! 
     _transactions_associerCategory(transactions, categories); // !!!
@@ -79,7 +72,7 @@ function transactions_displayTableSimple(array, table) {
         const tr = dom_tr();
         dom_td(tr, e.quand);
         dom_td(tr, ` <span class="keyword">${e.keyword}</span>&nbsp;&nbsp;&nbsp;${e.quoi}`, true);
-        dom_td(tr, e.combien);
+        dom_td(tr, display_decimal(e.combien));
         table.append(tr);
     });
 }

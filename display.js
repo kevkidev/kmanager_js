@@ -9,20 +9,20 @@ function display_trSum(sum, table, colspan, title, highlight) {
     const tdTitle = dom_td(trSum, title);
     tdTitle.setAttribute("colspan", colspan);
     tdTitle.setAttribute("class", "total_title");
-    dom_td(trSum, `<span class="sum_value">${sum}</span>`, true, true, highlight);
+    dom_td(trSum, `<span class="sum_value">${display_decimal(sum)}</span>`, true, true, highlight);
     table.append(trSum);
     return trSum;
 }
 
-function display_trSub({ value, table, colspan, title }) {
-    const tr = dom_tr();
-    const tdTitle = dom_td(tr, title);
-    tdTitle.setAttribute("colspan", colspan);
-    tdTitle.setAttribute("class", "tr_sub_title");
-    dom_td(tr, `<span class="tr_sub_value">${value}</span>`, true);
-    table.append(tr);
-    return tr;
-}
+// function display_trSub({ value, table, colspan, title }) {
+//     const tr = dom_tr();
+//     const tdTitle = dom_td(tr, title);
+//     tdTitle.setAttribute("colspan", colspan);
+//     tdTitle.setAttribute("class", "tr_sub_title");
+//     dom_td(tr, `<span class="tr_sub_value">${value}</span>`, true);
+//     table.append(tr);
+//     return tr;
+// }
 
 function display_toggle(event, id) {
     let status = storage_get(id);
@@ -40,11 +40,6 @@ function display_toggle(event, id) {
     event.target.setAttribute("src", "img/icons8-" + status + "-50.png");
 }
 
-function display_popup(message) {
-    console.warn(message);
-    alert(message);
-}
-
 function display_simpleTableHeader(table) {
     const tr = dom_tr();
     dom_th(tr, "Quand");
@@ -55,4 +50,19 @@ function display_simpleTableHeader(table) {
 
 function display_changeDate() {
     dom_get("changeDate").innerText = storage_getChangeDate();
+}
+
+function display_messages() {
+    const messages = storage_get(storage_ID_MESSAGES);
+    if (!messages) return;
+    for (let i = 0; i < messages.length; i++) {
+        const m = messages[i];
+        alert(m);
+    }
+    storage_remove(storage_ID_MESSAGES);
+}
+
+function display_decimal(preciseInt) {
+    const res = util_round_100(preciseInt / 1000);
+    return res;
 }

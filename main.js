@@ -2,19 +2,16 @@ function initImportListener() {
     util_initImportListener('triggerImportCSVTransactions', function () {
         io_importCSV(this, function (text) {
             transactions_importCSV(text);
-            load();
         });
     });
     util_initImportListener('triggerImportCSVCategories', function () {
         io_importCSV(this, function (text) {
             categories_importCSV(text);
-            load();
         });
     });
     util_initImportListener('triggerImportCSVPrevisions', function () {
         io_importCSV(this, function (text) {
             budget_importCSV(text);
-            budget_display();
         });
     });
 }
@@ -23,11 +20,13 @@ function load() {
     const { incomes, expenses } = transactions_build();
     if (expenses || incomes) {
         transactions_display({ incomes, expenses });
+        synthese_displaySumMonth();
         categories_display(expenses);
-        synthese_display();
     }
+    synthese_displaySumBudget();
     budget_display();
     display_changeDate();
+    display_messages();
 }
 
 // actions export
@@ -61,14 +60,12 @@ function actionToggle(event, id) {
 
 function actionBudgetDeleteItem(id) {
     budget_deleteItem(id);
-    synthese_display();
-    display_changeDate();
+    load();
 }
 
 function actionBudgetAddItem() {
     budget_add();
-    synthese_display();
-    display_changeDate();
+    load();
 }
 
 // DEBUT 

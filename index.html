@@ -63,23 +63,14 @@
         <h1>Catégories <img class="toogle_img" onclick="actionToggle(event, 'viewCategories')" src="img/icons8-off-50.png" /> </h1>
 
         <section id="viewCategories">
-
             <p>Impoerter CSV : Catégories et mots-clés associés. Il faut le mettre à jour à chaque nouveau créancier et
                 l'importer.</p>
-
             <input type="file" id="triggerImportCSVCategories" accept=".csv" class="button" /><br>
             Dernier import : <span id="lastImportDate_categories"></span>
-
             <p>
                 <button onclick="actionExportCSVCategories()"> Exporter catégories et mots-clés</button> (importable)
             </p>
-
-            <table id="tableResumeCategorie">
-                <tr>
-                    <th>Catégorie</th>
-                    <th>Somme</th>
-                </tr>
-            </table>
+            <table id="tableResumeCategorie"> </table>
         </section>
 
 
@@ -107,7 +98,7 @@
                 Dernier import : <span id="lastImportDate_previsions"></span>
             </p>
             <p>
-                <button onclick="actionExportCSVPrevisions()">Exporter les prévsions</button> (importable)
+                <button onclick="actionExportCSVPrevisions()">Exporter budget</button> (importable)
             </p>
             <table id="tablePrevisions"></table>
         </section>
