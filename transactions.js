@@ -13,6 +13,20 @@ function transactions_importCSV(text) {
     storage_recordImportDate(transactions_ID);
 }
 
+function transactions_exportCSV() {
+    io_exportCSV("transactions", function () {
+        let transactions = storage_get(transactions_ID);
+        if (!transactions) return [];
+        const rows = [
+            ["quand", null, "quoi", null, null, null, "combien"]
+        ];
+        transactions.forEach(e => {
+            rows.push([e.quand, null, e.quoi, null, null, null, display_decimal(e.combien)]);
+        });
+        return rows;
+    });
+}
+
 function transactions_incomes(transactions) {
     return transactions.filter(e => e.combien > 0);
 }
@@ -22,25 +36,25 @@ function transactions_expences(transactions) {
 }
 
 function _transactions_associerKeyword(transactions, keywords) {
-    return transactions.map(e => {
-        e.keyword = "inconnu";
+    return transactions.map(t => {
+        t.keyword = "inconnu";
         for (let i = 0; i < keywords.length; i++) {
             const k = keywords[i];
-            if (k && e.quoi.includes(k)) {
-                e.keyword = k;
-                return e;
+            if (k && t.quoi.includes(k)) {
+                t.keyword = k;
+                return t;
             }
         }
     });
 }
 
-function _transactions_associerCategory(data, categories) {
-    data.map(e => {
+function _transactions_associerCategory(transactions, categories) {
+    transactions.map(t => {
         for (let i = 0; i < categories.length; i++) {
             const c = categories[i];
-            if (c.keywords.includes(e.keyword)) {
-                e.category = c.name;
-                return e;
+            if (c.keywords.includes(t.keyword)) {
+                t.category = c.name;
+                return t;
             }
         };
     });

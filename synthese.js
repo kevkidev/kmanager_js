@@ -32,11 +32,6 @@ function synthese_displaySumBudget() {
         "Total Année"
     );
 
-    const trSumIncomes = dom_tr();
-    dom_td(trSumIncomes, "Entrees externes mois");
-    dom_td(trSumIncomes, display_decimal(budget_sumMonthIncomes));
-    table.append(trSumIncomes);
-
     display_trSum(
         budget_sumMonthProvision(),
         table,
@@ -54,34 +49,33 @@ function synthese_displaySumBudget() {
 
 }
 
-function synthese_displaySumMonth() {
-    // function _trSub({ title, value }) {
-    //     display_trSub({
-    //         value,
-    //         table,
-    //         colapse: 1,
-    //         title
-    //     });
-    // }
+function _td({ title, value, highlight }) {
+    const tr = dom_tr();
+    dom_td(tr, title, false);
+    dom_td(tr, display_decimal(value), false, true, highlight);
+    return tr;
+}
 
-    const trans = storage_get(transactions_ID);
+function synthese_displaySumMonth({ incomes, expenses }) {
 
-    const expenses = util_sum(transactions_expences(trans));
-    const incomes = util_sum(transactions_incomes(trans));
+    const sumIncomes = util_sum(incomes);
+    const sumIncomesInternal = util_sum(incomes.filter(i => i.category == "interne"));
+    const sumIncomesExt = sumIncomes - sumIncomesInternal;
     const table = dom_get("tableSynthese2");
+    const diffExpenses = util_sum(expenses) + budget_sumMonth();
 
-    const tr2 = dom_tr();
-    dom_td(tr2, "Sorties", false);
-    dom_td(tr2, display_decimal(expenses), false, true);
+    table.replaceChildren(
+        _td({ title: "Sorties", value: util_sum(expenses) }),
+        _td({ title: "Entrées", value: sumIncomes }),
+        _td({ title: "dont extrenes", value: sumIncomesExt }),
+        _td({ title: "dont internes", value: sumIncomesInternal }),
+        _td({ title: "Différence", value: diffExpenses, highlight: true }),
+    );
+}
 
-    const tr1 = dom_tr();
-    dom_td(tr1, "Entrées", false);
-    dom_td(tr1, display_decimal(incomes), false, true);
+function synthese_displayTreasure() {
+    const table = dom_get("tableSynthese3");
 
-    const diffExpenses = expenses + budget_sumMonth();
-    const tr3 = dom_tr();
-    dom_td(tr3, "Différence", false);
-    dom_td(tr3, display_decimal(diffExpenses), false, true, true);
-
-    table.replaceChildren(tr2, tr1, tr3);
+    table.replaceChildren();
+    // TODO
 }

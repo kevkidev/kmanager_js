@@ -20,7 +20,7 @@ function load() {
     const { incomes, expenses } = transactions_build();
     if (expenses || incomes) {
         transactions_display({ incomes, expenses });
-        synthese_displaySumMonth();
+        synthese_displaySumMonth({ incomes, expenses });
         categories_display(expenses);
     }
     synthese_displaySumBudget();
@@ -31,19 +31,7 @@ function load() {
 
 // actions export
 function actionExportCSVTransactions() {
-    io_exportCSV("transactions", function () {
-        let transactions = storage_get(transactions_ID);
-
-        if (!transactions) return [];
-        const rows = [
-            ["quand", null, "quoi", null, null, null, "combien"]
-        ];
-
-        transactions.forEach(e => {
-            rows.push([e.quand, null, e.quoi, null, null, null, e.combien]);
-        });
-        return rows;
-    });
+    transactions_exportCSV();
 }
 
 function actionExportCSVCategories() {
