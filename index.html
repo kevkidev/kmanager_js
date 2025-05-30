@@ -4,119 +4,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Compta RDMP</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="header">
-        <h1 class="app_title"> RDMP : Rapport des Dépenses Mensuelles Personnelles</h1>
-    </div>
+    <div class="container" id="container">
 
+        <section>
+            <div id="notice" class="section_title"></div>
+            <div id="viewNotice">
+                <h2>Quick Start</h2>
+                <br>
+                <p>Pas d'ordre d'import :</p>
+                <ul>
+                    <li>Import CSV de transactions du mois, ficher exporté depuis :</li>
+                    <ul>
+                        <li>la banque</li>
+                        <li>cette application</li>
+                    </ul>
 
-    <div class="container">
+                    <li>Importer CSV catégories & mots-clés</li>
+                    <li>Importer CSV budget</li>
+                </ul>
+                <p>Les fichiers exporté depuis l'app peuvent être reimporté</p>
 
-        <h1>Synthèse <img class="toogle_img" onclick="actionToggle(event, 'viewSynthese')" src="img/icons8-off-50.png" />
-        </h1>
-
-        <section id="viewSynthese">
-            <h2>Prevision</h2>
-            <table id="tableSynthese1"></table>
-            <h2>Mois</h2>
-            <table id="tableSynthese2"></table>
-            <h2>Trésor</h2>
-            <table id="tableSynthese3"></table>
-        </section>
-
-
-
-
-
-        <h1>Transactions <img class="toogle_img" onclick="actionToggle(event, 'viewTransactions')" src="img/icons8-off-50.png" /></h1>
-
-        <section id="viewTransactions">
-
-            <p>
-                Un fichier CSV mensuel exporté depuis la banque (ou depuis un autre rapport).
-                Les données du dernier fichier selectionné sont chargées automatiquement depuis le local storage! Les
-                colonnes 1, 3 et 7 sont respectivement : quand, quoi et combien.
-            </p>
-            <input type="file" id="triggerImportCSVTransactions" accept=".csv" /><br>
-            Dernier import : <span id="lastImportDate_transactions"></span>
-            <p>
-                Export des données de base pour régenerer le rapport : la liste des entrées et sorties et la liste de
-                categories et keywords associés.
-            </p>
-            <p>
+                <h2>1. Transactions</h2>
+                <br>
+                <ul>
+                    <li>Fichier CSV mensuel exporté depuis la banque (ou depuis un autre rapport).</li>
+                    <li>Les données du dernier fichier importé sont chargées automatiquement depuis le local storage.</li>
+                    <li>Les colonnes 1, 3 et 7 sont respectivement : quand, quoi et combien.</li>
+                </ul>
+                <br>
+                <input type="file" id="triggerImportCSVTransactions" accept=".csv" /><br>
+                Dernier import : <span id="lastImportDate_transactions"></span>
+                <br>
+                <br>
                 <button onclick="actionExportCSVTransactions()">Exporter transactions</button> (importable)
-            </p>
 
+                <h2>2. Catégories & Mots-clès</h2>
+                <br>
+                <p>Importer CSV : Catégories et mots-clés associés. Il faut le mettre à jour à chaque nouveau créancier et
+                    l'importer. MàJ possible soit !</p>
 
-            <h2>Entrées <span></span></h2>
-            <table id="tableIn"></table>
+                <ul>
+                    <li>directement dans l'app</li>
+                    <li>Soit editer le fichier CSV et importer</li>
+                </ul>
+                <br>
+                <input type="file" id="triggerImportCSVCategories" accept=".csv" class="button" /><br>
+                Dernier import : <span id="lastImportDate_categories"></span>
+                <br>
+                <br>
+                <button onclick="actionExportCSVCategories()"> Exporter catégories & mots-clés</button> (importable)
 
-            <h2>Sorties</h2>
-            <table id="tableOut"></table>
-        </section>
-
-
-
-
-        <h1>Catégories <img class="toogle_img" onclick="actionToggle(event, 'viewCategories')" src="img/icons8-off-50.png" /> </h1>
-
-        <section id="viewCategories">
-            <p>Impoerter CSV : Catégories et mots-clés associés. Il faut le mettre à jour à chaque nouveau créancier et
-                l'importer.</p>
-            <input type="file" id="triggerImportCSVCategories" accept=".csv" class="button" /><br>
-            Dernier import : <span id="lastImportDate_categories"></span>
-            <p>
-                <button onclick="actionExportCSVCategories()"> Exporter catégories et mots-clés</button> (importable)
-            </p>
-            <table id="tableResumeCategorie"> </table>
-        </section>
-
-
-
-        <h1>Catégories : détail<img class="toogle_img" onclick="actionToggle(event, 'viewDetailsCategories')" src="img/icons8-off-50.png" /></h1>
-        <section id="viewDetailsCategories"></section>
-
-        <h1>Mots-clès <img class="toogle_img" id="toggleByCategory" onclick="actionToggle(event, 'viewKeywords')" src="img/icons8-off-50.png" /> </h1>
-        <section id="viewKeywords">
-            <table id="tableResumeKeywords">
-                <tr>
-                    <th>Keyword</th>
-                    <th>Somme</th>
-                </tr>
-            </table>
-        </section>
-
-
-
-        <h1>Budget <img class="toogle_img" onclick="actionToggle(event, 'viewBudget')" src="img/icons8-off-50.png" />
-        </h1>
-        <section id="viewBudget">
-            <p>
-                <input type="file" id="triggerImportCSVPrevisions" accept=".csv" /><br>
-                Dernier import : <span id="lastImportDate_previsions"></span>
-            </p>
-            <p>
+                <h2>3. Budget</h2>
+                <br>
+                <p>
+                    <input type="file" id="triggerImportCSVPrevisions" accept=".csv" /><br>
+                    Dernier import : <span id="lastImportDate_previsions"></span>
+                </p>
+                <br>
                 <button onclick="actionExportCSVPrevisions()">Exporter budget</button> (importable)
-            </p>
-            <table id="tablePrevisions"></table>
+
+                <h2>4. Sauvegarde</h2>
+                <br>
+                <p>
+                    Pour une sauvegrade complète du rapport il faut juste imprimer la page en PDF pour avoir un snapshot du
+                    rapport (CTRL P).</p>
+                <p>
+                    <button onclick="window.print()">Capturer la vue actuelle</button>
+                </p>
+                <p>
+                    Dernière modification : <span id="changeDate"></span>
+                </p>
+
+            </div>
         </section>
 
-        <h1>Sauvegarde</h1>
-        <section class="visible">
-            <p>
-                Pour une sauvegrade complète du rapport il faut juste imprimer la page en PDF pour avoir un snapshot du
-                rapport (CTRL P).</p>
-            <p>
-                <button onclick="window.print()">Capturer la vue actuelle</button>
-            </p>
-            <p>
-                Dernière modification : <span id="changeDate"></span>
-            </p>
+        <section>
+            <div class="section_title"></div>
+            <div id="viewSynthese">
+                <h2>Prévisions</h2>
+                <table id="tableSynthese1"></table>
+                <h2>Mois</h2>
+                <table id="tableSynthese2"></table>
+                <h2>Trésor</h2>
+                <table id="tableSynthese3"></table>
+            </div>
         </section>
+
+        <section>
+            <div class="section_title"></div>
+            <div id="viewTransactions">
+
+                <h2>Entrées <span></span></h2>
+                <table id="tableIn"></table>
+
+                <h2>Sorties</h2>
+                <table id="tableOut"></table>
+
+                <br>
+
+            </div>
+        </section>
+
+        <section>
+            <div class="section_title"></div>
+            <div id="viewCategories">
+
+                <table id="tableResumeCategorie"> </table>
+
+
+            </div>
+        </section>
+
+        <section>
+            <div class="section_title"></div>
+            <div id="viewDetailsCategories"></div>
+        </section>
+
+        <section>
+            <div class="section_title"></div>
+            <div id="viewKeywords">
+                <table id="tableResumeKeywords">
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Somme</th>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <div class="section_title"></div>
+            <div id="viewBudget">
+
+                <table id="tablePrevisions"></table>
+
+
+            </div>
+        </section>
+
+
+
 
     </div>
 

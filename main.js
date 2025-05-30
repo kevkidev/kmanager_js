@@ -23,6 +23,7 @@ function load() {
         synthese_displaySumMonth({ incomes, expenses });
         categories_display(expenses);
     }
+    display_section_titles();
     synthese_displaySumBudget();
     budget_display();
     display_changeDate();
@@ -44,6 +45,22 @@ function actionExportCSVPrevisions() {
 
 function actionToggle(event, id) {
     display_toggle(event, id);
+}
+
+function actionScrollX(event, toLeft) {
+    const padding = 30;
+
+    let screenSize = 444;
+    if (screen.width < 1500) { // sur mobile et tablette
+        screenSize = screen.width;
+    }
+
+    x = window.pageXOffset + screenSize + padding;
+    if (toLeft) {
+        x = window.pageXOffset - screenSize - padding;
+    }
+
+    window.scrollTo(x, 0);
 }
 
 function actionBudgetDeleteItem(id) {
