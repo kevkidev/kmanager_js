@@ -73,6 +73,21 @@ function actionBudgetAddItem() {
     load();
 }
 
+function actionCategoriesDeleteKeyword(categoryId, keyword) {
+    categories_deleteKeyword({ categoryId, keyword });
+    load();
+}
+
+function actionCategoryAddItem() {
+    category_add();
+    load();
+}
+
+function actionCategoryAddKeyword() {
+    category_addKeyword();
+    load();
+}
+
 // DEBUT 
 storage_cleanSession([
     categories_ID,

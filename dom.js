@@ -35,10 +35,11 @@ function dom_td(tr, value, isHtml, isBold, highlight) {
     return td;
 }
 
-function dom_input(id, type) {
+function dom_input(id, type, placeholder) {
     const el = dom_create("input");
     el.setAttribute("id", id);
     el.setAttribute("type", type);
+    if (placeholder) el.setAttribute("placeholder", placeholder);
     return el;
 }
 
@@ -47,7 +48,5 @@ function dom_img({ src, id, clazz }) {
     img.setAttribute("src", src);
     if (id) img.setAttribute("id", id);
     if (clazz) img.setAttribute("class", clazz);
-
     return img;
 }
-

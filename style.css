@@ -143,12 +143,17 @@ a {
     cursor: pointer;
 }
 
-td>input {
+td>input,
+td>select {
     background-color: var(--color1);
     border: solid #e6e6e6 2px;
     width: 100%;
     padding: 10px;
     border-radius: 5px;
+}
+
+option {
+    padding-bottom: 10px;
 }
 
 input::file-selector-button,
@@ -161,6 +166,10 @@ button {
     font-weight: bold;
     font-size: 15px;
     cursor: pointer;
+}
+
+button {
+    margin-top: 20px;
 }
 
 .tr_sub_title {
