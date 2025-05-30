@@ -74,18 +74,35 @@ function categories_sumPerKeyword(transactions) {
 
 // display
 
-function categories_displaySumPerCategory(data) {
-    const table = dom_get("tableResumeCategorie");
-    const tr = dom_tr();
-    dom_th(tr, "Catégorie");
-    dom_th(tr, "Somme");
-    table.replaceChildren(tr);
+function categories_displaySumPerCategory({ transactionsPerCategory, sumPerKeyword }) {
+    dom_get("viewCategories").replaceChildren();
+    transactionsPerCategory.forEach(e => {
+        const category = e.category;
+        const h3 = dom_create("h3");
+        h3.innerText = category.name;
+        const table = dom_create("table");
 
+        sumPerKeyword.forEach(e => {
+            if (category.keywords.includes(e.keyword)) {
+                const tr = dom_tr();
+                dom_td(tr, e.keyword);
+                dom_td(tr, display_decimal(e.sum));
+                table.append(tr);
+            }
+        });
+        display_trSum(category.sum, table, 1);
+
+        dom_get("viewCategories").append(h3, table);
+    });
+}
+
+
+function categories_displaySumPerCategory_details(data) {
     const view = dom_get("viewDetailsCategories");
     view.replaceChildren(); // vider la vue
+
     data.forEach(e => {
         if (e.list.length > 0) {
-            // vue details
             const h3 = dom_create("h3");
             h3.innerText = e.category.name;
             const table = dom_create("table");
@@ -93,16 +110,9 @@ function categories_displaySumPerCategory(data) {
             view.append(table);
             transactions_displayTableSimple(e.list, table);
             display_trSum(e.category.sum, table, 2);
-
-            // vue resume
-            const tr = dom_tr();
-            dom_td(tr, e.category.name)
-            dom_td(tr, display_decimal(e.category.sum))
-            dom_get("tableResumeCategorie").append(tr);
         }
     });
     const sum = data.map(e => e.category.sum).reduce((a, b) => a + b);
-    display_trSum(sum, table, 1);
     display_lastImportDate(categories_ID);
 }
 
@@ -121,6 +131,9 @@ function categories_displaySumPerKeyword(array) {
 
 function categories_display(expenses) {
     display_lastImportDate(categories_ID);
-    categories_displaySumPerCategory(categories_sumPerCategory(expenses));
-    categories_displaySumPerKeyword(categories_sumPerKeyword(expenses));
+    categories_displaySumPerCategory({
+        transactionsPerCategory: categories_sumPerCategory(expenses),
+        sumPerKeyword: categories_sumPerKeyword(expenses)
+    });
+    categories_displaySumPerCategory_details(categories_sumPerCategory(expenses));
 }

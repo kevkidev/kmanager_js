@@ -107,6 +107,5 @@ function display_section_titles() {
     display_section_title({ title: "Transactions", parentId: "viewTransactions" });
     display_section_title({ title: "Catégories", parentId: "viewCategories" });
     display_section_title({ title: "Détails par catégorie", parentId: "viewDetailsCategories" });
-    display_section_title({ title: "Mots-clés", parentId: "viewKeywords" });
     display_section_title({ title: "Budget", parentId: "viewBudget", isLast: true });
 }
