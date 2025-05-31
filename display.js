@@ -40,14 +40,6 @@ function display_toggle(event, id) {
     event.target.setAttribute("src", "img/icons8-" + status + "-50.png");
 }
 
-function display_simpleTableHeader(table) {
-    const tr = dom_tr();
-    dom_th(tr, "Quand");
-    dom_th(tr, "Quoi");
-    dom_th(tr, "Combien");
-    table.replaceChildren(tr);
-}
-
 function display_changeDate() {
     dom_get("changeDate").innerText = storage_getChangeDate();
 }
@@ -108,4 +100,21 @@ function display_section_titles() {
     display_section_title({ title: "Catégories", parentId: "viewCategories" });
     display_section_title({ title: "Détails par catégorie", parentId: "viewDetailsCategories" });
     display_section_title({ title: "Budget", parentId: "viewBudget", isLast: true });
+}
+
+function display_createEditButton(storageEditingId) {
+    const editBtn = dom_create("button");
+    const isEditing = storage_get(storageEditingId) === true;
+
+    editBtn.onclick = function () {
+        storage_update(storageEditingId, !isEditing);
+        load();
+        window.scrollTo(window.pageXOffset, 0);
+    }
+
+    editBtn.innerText = "Mofidier";
+    if (isEditing) {
+        editBtn.innerText = "Terminer";
+    }
+    return editBtn;
 }

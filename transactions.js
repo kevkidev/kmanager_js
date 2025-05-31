@@ -37,7 +37,7 @@ function transactions_expences(transactions) {
 
 function _transactions_associerKeyword(transactions, keywords) {
     return transactions.map(t => {
-        t.keyword = "inconnu";
+        t.keyword = categories_DEFAULT_KEYWORD;
         for (let i = 0; i < keywords.length; i++) {
             const k = keywords[i];
             if (k && t.quoi.includes(k)) {
@@ -81,7 +81,6 @@ function transactions_build() {
 // display
 
 function transactions_displayTableSimple(array, table) {
-    display_simpleTableHeader(table);
     array.forEach(e => {
         const tr = dom_tr();
         dom_td(tr, e.quand);

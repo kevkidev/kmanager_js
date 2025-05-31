@@ -78,6 +78,11 @@ function actionCategoriesDeleteKeyword(categoryId, keyword) {
     load();
 }
 
+function actionCategoriesDeleteItem(categoryId) {
+    categories_deleteItem({ categoryId });
+    load();
+}
+
 function actionCategoryAddItem() {
     category_add();
     load();
@@ -85,6 +90,11 @@ function actionCategoryAddItem() {
 
 function actionCategoryAddKeyword() {
     category_addKeyword();
+    load();
+}
+
+function actionCategoryAssignKeyword() {
+    category_assignKeyword();
     load();
 }
 

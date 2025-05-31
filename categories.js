@@ -1,5 +1,7 @@
 const categories_ID = "categories";
 const categories_EDITING = "categories_editing";
+const categories_DEFAULT_CATEGORY = "inconnue";
+const categories_DEFAULT_KEYWORD = "inconnu";
 
 function categories_importCSV(text) {
     const value = io_extractCSV(text, function (currentLine) {
@@ -39,8 +41,8 @@ function categories_get() {
     if (!categories) {
         storage_addMessage("Pas de catégories!");
         categories = [{
-            name: "inconnue",
-            keywords: ["inconnu"]
+            name: categories_DEFAULT_CATEGORY,
+            keywords: [categories_DEFAULT_KEYWORD]
         }];
     }
     return categories;
@@ -54,7 +56,7 @@ function categories_sumPerCategory(transactions) {
         const c = categories[i];
         const list = transactions.filter(e => c.name == e.category).sort((a, b) => a.combien - b.combien);
         c.count = list.length;
-        if (storage_get(categories_EDITING) === true || list.length > 0) {
+        if (categories_isEditing() || list.length > 0) {
             c.sum = util_sum(list);
             maps.push({ list: list, category: c });
         }
@@ -68,7 +70,7 @@ function categories_sumPerKeyword(transactions) {
     const keywords = categories_getKeywords(categories);
     keywords.forEach(k => {
         const list = transactions.filter(e => e.keyword == k);
-        if (storage_get(categories_EDITING) === true || list.length > 0) {
+        if (categories_isEditing() || list.length > 0) {
             maps.push({ keyword: k, sum: util_sum(list) });
         }
     });
@@ -87,8 +89,24 @@ function categories_deleteKeyword({ categoryId, keyword }) {
     }
 }
 
+function categories_deleteItem({ categoryId }) {
+    const array = storage_get(categories_ID);
+    const index = array.findIndex(e => e.id == categoryId);
+    const confirmation = confirm(`Confirmer suppression de '${array[index].name}', mots-clés seront assignés à '${categories_DEFAULT_CATEGORY}' ?`);
+    if (confirmation) {
+        const defaultIndex = array.findIndex(e => e.name == categories_DEFAULT_CATEGORY);
+        if (defaultIndex < 0) {
+            storage_addMessage("Suppression impossible : Il faut une catégorie nommée : " + categories_DEFAULT_CATEGORY);
+            return;
+        }
+        array[defaultIndex].keywords.push(...array[index].keywords);
+        array.splice(index, 1);
+        storage_update(categories_ID, array);
+    }
+}
+
 function category_addKeyword() {
-    const keyword = dom_get("input_keyword").value;
+    const keyword = dom_get("input_keyword").value.toLowerCase();
     const categoryId = dom_get("selected_category").value;
 
     if (!keyword || !categoryId) return;
@@ -99,11 +117,34 @@ function category_addKeyword() {
 }
 
 function category_add() {
-    const name = dom_get("input_category").value;
+    const name = dom_get("input_category").value.toLowerCase();
 
     if (!name) return;
     const newItem = { id: storage_newId(), name, keywords: [] };
     storage_add(categories_ID, newItem);
+}
+
+function categories_isEditing() {
+    return storage_get(categories_EDITING) === true;
+}
+
+function category_assignKeyword() {
+    const keyword = dom_get("assignKeyword_item").value;
+    const categoryId = dom_get("assignKeyword_category").value;
+
+    if (!keyword || !categoryId) return;
+
+    const array = categories_get(categories_ID);
+    // trouver la categorie qui contient le keyword
+    const indexToClean = array.findIndex(e => e.keywords.includes(keyword));
+    // trouver l'index du keyword en supprimer
+    const indextoRemove = array[indexToClean].keywords.indexOf(keyword);
+    // supprimer le keyword de la categories
+    array[indexToClean].keywords.splice(indextoRemove, 1);
+    // ajouter le keyword à la bonne categorie
+    array.find(e => e.id == categoryId).keywords.push(keyword);
+    // save
+    storage_update(categories_ID, array);
 }
 
 // display
@@ -114,75 +155,107 @@ function categories_displaySumPerCategory({ transactionsPerCategory, sumPerKeywo
 
     // generer form categorie
     const trForm = dom_tr();
-    dom_td(trForm, `<img class="img_row_action" src="img/icons8-add-50.png" onclick="actionCategoryAddItem()"/>`, true);
+    const img = dom_img_row_add();
+    const btn = dom_button_row({ stringCallback: "actionCategoryAddItem()", img });
     dom_td(trForm, dom_input("input_category", "text", "Catégorie").outerHTML, true);
+    dom_td(trForm, btn.outerHTML, true);
     const tableFormAddCategory = dom_create("table");
     tableFormAddCategory.append(trForm);
 
     // generer form keyword
     const trForm2 = dom_tr();
-    dom_td(trForm2, `<img class="img_row_action" src="img/icons8-add-50.png" onclick="actionCategoryAddKeyword()"/>`, true);
+    const btn2 = dom_button_row({ stringCallback: "actionCategoryAddKeyword()", img });
     dom_td(trForm2, dom_input("input_keyword", "text", "Mot-clé").outerHTML, true);
     const select = dom_create("select");
     select.setAttribute("id", "selected_category");
 
-    const categories = categories_get();
+    function _fillSelectWithCategories({ categories, select }) {
+        categories.forEach(e => {
+            // remplir les options du select
+            const option = dom_create("option");
+            option.text = e.name;
+            option.value = e.id;
+            select.add(option);
+        });
+    }
 
-    categories.forEach(e => {
-        // remplir les options du select
-        const option = dom_create("option");
-        option.text = e.name;
-        option.value = e.id;
-        select.add(option);
-    });
+    const categories = categories_get().sort((a, b) => a.name.localeCompare(b.name));
+    _fillSelectWithCategories({ categories, select });
     dom_td(trForm2, select.outerHTML, true); // append le select
+    dom_td(trForm2, btn2.outerHTML, true);
+
+    function _buildFormAssignKeyword() {// generer form assigner keyword à catégorie
+        const keywords = sumPerKeyword.map(e => e.keyword).sort();
+        const select = dom_create("select");
+        select.setAttribute("id", "assignKeyword_item");
+        keywords.forEach(e => {// remplir les options du select
+            const option = dom_create("option");
+            option.text = e;
+            select.add(option);
+        });
+
+        const select2 = dom_create("select");
+        select2.setAttribute("id", "assignKeyword_category");
+        _fillSelectWithCategories({ categories, select: select2 });
+
+        const btn = dom_button_row({ stringCallback: "actionCategoryAssignKeyword()", img });
+
+        const tr = dom_tr();
+        dom_td(tr, select.outerHTML, true);
+        dom_td(tr, select2.outerHTML, true);
+        dom_td(tr, btn.outerHTML, true);
+
+        return tr;
+    }
+
+    const trForm3 = _buildFormAssignKeyword();
 
     const tableFormAddKeyword = dom_create("table");
     tableFormAddKeyword.append(trForm2);
+    tableFormAddKeyword.append(trForm3);
+
+    if (categories_isEditing()) {
+        view.append(tableFormAddCategory);
+        view.append(tableFormAddKeyword);
+    }
 
     transactionsPerCategory.forEach(e => {
-
         // lister les categories
         const category = e.category;
+        const div = dom_create("div");
+        div.setAttribute("class", "category_title");
         const h3 = dom_create("h3");
-        h3.innerText = category.name;
-        view.append(h3);
+        h3.innerText = category.name == categories_DEFAULT_CATEGORY ? "*" + category.name : category.name;
+        div.append(h3);
+
+        if (categories_isEditing() && category.name !== categories_DEFAULT_CATEGORY) {
+            const stringCallback = `actionCategoriesDeleteItem('${category.id}')`;
+            const btn = dom_button_row({ stringCallback, img: dom_img_row_delete() });
+            div.append(btn);
+        }
+
+        view.append(div);
 
         // remplir table de keyword et somme
         const table = dom_create('table');
         sumPerKeyword.forEach(e => {
             if (category.keywords.includes(e.keyword)) {
                 const tr = dom_tr();
-                const action = `actionCategoriesDeleteKeyword('${category.id}', '${e.keyword}')`;
-                if (storage_get(categories_EDITING) === true) {
-                    dom_td(tr, `<img class="img_row_action" src="img/icons8-remove-50.png" onclick="${action}"/>`, true);
+                const img = dom_img_row_delete();
+                if (categories_isEditing()) {
+                    const stringCallback = `actionCategoriesDeleteKeyword('${category.id}', '${e.keyword}')`;
+                    const btn = dom_button_row({ stringCallback, img });
+                    dom_td(tr, btn.outerHTML, true);
                 }
                 dom_td(tr, e.keyword);
                 dom_td(tr, display_decimal(e.sum));
                 table.append(tr);
             }
         });
-        display_trSum(category.sum, table, (storage_get(categories_EDITING) === true) ? 2 : 1);
+        display_trSum(category.sum, table, categories_isEditing() ? 2 : 1);
         view.append(table);
     });
-
-    const editBtn = dom_create("button");
-    editBtn.onclick = function () {
-        storage_update(categories_EDITING, true);
-        load();
-    }
-    editBtn.innerText = "Mofidier";
-
-    if (storage_get(categories_EDITING) === true) {
-        view.append(tableFormAddCategory);
-        view.append(tableFormAddKeyword);
-        editBtn.innerText = "Terminer";
-        editBtn.onclick = function () {
-            storage_update(categories_EDITING, false);
-            load();
-        }
-    }
-    view.append(editBtn);
+    view.append(display_createEditButton(categories_EDITING));
 }
 
 

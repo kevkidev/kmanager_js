@@ -1,5 +1,10 @@
 const budget_ID = "previsions";
+const budget_EDITING = "budget_editing";
 const budget_sumMonthIncomes = 750 * 1000; // à recuper dans storage , import //todo
+
+function budget_isEditing() {
+    return storage_get(budget_EDITING) === true;
+}
 
 function budget_importCSV(text) {
     function extractCSV(text) {
@@ -60,33 +65,49 @@ function budget_deleteItem(id) {
 }
 
 function budget_display() {
-    const data = storage_get(budget_ID);
+    const data = storage_get(budget_ID).sort((a, b) => b.combien - a.combien);
     const trHead = dom_tr();
-    dom_th(trHead, "");
+    if (budget_isEditing()) {
+        dom_th(trHead, "");
+    }
     dom_th(trHead, "Quoi");
-    dom_th(trHead, "Fréquence (mois)");
-    dom_th(trHead, "Combien (€)");
-    dom_get("tablePrevisions").replaceChildren(trHead);
+    dom_th(trHead, "N mois");
+    dom_th(trHead, "Euros");
+
+    const table = dom_create("table");
+    table.append(trHead);
 
     if (data) {
         data.forEach(e => {
             const tr = dom_tr();
-            dom_td(tr, `<img class="img_row_action" src="img/icons8-remove-50.png" onclick="actionBudgetDeleteItem(${e.id})"/>`, true);
+            const img = dom_img_row_delete();
+
+            if (budget_isEditing()) {
+                const btn = dom_button_row({ stringCallback: `actionBudgetDeleteItem(${e.id})`, img });
+                dom_td(tr, btn.outerHTML, true);
+            }
+
             dom_td(tr, e.quoi);
             dom_td(tr, e.frequence);
             dom_td(tr, display_decimal(e.combien));
-            dom_get("tablePrevisions").append(tr);
+            table.append(tr);
         });
     }
 
     // generer la derniere ligne du tableau sont forme de formulaire pour l'ajout d'une prévision
-    const trForm = dom_tr();
-    dom_td(trForm, `<img class="img_row_action" src="img/icons8-add-50.png" onclick="actionBudgetAddItem()"/>`, true);
-    dom_td(trForm, dom_input("prevQuoi", "text").outerHTML, true);
-    dom_td(trForm, dom_input("prevFrequence", "number").outerHTML, true);
-    dom_td(trForm, dom_input("prevCombien", "number").outerHTML, true);
-    dom_get("tablePrevisions").append(trForm);
+    if (budget_isEditing()) {
+        const trForm = dom_tr();
+        const img = dom_img_row_add();
+        const btn = dom_button_row({ stringCallback: "actionBudgetAddItem()", img });
+        dom_td(trForm, btn.outerHTML, true);
+        dom_td(trForm, dom_input("prevQuoi", "text").outerHTML, true);
+        dom_td(trForm, dom_input("prevFrequence", "number").outerHTML, true);
+        dom_td(trForm, dom_input("prevCombien", "number").outerHTML, true);
+        table.append(trForm);
+    }
 
+    const view = dom_get("viewBudget");
+    view.replaceChildren(table, display_createEditButton(budget_EDITING));
     display_lastImportDate(budget_ID);
 }
 

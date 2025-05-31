@@ -40,7 +40,7 @@ td,
 th {
     border: 1px solid var(--color1);
     text-align: left;
-    padding: 8px;
+    padding: 5px;
 }
 
 tr:nth-child(even) {
@@ -48,8 +48,11 @@ tr:nth-child(even) {
 }
 
 .keyword {
-    border: solid black 1px;
     padding: 3px;
+    background-color: rgb(158, 255, 221);
+    border-radius: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .sum_value,
@@ -80,12 +83,7 @@ h1 {
     padding-bottom: 20px;
 }
 
-h3 {
-    margin-top: 20px;
-    text-transform: capitalize;
-    border: solid var(--color2) 5px;
-    text-align: center;
-}
+
 
 section {
     padding: 20px;
@@ -148,8 +146,9 @@ td>select {
     background-color: var(--color1);
     border: solid #e6e6e6 2px;
     width: 100%;
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px;
+    color: black;
 }
 
 option {
@@ -170,9 +169,31 @@ button {
 
 button {
     margin-top: 20px;
+    color: black;
+}
+
+.td_button {
+    margin: 0;
+    padding: 0;
+    background: none;
 }
 
 .tr_sub_title {
     text-align: right;
     font-style: italic;
+}
+
+.category_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+
+    margin-top: 20px;
+    padding: 5px;
+    border: solid var(--color2) 3px;
+}
+
+.category_title>h3 {
+    text-transform: capitalize;
 }

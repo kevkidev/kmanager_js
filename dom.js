@@ -50,3 +50,26 @@ function dom_img({ src, id, clazz }) {
     if (clazz) img.setAttribute("class", clazz);
     return img;
 }
+
+function dom_img_row(action) {
+    return dom_img({
+        src: `img/icons8-${action}-50.png`,
+        clazz: "img_row_action",
+    });
+}
+
+function dom_img_row_delete() {
+    return dom_img_row("remove");
+}
+
+function dom_img_row_add() {
+    return dom_img_row("add");
+}
+
+function dom_button_row({ stringCallback, img }) {
+    const btn = dom_create("button");
+    btn.setAttribute("class", "td_button");
+    btn.setAttribute("onclick", stringCallback);
+    btn.append(img);
+    return btn;
+}
