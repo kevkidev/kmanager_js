@@ -65,7 +65,7 @@ function budget_deleteItem(id) {
 }
 
 function budget_display() {
-    const data = storage_get(budget_ID).sort((a, b) => b.combien - a.combien);
+    const data = storage_get(budget_ID);
     const trHead = dom_tr();
     if (budget_isEditing()) {
         dom_th(trHead, "");
@@ -78,7 +78,7 @@ function budget_display() {
     table.append(trHead);
 
     if (data) {
-        data.forEach(e => {
+        data.sort((a, b) => b.combien - a.combien).forEach(e => {
             const tr = dom_tr();
             const img = dom_img_row_delete();
 
