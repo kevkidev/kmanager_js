@@ -223,9 +223,16 @@ function categories_displaySumPerCategory({ transactionsPerCategory, sumPerKeywo
         // lister les categories
         const category = e.category;
         const div = dom_create("div");
-        div.setAttribute("class", "category_title");
+        let divClass = "category_title";
+
+        if (category.name == categories_DEFAULT_CATEGORY) {
+            divClass += " highlight_danger";
+        }
+
+        div.setAttribute("class", divClass);
+
         const h3 = dom_create("h3");
-        h3.innerText = category.name == categories_DEFAULT_CATEGORY ? "*" + category.name : category.name;
+        h3.innerText = category.name;
         div.append(h3);
 
         if (categories_isEditing() && category.name !== categories_DEFAULT_CATEGORY) {
@@ -265,10 +272,17 @@ function categories_displaySumPerCategory_details(data) {
 
     data.forEach(e => {
         if (e.list.length > 0) {
+            const div = dom_create("div");
+            let divClass = "category_title";
+            if (e.category.name == categories_DEFAULT_CATEGORY) {
+                divClass += " highlight_danger";
+            }
+            div.setAttribute("class", divClass);
             const h3 = dom_create("h3");
             h3.innerText = e.category.name;
+            div.append(h3);
             const table = dom_create("table");
-            view.append(h3);
+            view.append(div);
             view.append(table);
             transactions_displayTableSimple(e.list, table);
             display_trSum(e.category.sum, table, 2);
