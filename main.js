@@ -16,18 +16,30 @@ function initImportListener() {
     });
 }
 
-function load() {
+function load(viewId) {
     const { incomes, expenses } = transactions_build();
     if (expenses || incomes) {
         transactions_display({ incomes, expenses });
         synthese_displaySumMonth({ incomes, expenses });
         categories_display(expenses);
     }
-    display_section_titles();
+    display_resetViewsHeaders({ openViewId: viewId });
     synthese_displaySumBudget();
     budget_display();
     display_changeDate();
     display_messages();
+}
+
+function actionImportTransactions() {
+    dom_get("triggerImportCSVTransactions").click();
+}
+
+function actionImportCategories() {
+    dom_get("triggerImportCSVCategories").click();
+}
+
+function actionImportBudget() {
+    dom_get("triggerImportCSVPrevisions").click();
 }
 
 // actions export
@@ -43,59 +55,52 @@ function actionExportCSVPrevisions() {
     budget_exportCSV();
 }
 
+function actionPrint() {
+    display_resetViewsHeaders({ showAll: true });
+    window.print();
+}
+
 function actionToggle(event, id) {
     display_toggle(event, id);
 }
 
-function actionScrollX(event, toLeft) {
-    const padding = 30;
-
-    let screenSize = 444;
-    if (screen.width < 1500) { // sur mobile et tablette
-        screenSize = screen.width;
-    }
-
-    x = window.pageXOffset + screenSize + padding;
-    if (toLeft) {
-        x = window.pageXOffset - screenSize - padding;
-    }
-
-    window.scrollTo(x, 0);
-}
-
 function actionBudgetDeleteItem(id) {
     budget_deleteItem(id);
-    load();
+    load("viewBudget");
 }
 
 function actionBudgetAddItem() {
     budget_add();
-    load();
+    load("viewBudget");
 }
 
 function actionCategoriesDeleteKeyword(categoryId, keyword) {
     categories_deleteKeyword({ categoryId, keyword });
-    load();
+    load("viewCategories");
 }
 
 function actionCategoriesDeleteItem(categoryId) {
     categories_deleteItem({ categoryId });
-    load();
+    load("viewCategories");
+
 }
 
 function actionCategoryAddItem() {
     category_add();
-    load();
+    load("viewCategories");
+
 }
 
 function actionCategoryAddKeyword() {
     category_addKeyword();
-    load();
+    load("viewCategories");
+
 }
 
 function actionCategoryAssignKeyword() {
     category_assignKeyword();
-    load();
+    load("viewCategories");
+
 }
 
 // DEBUT 

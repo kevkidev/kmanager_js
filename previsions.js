@@ -107,7 +107,7 @@ function budget_display() {
     }
 
     const view = dom_get("viewBudget");
-    view.replaceChildren(table, display_createEditButton(budget_EDITING));
+    view.replaceChildren(table, display_createEditButton(budget_EDITING, "viewBudget"));
     display_lastImportDate(budget_ID);
 }
 

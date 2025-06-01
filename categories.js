@@ -150,7 +150,8 @@ function category_assignKeyword() {
 // display
 
 function categories_displaySumPerCategory({ transactionsPerCategory, sumPerKeyword }) {
-    const view = dom_get("viewCategories");
+    const viewId = "viewCategories";
+    const view = dom_get(viewId);
     view.replaceChildren(); // vider la vue
 
     // generer form categorie
@@ -249,7 +250,7 @@ function categories_displaySumPerCategory({ transactionsPerCategory, sumPerKeywo
             if (category.keywords.includes(e.keyword)) {
                 const tr = dom_tr();
                 const img = dom_img_row_delete();
-                if (categories_isEditing()) {
+                if (categories_isEditing() && e.keyword !== categories_DEFAULT_KEYWORD) {
                     const stringCallback = `actionCategoriesDeleteKeyword('${category.id}', '${e.keyword}')`;
                     const btn = dom_button_row({ stringCallback, img });
                     dom_td(tr, btn.outerHTML, true);
@@ -262,7 +263,7 @@ function categories_displaySumPerCategory({ transactionsPerCategory, sumPerKeywo
         display_trSum(category.sum, table, categories_isEditing() ? 2 : 1);
         view.append(table);
     });
-    view.append(display_createEditButton(categories_EDITING));
+    view.append(display_createEditButton(categories_EDITING, viewId));
 }
 
 

@@ -1,3 +1,7 @@
+const display_STORAGE_VIEWS_ID = "views";
+const display_VIEW_STATUS_OPEN = "1";
+const display_VIEW_STATUS_CLOSED = "0";
+
 function display_lastImportDate(id) {
     const date = storage_getLastImportDate(id);
     dom_get("lastImportDate_" + id).innerText = (date != "null") ? date : "inconnue";
@@ -12,32 +16,6 @@ function display_trSum(sum, table, colspan, title, highlight) {
     dom_td(trSum, `<span class="sum_value">${display_decimal(sum)}</span>`, true, true, highlight);
     table.append(trSum);
     return trSum;
-}
-
-// function display_trSub({ value, table, colspan, title }) {
-//     const tr = dom_tr();
-//     const tdTitle = dom_td(tr, title);
-//     tdTitle.setAttribute("colspan", colspan);
-//     tdTitle.setAttribute("class", "tr_sub_title");
-//     dom_td(tr, `<span class="tr_sub_value">${value}</span>`, true);
-//     table.append(tr);
-//     return tr;
-// }
-
-function display_toggle(event, id) {
-    let status = storage_get(id);
-    const ON = "on";
-    const OFF = "off";
-    if (!status || status == OFF) {
-        dom_get(id).style.display = 'block';
-        storage_update(id, ON);
-        status = ON;
-    } else if (status == ON) {
-        dom_get(id).style.display = 'none';
-        storage_update(id, OFF);
-        status = OFF;
-    }
-    event.target.setAttribute("src", "img/icons8-" + status + "-50.png");
 }
 
 function display_changeDate() {
@@ -59,57 +37,75 @@ function display_decimal(preciseInt) {
     return res;
 }
 
-function display_section_title({ title, parentId, isFirst, isLast }) {
-    // creer 
+function display_sectionHeader({ title, viewId, isFirst, isLast, isOpen, imgSrc }) {
+
+    const divTitle = dom_create("div");
+    divTitle.setAttribute("class", "view_header_title")
+
+    if (imgSrc) {
+        const img = dom_img({ src: imgSrc, clazz: "view_header_title_img" });
+        divTitle.append(img);
+    }
+
     const h1 = dom_create('h1');
     h1.innerText = title;
+    divTitle.append(h1);
 
-    const scrollLeft = dom_img({
-        src: "img/icons8-left-48.png",
-        clazz: "btn_scroll_h",
+    const imgName = isOpen ? "expand" : "collapse";
+    const toggleImg = dom_img({
+        src: `img/${imgName}.png`,
+        clazz: "view_header_toggle_img",
     });
+    toggleImg.setAttribute("onclick", `actionToggle(event, '${viewId}')`);
 
-    const scrollRight = dom_img({
-        src: "img/icons8-right-48.png",
-        clazz: "btn_scroll_h",
+    const goTopImg = dom_img({
+        src: `img/icons8-double-up-64.png`,
+        clazz: "view_header_toggle_img",
     });
-
-    // configurer 
-    scrollLeft.onclick = function (scrollLeft) {
-        actionScrollX(scrollLeft, true);
-    }
-    scrollRight.onclick = function (scrollRight) {
-        actionScrollX(scrollRight);
+    goTopImg.onclick = function () {
+        window.scrollTo(window.pageXOffset, 0);
     }
 
-    // assembler
-    const div = dom_get(parentId).parentNode.querySelector("div");
-    if (isFirst) {
-        div.replaceChildren(h1, scrollRight);
-    } else if (isLast) {
-        div.replaceChildren(scrollLeft, h1);
-    } else {
-        div.replaceChildren(scrollLeft, h1, scrollRight);
-    }
+    const divBtn = dom_create("div");
+    divBtn.append(toggleImg, goTopImg);
+
+    const div = dom_get(viewId).parentNode.querySelector("div");
+    div.replaceChildren(divTitle, divBtn);
 }
 
-function display_section_titles() {
-    display_section_title({ title: "Synthèse", parentId: "viewSynthese" });
-    display_section_title({ title: "Notice", parentId: "viewNotice", isFirst: true });
-    display_section_title({ title: "Transactions", parentId: "viewTransactions" });
-    display_section_title({ title: "Catégories", parentId: "viewCategories" });
-    display_section_title({ title: "Détails par catégorie", parentId: "viewDetailsCategories" });
-    display_section_title({ title: "Budget", parentId: "viewBudget", isLast: true });
+function display_resetViewsHeaders({ openViewId, showAll }) {
+    const views = [
+        { title: "Notice", viewId: "viewNotice", isFirst: true, imgSrc: "img/icons8-user-manual-64.png" },
+        { title: "Synthèse", viewId: "viewSynthese", imgSrc: "img/icons8-improvement-64.png" },
+        { title: "Transactions", viewId: "viewTransactions", imgSrc: "img/icons8-activity-history-64.png" },
+        { title: "Catégories", viewId: "viewCategories", imgSrc: "img/icons8-folder-tree-64.png" },
+        { title: "Détails par catégorie", viewId: "viewDetailsCategories", imgSrc: "img/icons8-tree-structure-64.png" },
+        { title: "Budget", viewId: "viewBudget", isLast: true, imgSrc: "img/icons8-stocks-growth-64.png" },
+    ];
+
+    views.forEach(e => {
+        let display = "none";
+        if (showAll || openViewId && e.viewId == openViewId) {
+            display = "block";
+            e.isOpen = true;
+        }
+        dom_get(e.viewId).style.display = display;
+        display_sectionHeader(e);
+    });
 }
 
-function display_createEditButton(storageEditingId) {
+function display_toggle(event, viewId) {
+    event.target.getAttribute("src").includes("expand") ?
+        display_resetViewsHeaders({}) : display_resetViewsHeaders({ openViewId: viewId });
+}
+
+function display_createEditButton(storageEditingId, viewId) {
     const editBtn = dom_create("button");
     const isEditing = storage_get(storageEditingId) === true;
 
     editBtn.onclick = function () {
         storage_update(storageEditingId, !isEditing);
-        load();
-        window.scrollTo(window.pageXOffset, 0);
+        load(viewId);
     }
 
     editBtn.innerText = "Mofidier";

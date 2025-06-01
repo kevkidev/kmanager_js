@@ -81,6 +81,7 @@ function transactions_build() {
 // display
 
 function transactions_displayTableSimple(array, table) {
+    table.replaceChildren();
     array.forEach(e => {
         const tr = dom_tr();
         dom_td(tr, e.quand);
