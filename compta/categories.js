@@ -290,11 +290,17 @@ function categories_displaySumPerCategory_details(data) {
         }
     });
     const sum = data.map(e => e.category.sum).reduce((a, b) => a + b);
-    display_lastImportDate(categories_ID);
+    common_display_lastImportDate({
+        prefixId: display_DATE_IMPORT_PREFIX_ID,
+        suffixId: categories_ID
+    });
 }
 
 function categories_display(expenses) {
-    display_lastImportDate(categories_ID);
+    common_display_lastImportDate({
+        prefixId: display_DATE_IMPORT_PREFIX_ID,
+        suffixId: categories_ID
+    });
     categories_displaySumPerCategory({
         transactionsPerCategory: categories_sumPerCategory(expenses),
         sumPerKeyword: categories_sumPerKeyword(expenses)

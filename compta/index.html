@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K_manager : Compta RDMP</title>
+    <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container" id="container">
+        <h1 class="app_title">RDMP : Rapport.Dépenses.Mensuelles.Personnelles</h1>
+        <section>
+            <div id="notice" class="view_header"></div>
+            <div id="viewNotice" class="view_body">
+
+
+                <h2>Quick Start</h2>
+                <p>Pas d'ordre d'import :</p>
+                <ul>
+                    <li>Import CSV de transactions du mois, ficher exporté depuis :</li>
+                    <ul>
+                        <li>la banque</li>
+                        <li>cette application</li>
+                    </ul>
+
+                    <li>Importer CSV catégories & mots-clés</li>
+                    <li>Importer CSV budget</li>
+                </ul>
+                <p>Les fichiers exporté depuis l'app peuvent être reimporté</p>
+
+
+                <h2>1. Transactions</h2>
+                <p>
+                    Fichier CSV mensuel exporté depuis la banque (ou depuis un autre rapport).
+                </p>
+                <p>
+                    Les données du dernier fichier importé sont chargées automatiquement depuis le local storage.
+                </p>
+                <p>
+                    Les colonnes 1, 3 et 7 sont respectivement : quand, quoi et combien.
+                </p>
+
+                <input type="file" id="triggerImportCSVTransactions" accept=".csv" hidden />
+                <img src="../img/icons8-import-csv-64.png" onclick="actionImportTransactions()" class="impex">
+                Dernier import : <span id="lastImportDate_transactions"></span>
+
+                <img src="../img/icons8-export-64.png" onclick="actionExportCSVTransactions()" class="impex"> (importable)
+
+
+                <h2>2. Catégories & Mots-clès</h2>
+                <p>Importer CSV : Catégories et mots-clés associés. Il faut le mettre à jour à chaque nouveau créancier et
+                    l'importer. MàJ possible soit :</p>
+
+                <ul>
+                    <li>directement dans l'app</li>
+                    <li>Soit editer le fichier CSV et importer</li>
+                </ul>
+                <br>
+                <input type="file" id="triggerImportCSVCategories" accept=".csv" hidden />
+                <img src="../img/icons8-import-csv-64.png" onclick="actionImportCategories()" class="impex">
+                Dernier import : <span id="lastImportDate_categories"></span>
+
+                <img src="../img/icons8-export-64.png" onclick="actionExportCSVCategories()" class="impex"> (importable)
+
+
+                <h2>3. Budget</h2>
+                <p>
+                    <input type="file" id="triggerImportCSVPrevisions" accept=".csv" hidden />
+                    <img src="../img/icons8-import-csv-64.png" onclick="actionImportBudget()" class="impex">
+
+                    Dernier import : <span id="lastImportDate_previsions"></span>
+                </p>
+                <img src="../img/icons8-export-64.png" onclick="actionExportCSVPrevisions()" class="impex"> (importable)
+
+
+                <h2>4. Sauvegarde</h2>
+                <p>
+                    Imprimer en PDF. Pour garder tous le CSS : Cocher "Plus de paramètres" > "Graphiques d'arrière plan".
+                </p>
+                <p>
+                    <img src="../img/icons8-export-pdf-64.png" onclick="actionPrint()" class="impex" /> [ CTRL P ]
+                </p>
+                <p>
+                    Dernière modification : <span id="changeDate"></span>
+                </p>
+            </div>
+        </section>
+        <hr>
+
+        <section>
+            <div class="view_header"></div>
+            <div id="viewSynthese" class="view_body">
+                <h2>Prévisions</h2>
+                <table id="tableSynthese1"></table>
+                <h2>Mois</h2>
+                <table id="tableSynthese2"></table>
+                <h2>Trésor</h2>
+                <table id="tableSynthese3"></table>
+            </div>
+        </section>
+        <hr>
+
+        <section>
+            <div class="view_header"></div>
+            <div id="viewCategories" class="view_body"></div>
+        </section>
+        <hr>
+
+        <section>
+            <div class="view_header"></div>
+            <div id="viewDetailsCategories" class="view_body"></div>
+        </section>
+        <hr>
+
+        <section>
+            <div class="view_header"></div>
+            <div id="viewTransactions" class="view_body">
+                <h2>Entrées <span></span></h2>
+                <table id="tableIn"></table>
+
+                <h2>Sorties</h2>
+                <table id="tableOut"></table>
+            </div>
+        </section>
+        <hr>
+
+        <section>
+            <div class="view_header"></div>
+            <div id="viewBudget" class="view_body"></div>
+        </section>
+    </div>
+    <!-- scripts -->
+    <script src="dom.js"></script>
+    <script src="util.js"></script>
+    <script src="storage.js"></script>
+    <script src="../common/display.js"></script>
+    <script src="display.js"></script>
+    <script src="io.js"></script>
+    <script src="synthese.js"></script>
+    <script src="previsions.js"></script>
+    <script src="transactions.js"></script>
+    <script src="categories.js"></script>
+    <script src="main.js"></script>
+    <script src="test.js"></script>
+</body>
+
+</html>

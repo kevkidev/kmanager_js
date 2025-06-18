@@ -100,5 +100,8 @@ function transactions_display({ incomes, expenses }) {
     transactions_displayTableSimple(expenses, outTable);
     display_trSum(util_sum(expenses), outTable, 2);
 
-    display_lastImportDate(transactions_ID);
+    common_display_lastImportDate({
+        prefixId: display_DATE_IMPORT_PREFIX_ID,
+        suffixId: transactions_ID
+    });
 }

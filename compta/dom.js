@@ -53,7 +53,7 @@ function dom_img({ src, id, clazz }) {
 
 function dom_img_row(action) {
     return dom_img({
-        src: `img/icons8-${action}-50.png`,
+        src: `../img/icons8-${action}-50.png`,
         clazz: "img_row_action",
     });
 }

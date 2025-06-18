@@ -108,7 +108,11 @@ function budget_display() {
 
     const view = dom_get("viewBudget");
     view.replaceChildren(table, display_createEditButton(budget_EDITING, "viewBudget"));
-    display_lastImportDate(budget_ID);
+    common_display_lastImportDate({
+        prefixId: display_DATE_IMPORT_PREFIX_ID,
+        suffixId: budget_ID
+    });
+
 }
 
 function budget_sumYear() {
