@@ -14,26 +14,12 @@ function display_trSum(sum, table, colspan, title, highlight) {
     return trSum;
 }
 
-function display_changeDate() {
-    dom_get("changeDate").innerText = storage_getChangeDate();
-}
-
-function display_messages() {
-    const messages = storage_get(storage_ID_MESSAGES);
-    if (!messages) return;
-    for (let i = 0; i < messages.length; i++) {
-        const m = messages[i];
-        alert(m);
-    }
-    storage_remove(storage_ID_MESSAGES);
-}
-
 function display_decimal(preciseInt) {
     const res = util_round_100(preciseInt / 1000);
     return res;
 }
 
-function display_sectionHeader({ title, viewId, isFirst, isLast, isOpen, imgSrc }) {
+function display_sectionHeader({ title, viewId, isOpen, imgSrc }) {
 
     const divTitle = dom_create("div");
     divTitle.setAttribute("class", "view_header_title")
@@ -95,17 +81,13 @@ function display_toggle(event, viewId) {
         display_resetViewsHeaders({}) : display_resetViewsHeaders({ openViewId: viewId });
 }
 
-function display_createEditButton(storageEditingId, viewId) {
+
+function display_createEditButton({ controller }) {
     const editBtn = dom_create("button");
-    const isEditing = storage_get(storageEditingId) === true;
-
-    editBtn.onclick = function () {
-        storage_update(storageEditingId, !isEditing);
-        load(viewId);
-    }
-
     editBtn.innerText = "Mofidier";
-    if (isEditing) {
+    const control = controller();
+    editBtn.onclick = control.onclick;
+    if (control.isEditing) {
         editBtn.innerText = "Terminer";
     }
     return editBtn;

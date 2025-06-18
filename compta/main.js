@@ -6,7 +6,7 @@ function initImportListener() {
     });
     util_initImportListener('triggerImportCSVCategories', function () {
         io_importCSV(this, function (text) {
-            categories_importCSV(text);
+            categories_manager_importCSV(text);
         });
     });
     util_initImportListener('triggerImportCSVPrevisions', function () {
@@ -21,13 +21,13 @@ function load(viewId) {
     if (expenses || incomes) {
         transactions_display({ incomes, expenses });
         synthese_displaySumMonth({ incomes, expenses });
-        categories_display(expenses);
+        categories_viewer_display(expenses);
     }
     display_resetViewsHeaders({ openViewId: viewId });
     synthese_displaySumBudget();
     budget_display();
-    display_changeDate();
-    display_messages();
+    common_display_changeDate();
+    common_display_messages();
 }
 
 function actionImportTransactions() {
@@ -48,7 +48,7 @@ function actionExportCSVTransactions() {
 }
 
 function actionExportCSVCategories() {
-    categories_exportCSV();
+    categories_manager_exportCSV();
 }
 
 function actionExportCSVPrevisions() {
@@ -75,40 +75,36 @@ function actionBudgetAddItem() {
 }
 
 function actionCategoriesDeleteKeyword(categoryId, keyword) {
-    categories_deleteKeyword({ categoryId, keyword });
+    categories_controller_deleteKeyword({ categoryId, keyword });
     load("viewCategories");
 }
 
 function actionCategoriesDeleteItem(categoryId) {
-    categories_deleteItem({ categoryId });
+    categories_controller_deleteItem({ categoryId });
     load("viewCategories");
-
 }
 
 function actionCategoryAddItem() {
-    category_add();
+    category_controller_add();
     load("viewCategories");
-
 }
 
 function actionCategoryAddKeyword() {
-    category_addKeyword();
+    category_controller_addKeyword();
     load("viewCategories");
-
 }
 
 function actionCategoryAssignKeyword() {
-    category_assignKeyword();
+    category_controller_assignKeyword();
     load("viewCategories");
-
 }
 
 // DEBUT 
 storage_cleanSession([
-    categories_ID,
+    categories_controller_STORAGE_ID,
     budget_ID,
     transactions_ID,
-    `date_import_${categories_ID}`,
+    `date_import_${categories_controller_STORAGE_ID}`,
     `date_import_${budget_ID}`,
     `date_import_${transactions_ID}`,
     storage_ID_DATE_CHANGE,

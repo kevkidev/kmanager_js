@@ -37,7 +37,7 @@ function transactions_expences(transactions) {
 
 function _transactions_associerKeyword(transactions, keywords) {
     return transactions.map(t => {
-        t.keyword = categories_DEFAULT_KEYWORD;
+        t.keyword = categories_manager_DEFAULT_KEYWORD;
         for (let i = 0; i < keywords.length; i++) {
             const k = keywords[i];
             if (k && t.quoi.includes(k)) {
@@ -68,8 +68,8 @@ function transactions_build() {
         return { undefined, undefined };
     }
 
-    let categories = categories_get();
-    const keywords = categories_getKeywords(categories);
+    let categories = categories_manager_get();
+    const keywords = categories_manager_getKeywords(categories);
     _transactions_associerKeyword(transactions, keywords); // !!! 
     _transactions_associerCategory(transactions, categories); // !!!
     const incomes = transactions_incomes(transactions);

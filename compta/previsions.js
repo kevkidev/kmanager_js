@@ -1,6 +1,7 @@
 const budget_ID = "previsions";
 const budget_EDITING = "budget_editing";
 const budget_sumMonthIncomes = 750 * 1000; // à recuper dans storage , import //todo
+const budget_viewer_ID = "viewBudget";
 
 function budget_isEditing() {
     return storage_get(budget_EDITING) === true;
@@ -107,12 +108,35 @@ function budget_display() {
     }
 
     const view = dom_get("viewBudget");
-    view.replaceChildren(table, display_createEditButton(budget_EDITING, "viewBudget"));
+    view.replaceChildren(table, _budget_viewer_createEditButton());
     common_display_lastImportDate({
         prefixId: display_DATE_IMPORT_PREFIX_ID,
         suffixId: budget_ID
     });
 
+}
+
+function _budget_viewer_createEditButton() {
+    return display_createEditButton({ controller: budget_controller_clickEditButton });
+}
+
+function budget_controller_clickEditButton() {
+    const isEditing = budget_storage_isEditing();
+    return {
+        isEditing,
+        onclick: function () {
+            budget_storage_setEditing({ value: !isEditing });
+            load(budget_viewer_ID);
+        }
+    }
+}
+
+function budget_storage_isEditing() {
+    return storage_get(budget_EDITING) === true;
+}
+
+function budget_storage_setEditing({ value }) {
+    storage_update(budget_EDITING, value);
 }
 
 function budget_sumYear() {
