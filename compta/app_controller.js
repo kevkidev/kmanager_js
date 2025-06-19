@@ -57,37 +57,37 @@ function actionToggle(event, viewIdToKeepOpen) {
 
 function actionBudgetDeleteItem(id) {
     budget_controller_deleteItem(id);
-    app_reload({ viewIdToKeepOpen: "viewBudget" });
+    app_manager_reload({ viewIdToKeepOpen: "viewBudget" });
 }
 
 function actionBudgetAddItem() {
     budget_controller_add();
-    app_reload({ viewIdToKeepOpen: "viewBudget" });
+    app_manager_reload({ viewIdToKeepOpen: "viewBudget" });
 }
 
 function actionCategoriesDeleteKeyword(categoryId, keyword) {
     categories_controller_deleteKeyword({ categoryId, keyword });
-    app_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
 }
 
 function actionCategoriesDeleteItem(categoryId) {
     categories_controller_deleteItem({ categoryId });
-    app_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
 }
 
 function actionCategoryAddItem() {
     category_controller_add();
-    app_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
 }
 
 function actionCategoryAddKeyword() {
     category_controller_addKeyword();
-    app_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
 }
 
 function actionCategoryAssignKeyword() {
     category_controller_assignKeyword();
-    app_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
 }
 
 function controller_resetViewsHeaders({ viewIdToKeepOpen, showAll }) {

@@ -89,7 +89,7 @@ function categories_controller_clickEditButton() {
         isEditing,
         onclick: function () {
             categories_storage_setEditing({ value: !isEditing });
-            app_reload({ viewIdToKeepOpen: categories_viewer_ID });
+            app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
         }
     };
 }
