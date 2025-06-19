@@ -47,7 +47,7 @@
                 <img src="../img/icons8-import-csv-64.png" onclick="actionImportTransactions()" class="impex">
                 Dernier import : <span id="lastImportDate_transactions"></span>
 
-                <img src="../img/icons8-export-64.png" onclick="actionExportCSVTransactions()" class="impex"> (importable)
+                <img src="../img/icons8-export-64.png" onclick="app_controller_exportCSVTransactions()" class="impex"> (importable)
 
 
                 <h2>2. Catégories & Mots-clès</h2>
@@ -63,7 +63,7 @@
                 <img src="../img/icons8-import-csv-64.png" onclick="actionImportCategories()" class="impex">
                 Dernier import : <span id="lastImportDate_categories"></span>
 
-                <img src="../img/icons8-export-64.png" onclick="actionExportCSVCategories()" class="impex"> (importable)
+                <img src="../img/icons8-export-64.png" onclick="app_controller_exportCSVCategories()" class="impex"> (importable)
 
 
                 <h2>3. Budget</h2>
@@ -73,7 +73,7 @@
 
                     Dernier import : <span id="lastImportDate_budget"></span>
                 </p>
-                <img src="../img/icons8-export-64.png" onclick="actionExportCSVBudget()" class="impex"> (importable)
+                <img src="../img/icons8-export-64.png" onclick="app_controller_exportCSVBudget()" class="impex"> (importable)
 
 
                 <h2>4. Sauvegarde</h2>
@@ -81,7 +81,7 @@
                     Imprimer en PDF. Pour garder tous le CSS : Cocher "Plus de paramètres" > "Graphiques d'arrière plan".
                 </p>
                 <p>
-                    <img src="../img/icons8-export-pdf-64.png" onclick="actionPrint()" class="impex" /> [ CTRL P ]
+                    <img src="../img/icons8-export-pdf-64.png" onclick="app_controller_print()" class="impex" /> [ CTRL P ]
                 </p>
                 <p>
                     Dernière modification : <span id="changeDate"></span>
@@ -156,7 +156,9 @@
     <script src="categories_controller.js"></script>
     <script src="categories_viewer.js"></script>
 
+    <script src="app_controller.js"></script>
     <script src="main.js"></script>
+
     <script src="test.js"></script>
 </body>
 

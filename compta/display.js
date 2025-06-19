@@ -59,11 +59,6 @@ function display_resetViewHeader({ view, display }) {
     display_sectionHeader(view);
 }
 
-function display_toggle(event, viewId) {
-    event.target.getAttribute("src").includes("expand") ?
-        controller_resetViewsHeaders({}) : controller_resetViewsHeaders({ openViewId: viewId });
-}
-
 
 function display_createEditButton({ controller }) {
     const editBtn = dom_create("button");

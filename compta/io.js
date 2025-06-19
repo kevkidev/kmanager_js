@@ -6,7 +6,7 @@ function io_importCSV(context, handle) {
     reader.onload = function (e) {
         const text = e.target.result;
         handle(text);
-        load({ openViewId: undefined });
+        app_reload({ viewIdToKeepOpen: undefined });
     };
     reader.readAsText(file);
 }

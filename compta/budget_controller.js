@@ -37,8 +37,8 @@ function budget_controller_clickEditButton() {
         isEditing,
         onclick: function () {
             budget_storage_setEditing({ value: !isEditing });
-            const openViewId = budget_controller_getViewParams().id;
-            load({ openViewId });
+            const viewIdToKeepOpen = budget_controller_getViewParams().id;
+            app_reload({ viewIdToKeepOpen });
         }
     }
 }
