@@ -1,7 +1,6 @@
 const display_STORAGE_VIEWS_ID = "views";
 const display_VIEW_STATUS_OPEN = "1";
 const display_VIEW_STATUS_CLOSED = "0";
-const display_DATE_IMPORT_PREFIX_ID = "lastImportDate_";
 
 function display_trSum(sum, table, colspan, title, highlight) {
     const trSum = dom_tr();
@@ -19,7 +18,7 @@ function display_decimal(preciseInt) {
     return res;
 }
 
-function display_sectionHeader({ title, viewId, isOpen, imgSrc }) {
+function display_sectionHeader({ title, id: viewId, isOpen, imgSrc }) {
 
     const divTitle = dom_create("div");
     divTitle.setAttribute("class", "view_header_title")
@@ -55,30 +54,14 @@ function display_sectionHeader({ title, viewId, isOpen, imgSrc }) {
     div.replaceChildren(divTitle, divBtn);
 }
 
-function display_resetViewsHeaders({ openViewId, showAll }) {
-    const views = [
-        { title: "Notice", viewId: "viewNotice", isFirst: true, imgSrc: "../img/icons8-user-manual-64.png" },
-        { title: "Synthèse", viewId: "viewSynthese", imgSrc: "../img/icons8-improvement-64.png" },
-        { title: "Transactions", viewId: "viewTransactions", imgSrc: "../img/icons8-activity-history-64.png" },
-        { title: "Catégories", viewId: "viewCategories", imgSrc: "../img/icons8-folder-tree-64.png" },
-        { title: "Détails par catégorie", viewId: "viewDetailsCategories", imgSrc: "../img/icons8-tree-structure-64.png" },
-        { title: "Budget", viewId: "viewBudget", isLast: true, imgSrc: "../img/icons8-stocks-growth-64.png" },
-    ];
-
-    views.forEach(e => {
-        let display = "none";
-        if (showAll || openViewId && e.viewId == openViewId) {
-            display = "block";
-            e.isOpen = true;
-        }
-        dom_get(e.viewId).style.display = display;
-        display_sectionHeader(e);
-    });
+function display_resetViewHeader({ view, display }) {
+    dom_get(view.id).style.display = display;
+    display_sectionHeader(view);
 }
 
 function display_toggle(event, viewId) {
     event.target.getAttribute("src").includes("expand") ?
-        display_resetViewsHeaders({}) : display_resetViewsHeaders({ openViewId: viewId });
+        controller_resetViewsHeaders({}) : controller_resetViewsHeaders({ openViewId: viewId });
 }
 
 

@@ -9,25 +9,45 @@ function initImportListener() {
             categories_manager_importCSV(text);
         });
     });
-    util_initImportListener('triggerImportCSVPrevisions', function () {
+    util_initImportListener('triggerImportCSVBudget', function () {
         io_importCSV(this, function (text) {
-            budget_importCSV(text);
+            budget_manager_importCSV(text);
         });
     });
 }
 
-function load(viewId) {
+function load({ openViewId }) {
     const { incomes, expenses } = transactions_build();
     if (expenses || incomes) {
         transactions_display({ incomes, expenses });
         synthese_displaySumMonth({ incomes, expenses });
         categories_viewer_display(expenses);
     }
-    display_resetViewsHeaders({ openViewId: viewId });
+    controller_resetViewsHeaders({ openViewId })
     synthese_displaySumBudget();
-    budget_display();
+    budget_viewer_display();
     common_display_changeDate();
     common_display_messages();
+}
+
+function controller_resetViewsHeaders({ openViewId, showAll }) {
+    const views = [
+        notice_controller_getViewParams(),
+        synthese_controller_getViewParams(),
+        transactions_controller_getViewParams(),
+        categories_controller_getViewParams(),
+        categories_controller_getViewDetailsParams(),
+        budget_controller_getViewParams(),
+    ];
+
+    views.forEach(view => {
+        let display = "none";
+        if (showAll || openViewId && view.id == openViewId) {
+            display = "block";
+            view.isOpen = true;
+        }
+        display_resetViewHeader({ view, display });
+    });
 }
 
 function actionImportTransactions() {
@@ -39,7 +59,7 @@ function actionImportCategories() {
 }
 
 function actionImportBudget() {
-    dom_get("triggerImportCSVPrevisions").click();
+    dom_get("triggerImportCSVBudget").click();
 }
 
 // actions export
@@ -51,12 +71,12 @@ function actionExportCSVCategories() {
     categories_manager_exportCSV();
 }
 
-function actionExportCSVPrevisions() {
-    budget_exportCSV();
+function actionExportCSVBudget() {
+    budget_manager_exportCSV();
 }
 
 function actionPrint() {
-    display_resetViewsHeaders({ showAll: true });
+    controller_resetViewsHeaders({ showAll: true });
     window.print();
 }
 
@@ -65,50 +85,52 @@ function actionToggle(event, id) {
 }
 
 function actionBudgetDeleteItem(id) {
-    budget_deleteItem(id);
-    load("viewBudget");
+    budget_controller_deleteItem(id);
+    load({ openViewId: "viewBudget" });
 }
 
 function actionBudgetAddItem() {
-    budget_add();
-    load("viewBudget");
+    budget_controller_add();
+    load({ openViewId: "viewBudget" });
 }
 
 function actionCategoriesDeleteKeyword(categoryId, keyword) {
     categories_controller_deleteKeyword({ categoryId, keyword });
-    load("viewCategories");
+    load({ openViewId: categories_viewer_ID });
 }
 
 function actionCategoriesDeleteItem(categoryId) {
     categories_controller_deleteItem({ categoryId });
-    load("viewCategories");
+    load({ openViewId: categories_viewer_ID });
 }
 
 function actionCategoryAddItem() {
     category_controller_add();
-    load("viewCategories");
+    load({ openViewId: categories_viewer_ID });
 }
 
 function actionCategoryAddKeyword() {
     category_controller_addKeyword();
-    load("viewCategories");
+    load({ openViewId: categories_viewer_ID });
 }
 
 function actionCategoryAssignKeyword() {
     category_controller_assignKeyword();
-    load("viewCategories");
+    load({ openViewId: categories_viewer_ID });
 }
 
 // DEBUT 
-storage_cleanSession([
-    categories_controller_STORAGE_ID,
-    budget_ID,
-    transactions_ID,
-    `date_import_${categories_controller_STORAGE_ID}`,
-    `date_import_${budget_ID}`,
-    `date_import_${transactions_ID}`,
-    storage_ID_DATE_CHANGE,
-]);
+storage_cleanSession({
+    idsToKeep: [
+        categories_controller_STORAGE_ID,
+        budget_storage_ID,
+        transactions_ID,
+        storage_DATE_IMPORT_PREFIX_ID + categories_controller_STORAGE_ID,
+        storage_DATE_IMPORT_PREFIX_ID + budget_storage_ID,
+        storage_DATE_IMPORT_PREFIX_ID + transactions_ID,
+        storage_ID_DATE_CHANGE,
+    ]
+});
 initImportListener();
-load();
+load({ openViewId: undefined });
 // FIN 

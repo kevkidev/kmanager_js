@@ -68,12 +68,12 @@
 
                 <h2>3. Budget</h2>
                 <p>
-                    <input type="file" id="triggerImportCSVPrevisions" accept=".csv" hidden />
+                    <input type="file" id="triggerImportCSVBudget" accept=".csv" hidden />
                     <img src="../img/icons8-import-csv-64.png" onclick="actionImportBudget()" class="impex">
 
-                    Dernier import : <span id="lastImportDate_previsions"></span>
+                    Dernier import : <span id="lastImportDate_budget"></span>
                 </p>
-                <img src="../img/icons8-export-64.png" onclick="actionExportCSVPrevisions()" class="impex"> (importable)
+                <img src="../img/icons8-export-64.png" onclick="actionExportCSVBudget()" class="impex"> (importable)
 
 
                 <h2>4. Sauvegarde</h2>
@@ -140,8 +140,15 @@
     <script src="display.js"></script>
     <script src="io.js"></script>
 
+    <script src="notice_controller.js"></script>
+
     <script src="synthese.js"></script>
-    <script src="previsions.js"></script>
+
+    <script src="budget_storage.js"></script>
+    <script src="budget_manager.js"></script>
+    <script src="budget_controller.js"></script>
+    <script src="budget_viewer.js"></script>
+
     <script src="transactions.js"></script>
 
     <script src="categories_storage.js"></script>

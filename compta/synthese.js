@@ -1,24 +1,26 @@
-
+function synthese_controller_getViewParams() {
+    return { title: "Synthèse", id: "viewSynthese", imgSrc: "../img/icons8-improvement-64.png" };
+}
 
 function synthese_displaySumBudget() {
     const table = dom_get("tableSynthese1");
 
     const trFre1 = dom_tr();
     dom_td(trFre1, "Recurrence mensuelle");
-    dom_td(trFre1, display_decimal(budget_sumPerFrequence(1)));
+    dom_td(trFre1, display_decimal(budget_manager_calculateSumPerFrequence(1)));
 
     const trFre3 = dom_tr();
     dom_td(trFre3, "Recurrence trimestrielle");
-    dom_td(trFre3, display_decimal(budget_sumPerFrequence(3)));
+    dom_td(trFre3, display_decimal(budget_manager_calculateSumPerFrequence(3)));
 
     const trFre12 = dom_tr();
     dom_td(trFre12, "Recurrence annuelle");
-    dom_td(trFre12, display_decimal(budget_sumPerFrequence(12)));
+    dom_td(trFre12, display_decimal(budget_manager_calculateSumPerFrequence(12)));
 
     table.replaceChildren(trFre1, trFre3, trFre12);
 
     display_trSum(
-        budget_sumMonth(),
+        budget_manager_calulateSumMonth(),
         table,
         1,
         "Total Mensuel",
@@ -26,14 +28,14 @@ function synthese_displaySumBudget() {
     );
 
     display_trSum(
-        budget_sumYear(),
+        budget_manager_calculateSumYear(),
         table,
         1,
         "Total Année"
     );
 
     display_trSum(
-        budget_sumMonthProvision(),
+        budget_manager_calculateSumMonthProvision(),
         table,
         1,
         "Apport Mensuel",
@@ -41,7 +43,7 @@ function synthese_displaySumBudget() {
     );
 
     display_trSum(
-        budget_sumYearProvision(),
+        budget_manager_calculateSumYearProvision(),
         table,
         1,
         "Apport Année"
@@ -62,7 +64,7 @@ function synthese_displaySumMonth({ incomes, expenses }) {
     const sumIncomesInternal = util_sum(incomes.filter(i => i.category == "interne"));
     const sumIncomesExt = sumIncomes - sumIncomesInternal;
     const table = dom_get("tableSynthese2");
-    const diffExpenses = util_sum(expenses) + budget_sumMonth();
+    const diffExpenses = util_sum(expenses) + budget_manager_calulateSumMonth();
 
     table.replaceChildren(
         _td({ title: "Sorties", value: util_sum(expenses) }),

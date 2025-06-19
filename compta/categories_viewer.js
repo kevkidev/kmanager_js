@@ -142,7 +142,7 @@ function _categories_viewer_displaySumPerCategoryDetails(data) {
     });
     const sum = data.map(e => e.category.sum).reduce((a, b) => a + b);
     common_display_lastImportDate({
-        prefixId: display_DATE_IMPORT_PREFIX_ID,
+        prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
         suffixId: categories_controller_STORAGE_ID
     });
 }
@@ -150,7 +150,7 @@ function _categories_viewer_displaySumPerCategoryDetails(data) {
 
 function categories_viewer_display(expenses) {
     common_display_lastImportDate({
-        prefixId: display_DATE_IMPORT_PREFIX_ID,
+        prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
         suffixId: categories_controller_STORAGE_ID
     });
     _categories_viewer_displaySumPerCategory({

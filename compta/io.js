@@ -6,7 +6,7 @@ function io_importCSV(context, handle) {
     reader.onload = function (e) {
         const text = e.target.result;
         handle(text);
-        load();
+        load({ openViewId: undefined });
     };
     reader.readAsText(file);
 }
@@ -14,7 +14,7 @@ function io_importCSV(context, handle) {
 function io_exportCSV(fileName, callback) {
     const rows = callback();
     if (!rows) {
-        storage_addMessage("Rien a exporter!");
+        storage_addMessage({ message: "Rien a exporter!" });
         return;
     }
     const csvContent = "data:text/csv;charset=utf-8,"

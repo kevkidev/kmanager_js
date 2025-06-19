@@ -12,15 +12,15 @@ function categories_manager_importCSV(text) {
         return categories;
     });
     categories_storage_update({ newArray: value });
-    storage_recordImportDate(categories_manager_STORAGE_ID);
-    storage_addMessage("Catégories importées avec succés!");
+    storage_recordImportDate({ id: categories_manager_STORAGE_ID });
+    storage_addMessage({ message: "Catégories importées avec succés!" });
 }
 
 function categories_manager_exportCSV() {
     let categories = categories_manager_get();
     io_exportCSV("categories", function () {
         if (!categories) {
-            storage_addMessage("Pas de données à exporter!");
+            storage_addMessage({ message: "Pas de données à exporter!" });
             return;
         }
         const rows = [["name", "keywords"]];
@@ -38,7 +38,7 @@ function categories_manager_getKeywords(categories) {
 function categories_manager_get() {
     let categories = categories_storage_get();
     if (!categories) {
-        storage_addMessage("Pas de catégories!");
+        storage_addMessage({ message: "Pas de catégories!" });
         categories = [{
             name: categories_manager_DEFAULT_CATEGORY,
             keywords: [categories_manager_DEFAULT_KEYWORD]

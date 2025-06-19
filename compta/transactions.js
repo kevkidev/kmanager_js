@@ -1,5 +1,13 @@
 const transactions_ID = "transactions";
 
+function transactions_controller_getViewParams() {
+    return {
+        title: "Transactions",
+        id: "viewTransactions",
+        imgSrc: "../img/icons8-activity-history-64.png"
+    }
+}
+
 function transactions_importCSV(text) {
     const value = io_extractCSV(text, function (currentLine) {
         const transaction = {
@@ -9,13 +17,13 @@ function transactions_importCSV(text) {
         }
         return transaction;
     });
-    storage_update(transactions_ID, value);
-    storage_recordImportDate(transactions_ID);
+    storage_update({ id: transactions_ID, value });
+    storage_recordImportDate({ id: transactions_ID });
 }
 
 function transactions_exportCSV() {
     io_exportCSV("transactions", function () {
-        let transactions = storage_get(transactions_ID);
+        let transactions = storage_get({ id: transactions_ID });
         if (!transactions) return [];
         const rows = [
             ["quand", null, "quoi", null, null, null, "combien"]
@@ -61,10 +69,10 @@ function _transactions_associerCategory(transactions, categories) {
 }
 
 function transactions_build() {
-    let transactions = storage_get(transactions_ID);
+    let transactions = storage_get({ id: transactions_ID });
 
     if (!transactions) {
-        storage_addMessage("Veuillez importez des transactions!");
+        storage_addMessage({ message: "Veuillez importez des transactions!" });
         return { undefined, undefined };
     }
 
@@ -101,7 +109,7 @@ function transactions_display({ incomes, expenses }) {
     display_trSum(util_sum(expenses), outTable, 2);
 
     common_display_lastImportDate({
-        prefixId: display_DATE_IMPORT_PREFIX_ID,
+        prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
         suffixId: transactions_ID
     });
 }

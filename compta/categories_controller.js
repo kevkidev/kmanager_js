@@ -1,5 +1,21 @@
 const categories_controller_STORAGE_ID = categories_manager_STORAGE_ID;
 
+function categories_controller_getViewParams() {
+    return {
+        title: "Catégories",
+        id: "viewCategories",
+        imgSrc: "../img/icons8-folder-tree-64.png"
+    }
+}
+
+function categories_controller_getViewDetailsParams() {
+    return {
+        title: "Détails par catégorie",
+        id: "viewDetailsCategories",
+        imgSrc: "../img/icons8-tree-structure-64.png"
+    }
+}
+
 function categories_controller_deleteKeyword({ categoryId, keyword }) {
     const array = categories_manager_get();
     const categoryIndex = array.findIndex(e => e.id == categoryId);
@@ -19,7 +35,7 @@ function categories_controller_deleteItem({ categoryId }) {
     if (confirmation) {
         const defaultIndex = array.findIndex(e => e.name == defaultCategory);
         if (defaultIndex < 0) {
-            storage_addMessage("Suppression impossible : Il faut une catégorie nommée : " + defaultCategory);
+            storage_addMessage({ message: "Suppression impossible : Il faut une catégorie nommée : " + defaultCategory });
             return;
         }
         array[defaultIndex].keywords.push(...array[index].keywords);
