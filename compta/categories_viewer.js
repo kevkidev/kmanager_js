@@ -107,14 +107,16 @@ function _categories_viewer_displaySumPerCategory({ transactionsPerCategory, sum
                     dom_td(tr, btn.outerHTML, true);
                 }
                 dom_td(tr, e.keyword);
-                dom_td(tr, display_decimal(e.sum));
+                dom_td(tr, util_intToDecimal(e.sum));
                 table.append(tr);
             }
         });
-        display_trSum(category.sum, table, categories_storage_isEditing() ? 2 : 1);
+        components_trSum(category.sum, table, categories_storage_isEditing() ? 2 : 1);
         view.append(table);
     });
-    view.append(_categories_viewer_createEditButton());
+    const { onclick, isEditing } = categories_controller_clickEditButton();
+    const editButton = components_editButton({ onclick, isEditing });
+    view.append(editButton);
 }
 
 
@@ -137,7 +139,7 @@ function _categories_viewer_displaySumPerCategoryDetails(data) {
             view.append(div);
             view.append(table);
             transactions_displayTableSimple(e.list, table);
-            display_trSum(e.category.sum, table, 2);
+            components_trSum(e.category.sum, table, 2);
         }
     });
     const sum = data.map(e => e.category.sum).reduce((a, b) => a + b);
@@ -158,9 +160,4 @@ function categories_viewer_display(expenses) {
         sumPerKeyword: categories_manager_calculateSumPerKeyword(expenses)
     });
     _categories_viewer_displaySumPerCategoryDetails(categories_manager_calculateSumPerCategory(expenses));
-}
-
-
-function _categories_viewer_createEditButton() {
-    return display_createEditButton({ controller: categories_controller_clickEditButton });
 }

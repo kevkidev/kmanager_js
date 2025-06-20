@@ -7,19 +7,19 @@ function synthese_displaySumBudget() {
 
     const trFre1 = dom_tr();
     dom_td(trFre1, "Recurrence mensuelle");
-    dom_td(trFre1, display_decimal(budget_manager_calculateSumPerFrequence(1)));
+    dom_td(trFre1, util_intToDecimal(budget_manager_calculateSumPerFrequence(1)));
 
     const trFre3 = dom_tr();
     dom_td(trFre3, "Recurrence trimestrielle");
-    dom_td(trFre3, display_decimal(budget_manager_calculateSumPerFrequence(3)));
+    dom_td(trFre3, util_intToDecimal(budget_manager_calculateSumPerFrequence(3)));
 
     const trFre12 = dom_tr();
     dom_td(trFre12, "Recurrence annuelle");
-    dom_td(trFre12, display_decimal(budget_manager_calculateSumPerFrequence(12)));
+    dom_td(trFre12, util_intToDecimal(budget_manager_calculateSumPerFrequence(12)));
 
     table.replaceChildren(trFre1, trFre3, trFre12);
 
-    display_trSum(
+    components_trSum(
         budget_manager_calulateSumMonth(),
         table,
         1,
@@ -27,14 +27,14 @@ function synthese_displaySumBudget() {
         true
     );
 
-    display_trSum(
+    components_trSum(
         budget_manager_calculateSumYear(),
         table,
         1,
         "Total Année"
     );
 
-    display_trSum(
+    components_trSum(
         budget_manager_calculateSumMonthProvision(),
         table,
         1,
@@ -42,7 +42,7 @@ function synthese_displaySumBudget() {
         true
     );
 
-    display_trSum(
+    components_trSum(
         budget_manager_calculateSumYearProvision(),
         table,
         1,
@@ -54,7 +54,7 @@ function synthese_displaySumBudget() {
 function _td({ title, value, highlight }) {
     const tr = dom_tr();
     dom_td(tr, title, false);
-    dom_td(tr, display_decimal(value), false, true, highlight);
+    dom_td(tr, util_intToDecimal(value), false, true, highlight);
     return tr;
 }
 

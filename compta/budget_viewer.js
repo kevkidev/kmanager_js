@@ -25,7 +25,7 @@ function budget_viewer_display() {
 
             dom_td(tr, e.quoi);
             dom_td(tr, e.frequence);
-            dom_td(tr, display_decimal(e.combien));
+            dom_td(tr, util_intToDecimal(e.combien));
             table.append(tr);
         });
     }
@@ -43,14 +43,10 @@ function budget_viewer_display() {
     }
 
     const view = dom_get("viewBudget");
-    view.replaceChildren(table, _budget_viewer_createEditButton());
+    const editButton = components_editButton(budget_controller_clickEditButton());
+    view.replaceChildren(table, editButton);
     common_display_lastImportDate({
         prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
         suffixId: budget_storage_ID
     });
-
-}
-
-function _budget_viewer_createEditButton() {
-    return display_createEditButton({ controller: budget_controller_clickEditButton });
 }

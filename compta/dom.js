@@ -43,11 +43,13 @@ function dom_input(id, type, placeholder) {
     return el;
 }
 
-function dom_img({ src, id, clazz }) {
+function dom_img({ src, id, clazz, onclick, onclickAttribute }) {
     const img = dom_create("img");
     img.setAttribute("src", src);
     if (id) img.setAttribute("id", id);
     if (clazz) img.setAttribute("class", clazz);
+    if (onclickAttribute) img.setAttribute("onclick", onclickAttribute);
+    if (onclick) img.onclick = onclick;
     return img;
 }
 

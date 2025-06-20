@@ -31,7 +31,7 @@ function budget_manager_exportCSV() {
             ["id", "quoi", "frequence", "combien"]
         ];
         array.forEach(e => {
-            rows.push([e.id, e.quoi, e.frequence, display_decimal(e.combien)]);
+            rows.push([e.id, e.quoi, e.frequence, util_intToDecimal(e.combien)]);
         });
 
         return rows;

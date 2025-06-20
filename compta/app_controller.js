@@ -1,5 +1,3 @@
-// app_controller
-//  todo : renommer fonction avec suffix
 
 function app_controller_initImportListener() {
     util_initImportListener('triggerImportCSVTransactions', function () {
@@ -44,15 +42,15 @@ function app_controller_exportCSVBudget() {
 }
 
 function app_controller_print() {
-    controller_resetViewsHeaders({ showAll: true });
+    app_manager_resetViewsHeaders({ showAll: true });
     window.print();
 }
 
-function actionToggle(event, viewIdToKeepOpen) {
+function app_controller_toggleHeader(event, viewIdToKeepOpen) {
     if (event.target.getAttribute("src").includes("expand")) {
         viewIdToKeepOpen = undefined;
     }
-    controller_resetViewsHeaders({ viewIdToKeepOpen });
+    app_manager_resetViewsHeaders({ viewIdToKeepOpen });
 }
 
 function actionBudgetDeleteItem(id) {
@@ -90,22 +88,3 @@ function actionCategoryAssignKeyword() {
     app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
 }
 
-function controller_resetViewsHeaders({ viewIdToKeepOpen, showAll }) {
-    const views = [
-        notice_controller_getViewParams(),
-        synthese_controller_getViewParams(),
-        transactions_controller_getViewParams(),
-        categories_controller_getViewParams(),
-        categories_controller_getViewDetailsParams(),
-        budget_controller_getViewParams(),
-    ];
-
-    views.forEach(view => {
-        let display = "none";
-        if (showAll || viewIdToKeepOpen && view.id == viewIdToKeepOpen) {
-            display = "block";
-            view.isOpen = true;
-        }
-        display_resetViewHeader({ view, display });
-    });
-}

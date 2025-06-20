@@ -29,7 +29,7 @@ function transactions_exportCSV() {
             ["quand", null, "quoi", null, null, null, "combien"]
         ];
         transactions.forEach(e => {
-            rows.push([e.quand, null, e.quoi, null, null, null, display_decimal(e.combien)]);
+            rows.push([e.quand, null, e.quoi, null, null, null, util_intToDecimal(e.combien)]);
         });
         return rows;
     });
@@ -94,7 +94,7 @@ function transactions_displayTableSimple(array, table) {
         const tr = dom_tr();
         dom_td(tr, e.quand);
         dom_td(tr, ` <span class="keyword">${e.keyword}</span>&nbsp;&nbsp;&nbsp;${e.quoi}`, true);
-        dom_td(tr, display_decimal(e.combien));
+        dom_td(tr, util_intToDecimal(e.combien));
         table.append(tr);
     });
 }
@@ -102,11 +102,11 @@ function transactions_displayTableSimple(array, table) {
 function transactions_display({ incomes, expenses }) {
     const inTable = dom_get("tableIn");
     transactions_displayTableSimple(incomes, inTable);
-    display_trSum(util_sum(incomes), inTable, 2);
+    components_trSum(util_sum(incomes), inTable, 2);
 
     const outTable = dom_get("tableOut");
     transactions_displayTableSimple(expenses, outTable);
-    display_trSum(util_sum(expenses), outTable, 2);
+    components_trSum(util_sum(expenses), outTable, 2);
 
     common_display_lastImportDate({
         prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
