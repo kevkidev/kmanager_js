@@ -1,7 +1,7 @@
-const categories_viewer_ID = "viewCategories";
+
 
 function _categories_viewer_displaySumPerCategory({ transactionsPerCategory, sumPerKeyword }) {
-    const view = dom_get(categories_viewer_ID);
+    const view = dom_get(categories_controller_getViewParams().id);
     view.replaceChildren(); // vider la vue
 
     // generer form categorie
@@ -145,7 +145,7 @@ function _categories_viewer_displaySumPerCategoryDetails(data) {
     const sum = data.map(e => e.category.sum).reduce((a, b) => a + b);
     common_display_lastImportDate({
         prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
-        suffixId: categories_controller_STORAGE_ID
+        suffixId: categories_manager_getStorageIds().id
     });
 }
 
@@ -153,7 +153,7 @@ function _categories_viewer_displaySumPerCategoryDetails(data) {
 function categories_viewer_display(expenses) {
     common_display_lastImportDate({
         prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
-        suffixId: categories_controller_STORAGE_ID
+        suffixId: categories_manager_getStorageIds().id
     });
     _categories_viewer_displaySumPerCategory({
         transactionsPerCategory: categories_manager_calculateSumPerCategory(expenses),

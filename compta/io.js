@@ -1,12 +1,11 @@
 
-function io_importCSV(context, handle) {
+function io_importCSV({ context, onload }) {
     const file = context.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function (e) {
         const text = e.target.result;
-        handle(text);
-        app_manager_reload({ viewIdToKeepOpen: undefined });
+        onload({ text });
     };
     reader.readAsText(file);
 }
@@ -27,13 +26,13 @@ function io_exportCSV(fileName, callback) {
     link.click();
 }
 
-function io_extractCSV(text, buildObject) {
+function io_extractCSV({ text, buildObjectMethod }) {
     const lines = text.split('\n');
-    const data = [];
+    const array = [];
     for (let i = 1; i < lines.length; i++) {
         if (lines[i].trim() === '') continue; // Ignorer les lignes vides
         const currentLine = lines[i].split(';');
-        data.push(buildObject(currentLine));
+        array.push(buildObjectMethod(currentLine));
     }
-    return data;
+    return array;
 }

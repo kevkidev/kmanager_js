@@ -20,10 +20,6 @@ function util_withPrecision(decimal) {
     return util_round_100(parseFloat(decimal) * 1000);
 }
 
-function util_initImportListener(id, action) {
-    document.getElementById(id).addEventListener('change', action);
-}
-
 function util_intToDecimal(preciseInt) {
     const res = util_round_100(preciseInt / 1000);
     return res;

@@ -4,18 +4,20 @@ function budget_manager_getSubject() {
 }
 
 function budget_manager_importCSV(text) {
-    function extractCSV(text) {
-        return io_extractCSV(text, function (currentLine) {
-            const budget = {
-                id: currentLine[0],
-                quoi: currentLine[1],
-                frequence: currentLine[2],
-                combien: util_withPrecision(currentLine[3]),
-            };
-            return budget;
-        });
-    }
-    budget_storage_update({ value: extractCSV(text) });
+    budget_storage_update({
+        value: io_extractCSV({
+            text,
+            buildObjectMethod: function (currentLine) {
+                const budget = {
+                    id: currentLine[0],
+                    quoi: currentLine[1],
+                    frequence: currentLine[2],
+                    combien: util_withPrecision(currentLine[3]),
+                };
+                return budget;
+            }
+        })
+    });
     budget_storage_recordImportDate();
     storage_addMessage({ message: "Budget importé avec succès!" });
 }

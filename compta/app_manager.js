@@ -2,10 +2,10 @@
 function app_manager_start() {
     storage_cleanSession({
         idsToKeep: [
-            categories_controller_STORAGE_ID,
+            categories_manager_getStorageIds().id,
+            categories_manager_getStorageIds().idDateImport,
             budget_storage_ID,
             transactions_ID,
-            storage_DATE_IMPORT_PREFIX_ID + categories_controller_STORAGE_ID,
             storage_DATE_IMPORT_PREFIX_ID + budget_storage_ID,
             storage_DATE_IMPORT_PREFIX_ID + transactions_ID,
             storage_ID_DATE_CHANGE,

@@ -9,15 +9,20 @@ function transactions_controller_getViewParams() {
 }
 
 function transactions_importCSV(text) {
-    const value = io_extractCSV(text, function (currentLine) {
-        const transaction = {
-            quand: currentLine[0],
-            quoi: currentLine[2].split('"').join('').toLowerCase(),
-            combien: util_withPrecision(currentLine[6].replace(",", ".")), // x1000 pour plus de precision dans les futurs calculs
-        }
-        return transaction;
+    storage_update({
+        id: transactions_ID,
+        value: io_extractCSV({
+            text,
+            buildObjectMethod: function (currentLine) {
+                const transaction = {
+                    quand: currentLine[0],
+                    quoi: currentLine[2].split('"').join('').toLowerCase(),
+                    combien: util_withPrecision(currentLine[6].replace(",", ".")), // x1000 pour plus de precision dans les futurs calculs
+                }
+                return transaction;
+            }
+        })
     });
-    storage_update({ id: transactions_ID, value });
     storage_recordImportDate({ id: transactions_ID });
 }
 

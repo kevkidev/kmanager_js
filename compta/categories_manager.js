@@ -1,18 +1,28 @@
 const categories_manager_DEFAULT_CATEGORY = "inconnue";
 const categories_manager_DEFAULT_KEYWORD = "inconnu";
-const categories_manager_STORAGE_ID = categories_storage_ID;
+
+function categories_manager_getStorageIds() {
+    return {
+        id: categories_storage_ID,
+        idDateImport: storage_DATE_IMPORT_PREFIX_ID + categories_storage_ID
+    }
+}
 
 function categories_manager_importCSV(text) {
-    const value = io_extractCSV(text, function (currentLine) {
-        const categories = {
-            id: currentLine[0],
-            name: currentLine[1],
-            keywords: currentLine[2].split(','),
-        };
-        return categories;
+    categories_storage_update({
+        newArray: io_extractCSV({
+            text,
+            buildObjectMethod: function (currentLine) {
+                const categories = {
+                    id: currentLine[0],
+                    name: currentLine[1],
+                    keywords: currentLine[2].split(','),
+                };
+                return categories;
+            }
+        })
     });
-    categories_storage_update({ newArray: value });
-    storage_recordImportDate({ id: categories_manager_STORAGE_ID });
+    categories_storage_recordImportDate();
     storage_addMessage({ message: "Catégories importées avec succés!" });
 }
 

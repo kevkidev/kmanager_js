@@ -20,3 +20,7 @@ function categories_storage_add({ newItem }) {
 function categories_storage_get() {
     return storage_get({ id: categories_storage_ID });
 }
+
+function categories_storage_recordImportDate() {
+    storage_recordImportDate({ id: categories_storage_ID });
+}

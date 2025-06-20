@@ -1,4 +1,3 @@
-const categories_controller_STORAGE_ID = categories_manager_STORAGE_ID;
 
 function categories_controller_getViewParams() {
     return {
@@ -82,14 +81,13 @@ function category_controller_assignKeyword() {
     categories_storage_update({ newArray: array });
 }
 
-
 function categories_controller_clickEditButton() {
     const isEditing = categories_storage_isEditing();
     return {
         isEditing,
         onclick: function () {
             categories_storage_setEditing({ value: !isEditing });
-            app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
+            app_manager_reload({ viewIdToKeepOpen: categories_controller_getViewParams().id });
         }
     };
 }

@@ -1,4 +1,4 @@
-// # budget storage
+
 const budget_storage_ID = "budget";
 const budget_storage_EDITING_ID = "budget_editing";
 

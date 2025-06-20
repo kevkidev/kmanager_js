@@ -1,32 +1,52 @@
+const app_controller_DOM_ID_IMPORT_CSV_TRANSACTIONS = "inputImportCSVTransactions";
+const app_controller_DOM_ID_IMPORT_CSV_CATEGORIES = "inputImportCSVCategories";
+const app_controller_DOM_ID_IMPORT_CSV_BUDGET = "inputImportCSVBudget";
 
 function app_controller_initImportListener() {
-    util_initImportListener('triggerImportCSVTransactions', function () {
-        io_importCSV(this, function (text) {
-            transactions_importCSV(text);
-        });
-    });
-    util_initImportListener('triggerImportCSVCategories', function () {
-        io_importCSV(this, function (text) {
-            categories_manager_importCSV(text);
-        });
-    });
-    util_initImportListener('triggerImportCSVBudget', function () {
-        io_importCSV(this, function (text) {
-            budget_manager_importCSV(text);
+    const array = [
+        {
+            domId: app_controller_DOM_ID_IMPORT_CSV_BUDGET,
+            onload: function ({ text }) {
+                budget_manager_importCSV(text);
+            }
+        },
+        {
+            domId: app_controller_DOM_ID_IMPORT_CSV_CATEGORIES,
+            onload: function ({ text }) {
+                categories_manager_importCSV(text);
+            }
+        },
+        {
+            domId: app_controller_DOM_ID_IMPORT_CSV_TRANSACTIONS,
+            onload: function ({ text }) {
+                transactions_importCSV(text);
+            }
+        },
+    ];
+
+    array.forEach(e => {
+        dom_get(e.domId).addEventListener('change', function () {
+            io_importCSV({
+                context: this,
+                onload: function ({ text }) {
+                    e.onload({ text });
+                    app_manager_reload({});
+                }
+            });
         });
     });
 }
 
 function actionImportTransactions() {
-    dom_get("triggerImportCSVTransactions").click();
+    dom_get(app_controller_DOM_ID_IMPORT_CSV_TRANSACTIONS).click();
 }
 
 function actionImportCategories() {
-    dom_get("triggerImportCSVCategories").click();
+    dom_get(app_controller_DOM_ID_IMPORT_CSV_CATEGORIES).click();
 }
 
 function actionImportBudget() {
-    dom_get("triggerImportCSVBudget").click();
+    dom_get(app_controller_DOM_ID_IMPORT_CSV_BUDGET).click();
 }
 
 function app_controller_exportCSVTransactions() {
@@ -55,36 +75,36 @@ function app_controller_toggleHeader(event, viewIdToKeepOpen) {
 
 function actionBudgetDeleteItem(id) {
     budget_controller_deleteItem(id);
-    app_manager_reload({ viewIdToKeepOpen: "viewBudget" });
+    app_manager_reload({ viewIdToKeepOpen: budget_controller_getViewParams().id });
 }
 
 function actionBudgetAddItem() {
     budget_controller_add();
-    app_manager_reload({ viewIdToKeepOpen: "viewBudget" });
+    app_manager_reload({ viewIdToKeepOpen: budget_controller_getViewParams().id });
 }
 
 function actionCategoriesDeleteKeyword(categoryId, keyword) {
     categories_controller_deleteKeyword({ categoryId, keyword });
-    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_controller_getViewParams().id });
 }
 
 function actionCategoriesDeleteItem(categoryId) {
     categories_controller_deleteItem({ categoryId });
-    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_controller_getViewParams().id });
 }
 
 function actionCategoryAddItem() {
     category_controller_add();
-    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_controller_getViewParams().id });
 }
 
 function actionCategoryAddKeyword() {
     category_controller_addKeyword();
-    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_controller_getViewParams().id });
 }
 
 function actionCategoryAssignKeyword() {
     category_controller_assignKeyword();
-    app_manager_reload({ viewIdToKeepOpen: categories_viewer_ID });
+    app_manager_reload({ viewIdToKeepOpen: categories_controller_getViewParams().id });
 }
 
