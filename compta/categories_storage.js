@@ -24,3 +24,7 @@ function categories_storage_get() {
 function categories_storage_recordImportDate() {
     storage_recordImportDate({ id: categories_storage_ID });
 }
+
+function categories_storage_getLastImportDate() {
+    return storage_getLastImportDate({ subject: categories_storage_ID });
+}

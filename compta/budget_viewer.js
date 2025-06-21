@@ -1,4 +1,3 @@
-// # budget viewer
 
 function budget_viewer_display() {
     const data = budget_storage_get();
@@ -45,8 +44,11 @@ function budget_viewer_display() {
     const view = dom_get("viewBudget");
     const editButton = components_editButton(budget_controller_clickEditButton());
     view.replaceChildren(table, editButton);
-    common_display_lastImportDate({
-        prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
-        suffixId: budget_storage_ID
+}
+
+function budget_components_view() {
+    return components_view({
+        viewId: "viewBudget",
+        bodyChildren: [],
     });
 }

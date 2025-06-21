@@ -1,4 +1,3 @@
-const app_controller_DOM_ID_IMPORT_CSV_TRANSACTIONS = "inputImportCSVTransactions";
 const app_controller_DOM_ID_IMPORT_CSV_CATEGORIES = "inputImportCSVCategories";
 const app_controller_DOM_ID_IMPORT_CSV_BUDGET = "inputImportCSVBudget";
 
@@ -17,7 +16,7 @@ function app_controller_initImportListener() {
             }
         },
         {
-            domId: app_controller_DOM_ID_IMPORT_CSV_TRANSACTIONS,
+            domId: transactions_controller_getDomIds().INPUT_IMPORT_CSV,
             onload: function ({ text }) {
                 transactions_importCSV(text);
             }
@@ -38,7 +37,7 @@ function app_controller_initImportListener() {
 }
 
 function actionImportTransactions() {
-    dom_get(app_controller_DOM_ID_IMPORT_CSV_TRANSACTIONS).click();
+    dom_get(transactions_controller_getDomIds().INPUT_IMPORT_CSV).click();
 }
 
 function actionImportCategories() {
@@ -107,4 +106,3 @@ function actionCategoryAssignKeyword() {
     category_controller_assignKeyword();
     app_manager_reload({ viewIdToKeepOpen: categories_controller_getViewParams().id });
 }
-

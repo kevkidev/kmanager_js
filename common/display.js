@@ -1,12 +1,7 @@
 
-function common_display_lastImportDate({ prefixId, suffixId }) {
-    const date = storage_getLastImportDate({ id: suffixId });
-    dom_get(prefixId + suffixId).innerText = (date != "null") ? date : "inconnue";
-}
 
-function common_display_changeDate() {
-    dom_get("changeDate").innerText = storage_getChangeDate();
-}
+
+
 
 function common_display_messages() {
     const messages = storage_get({ id: storage_ID_MESSAGES });

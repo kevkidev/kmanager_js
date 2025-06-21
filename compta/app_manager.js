@@ -1,5 +1,6 @@
 
 function app_manager_start() {
+    app_components_view();
     storage_cleanSession({
         idsToKeep: [
             categories_manager_getStorageIds().id,
@@ -12,7 +13,7 @@ function app_manager_start() {
         ]
     });
     app_controller_initImportListener();
-    app_manager_reload({ viewIdToKeepOpen: undefined });
+    app_manager_reload({});
 }
 
 function app_manager_reload({ viewIdToKeepOpen }) {
@@ -25,15 +26,14 @@ function app_manager_reload({ viewIdToKeepOpen }) {
     app_manager_resetViewsHeaders({ viewIdToKeepOpen })
     synthese_displaySumBudget();
     budget_viewer_display();
-    common_display_changeDate();
     common_display_messages();
 }
 
 function app_manager_resetViewsHeaders({ viewIdToKeepOpen, showAll }) {
     const viewsParams = [
-        notice_controller_getViewParams(),
+        notice_manager_getViewParams(),
         synthese_controller_getViewParams(),
-        transactions_controller_getViewParams(),
+        transactions_manager_getViewParams(),
         categories_controller_getViewParams(),
         categories_controller_getViewDetailsParams(),
         budget_controller_getViewParams(),
@@ -50,4 +50,8 @@ function app_manager_resetViewsHeaders({ viewIdToKeepOpen, showAll }) {
         const { divTitle, divBtn } = components_sectionHeader(viewParams);
         div.replaceChildren(divTitle, divBtn);
     });
+}
+
+function app_manager_getChangeDate() {
+    return storage_getChangeDate();
 }

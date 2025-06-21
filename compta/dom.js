@@ -37,10 +37,17 @@ function dom_td(tr, value, isHtml, isBold, highlight) {
 
 function dom_input(id, type, placeholder) {
     const el = dom_create("input");
-    el.setAttribute("id", id);
-    el.setAttribute("type", type);
+    if (id) el.setAttribute("id", id);
+    if (type) el.setAttribute("type", type);
     if (placeholder) el.setAttribute("placeholder", placeholder);
     return el;
+}
+
+function dom_inputFile({ id }) {
+    const input = dom_input(id, "file", null);
+    input.setAttribute("hidden", true);
+    input.setAttribute("accept", ".csv");
+    return input;
 }
 
 function dom_img({ src, id, clazz, onclick, onclickAttribute }) {
@@ -74,4 +81,59 @@ function dom_button_row({ stringCallback, img }) {
     btn.setAttribute("onclick", stringCallback);
     btn.append(img);
     return btn;
+}
+
+function dom_h({ number, clazz, text }) {
+    const h = dom_create("h" + number);
+    if (clazz) h.setAttribute("class", clazz);
+    if (text) h.innerText = text;
+    return h;
+}
+
+function dom_div({ clazz, id }) {
+    const div = dom_create("div");
+    if (clazz) div.setAttribute("class", clazz);
+    if (id) div.setAttribute("id", id);
+    return div;
+}
+
+function dom_p({ clazz, id, text, html }) {
+    const p = dom_create("p");
+    if (clazz) p.setAttribute("class", clazz);
+    if (id) p.setAttribute("id", id);
+    if (text) p.innerText = text;
+    if (html) p.innerHTML = html;
+    return p;
+}
+
+function dom_ul({ children }) {
+    const ul = dom_create("ul");
+    if (children) children.forEach(ch => {
+        ul.append(ch);
+    });
+    return ul;
+}
+
+function dom_li({ text }) {
+    const li = dom_create("li");
+    if (text) li.innerText = text;
+    return li;
+}
+
+function dom_text({ text }) {
+    return document.createTextNode(text);
+}
+
+function dom_span({ id, text, clazz }) {
+    const span = dom_create("span");
+    if (id) span.setAttribute("id", id);
+    if (clazz) span.setAttribute("class", clazz);
+    if (text) span.innerText = text;
+    return span;
+}
+
+function dom_table({ id }) {
+    const table = dom_create("table");
+    if (id) table.setAttribute("id", id);
+    return table;
 }

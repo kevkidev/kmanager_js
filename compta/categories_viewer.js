@@ -1,5 +1,4 @@
 
-
 function _categories_viewer_displaySumPerCategory({ transactionsPerCategory, sumPerKeyword }) {
     const view = dom_get(categories_controller_getViewParams().id);
     view.replaceChildren(); // vider la vue
@@ -119,7 +118,6 @@ function _categories_viewer_displaySumPerCategory({ transactionsPerCategory, sum
     view.append(editButton);
 }
 
-
 function _categories_viewer_displaySumPerCategoryDetails(data) {
     const view = dom_get("viewDetailsCategories");
     view.replaceChildren(); // vider la vue
@@ -143,21 +141,26 @@ function _categories_viewer_displaySumPerCategoryDetails(data) {
         }
     });
     const sum = data.map(e => e.category.sum).reduce((a, b) => a + b);
-    common_display_lastImportDate({
-        prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
-        suffixId: categories_manager_getStorageIds().id
-    });
 }
 
-
 function categories_viewer_display(expenses) {
-    common_display_lastImportDate({
-        prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
-        suffixId: categories_manager_getStorageIds().id
-    });
     _categories_viewer_displaySumPerCategory({
         transactionsPerCategory: categories_manager_calculateSumPerCategory(expenses),
         sumPerKeyword: categories_manager_calculateSumPerKeyword(expenses)
     });
     _categories_viewer_displaySumPerCategoryDetails(categories_manager_calculateSumPerCategory(expenses));
+}
+
+function categories_components_view() {
+    return components_view({
+        viewId: "viewCategories",
+        bodyChildren: [],
+    });
+}
+
+function categories_components_viewDetails() {
+    return components_view({
+        viewId: "viewDetailsCategories",
+        bodyChildren: [],
+    });
 }

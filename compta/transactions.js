@@ -1,10 +1,17 @@
+
 const transactions_ID = "transactions";
 
-function transactions_controller_getViewParams() {
+function transactions_manager_getViewParams() {
     return {
         title: "Transactions",
         id: "viewTransactions",
-        imgSrc: "../img/icons8-activity-history-64.png"
+        imgSrc: "../img/icons8-activity-history-64.png",
+    }
+}
+
+function transactions_controller_getDomIds() {
+    return {
+        INPUT_IMPORT_CSV: "inputImportCSVTransactions",
     }
 }
 
@@ -112,9 +119,26 @@ function transactions_display({ incomes, expenses }) {
     const outTable = dom_get("tableOut");
     transactions_displayTableSimple(expenses, outTable);
     components_trSum(util_sum(expenses), outTable, 2);
+}
 
-    common_display_lastImportDate({
-        prefixId: storage_LAST_DATE_IMPORT_PREFIX_ID,
-        suffixId: transactions_ID
+function transactions_manager_getLastImportDate() {
+    return transactions_storage_getLastImportDate();
+}
+
+function transactions_storage_getLastImportDate() {
+    return storage_getLastImportDate({ subject: transactions_ID });
+}
+
+function transactions_components_view() {
+    return components_view({
+        viewId: transactions_manager_getViewParams().id,
+        bodyChildren: [
+            dom_h({ number: 2, text: "Entréés" }),
+            dom_table({ id: "tableIn" }),
+            dom_h({ number: 2, text: "Sorties" }),
+            dom_table({ id: "tableOut" }),
+        ],
     });
 }
+
+

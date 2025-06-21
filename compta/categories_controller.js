@@ -15,6 +15,12 @@ function categories_controller_getViewDetailsParams() {
     }
 }
 
+function categories_controller_getDomIds() {
+    return {
+        INPUT_IMPORT_CSV: "inputImportCSVCategories",
+    }
+}
+
 function categories_controller_deleteKeyword({ categoryId, keyword }) {
     const array = categories_manager_get();
     const categoryIndex = array.findIndex(e => e.id == categoryId);

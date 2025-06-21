@@ -86,3 +86,6 @@ function categories_manager_calculateSumPerKeyword(transactions) {
     return maps.sort((a, b) => a.sum - b.sum);
 }
 
+function categories_manager_getLastImportDate() {
+    return categories_storage_getLastImportDate();
+}

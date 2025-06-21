@@ -90,7 +90,6 @@ tr:nth-child(even) {
 
 h1 {
     font-size: 20px;
-    font-family: 'Brush Script MT', cursive;
 }
 
 h1.app_title {
@@ -239,4 +238,11 @@ img.impex {
     padding: 10px;
     border: solid var(--color2) 4px;
     border-radius: 5px;
+}
+
+div.impex {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 20px;
 }

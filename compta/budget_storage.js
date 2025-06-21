@@ -25,3 +25,7 @@ function budget_storage_recordImportDate() {
 function budget_storage_add({ newItem }) {
     storage_add({ arrayId: budget_storage_ID, newItem });
 }
+
+function budget_storage_getLastImportDate() {
+    return storage_getLastImportDate({ subject: budget_storage_ID });
+}

@@ -1,7 +1,3 @@
-// # budget manager
-function budget_manager_getSubject() {
-    return budget_storage_ID;
-}
 
 function budget_manager_importCSV(text) {
     budget_storage_update({
@@ -67,4 +63,8 @@ function budget_manager_calculateSumMonthProvision() {
 
 function budget_manager_calculateSumYearProvision() {
     return budget_manager_calculateSumMonthProvision() * 12;
+}
+
+function budget_manager_getLastImportDate() {
+    return budget_storage_getLastImportDate();
 }

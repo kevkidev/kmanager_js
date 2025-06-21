@@ -44,8 +44,8 @@ function storage_cleanSession({ idsToKeep }) {
     }
 }
 
-function storage_getLastImportDate({ id }) {
-    return storage_get({ id: storage_DATE_IMPORT_PREFIX_ID + id });
+function storage_getLastImportDate({ subject }) {
+    return storage_get({ id: storage_DATE_IMPORT_PREFIX_ID + subject });
 }
 
 function storage_updateChangeDate() {

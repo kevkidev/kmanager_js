@@ -1,11 +1,15 @@
-// # budget controller
 
 function budget_controller_getViewParams() {
     return {
         title: "Budget",
         id: "viewBudget",
         imgSrc: "../img/icons8-stocks-growth-64.png",
-        subject: budget_manager_getSubject(),
+    }
+}
+
+function budget_controller_getDomIds() {
+    return {
+        INPUT_IMPORT_CSV: "inputImportCSVBudget",
     }
 }
 

@@ -81,3 +81,17 @@ function synthese_displayTreasure() {
     table.replaceChildren();
     // TODO
 }
+
+function synthese_components_view() {
+    return components_view({
+        viewId: "viewSynthese",
+        bodyChildren: [
+            dom_h({ number: 2, text: "Prévisions" }),
+            dom_table({ id: "tableSynthese1" }),
+            dom_h({ number: 2, text: "Mois" }),
+            dom_table({ id: "tableSynthese2" }),
+            dom_h({ number: 2, text: "Trésor" }),
+            dom_table({ id: "tableSynthese3" }),
+        ],
+    });
+}
