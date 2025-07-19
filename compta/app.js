@@ -31,11 +31,19 @@ function App() {
             })
         }
 
+        if (incomes && incomes.length > 0) {
+            const viewI = Dom().show("view_incomes");
+            viewI.innerText += `\n___ENTREES___ : ++[ ${Util().intToDecimal(Util().sum(incomes.map(e => e.amount)))} ]\n`;
+            incomes.forEach(i => {
+                viewI.innerText += `\t \xa0 ${Util().intToDecimal(i.amount)} <==  \t ${i.subject} --- ( ${i.date} ) \n`;
+            })
+        }
+
         const transactionsPerCategory = CategoryManager().calculateSumPerCategory(expenses);
         if (transactionsPerCategory && transactionsPerCategory.length > 0) {
             const viewT = Dom().show("view_transactions");
             const tpc = transactionsPerCategory;
-            viewT.innerText += `___TRANSACTIONS par CATEGORY___\n`;
+            viewT.innerText += `\n___DEPENSES par CATEGORIE___\n`;
             tpc.forEach(e => {
                 viewT.innerText += `[ ${e.category.name} ] ==> [ ${Util().intToDecimal(e.category.sum)} ] \n`;
                 e.list.forEach(t => {
