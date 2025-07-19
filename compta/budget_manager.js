@@ -1,70 +1,73 @@
-
-function budget_manager_importCSV(text) {
-    budget_storage_update({
-        value: io_extractCSV({
-            text,
-            buildObjectMethod: function (currentLine) {
-                const budget = {
-                    id: currentLine[0],
-                    quoi: currentLine[1],
-                    frequence: currentLine[2],
-                    combien: util_withPrecision(currentLine[3]),
-                };
-                return budget;
+function BudgetManager() {
+    return {
+        getViewParams() {
+            return {
+                title: "Budget",
+                id: "viewBudget",
+                imgSrc: "../img/icons8-stocks-growth-64.png",
             }
-        })
-    });
-    budget_storage_recordImportDate();
-    storage_addMessage({ message: "Budget importé avec succès!" });
-}
+        },
+        importCSV: function (text) {
+            BudgetStorage().update({
+                value: io_extractCSV({
+                    text,
+                    buildObjectMethod: function (currentLine) {
+                        const budget = {
+                            id: currentLine[0],
+                            subject: currentLine[1],
+                            frequency: currentLine[2],
+                            amount: Util().withPrecision(currentLine[3]),
+                        };
+                        console.info(budget);
+                        return budget;
+                    }
+                })
+            });
 
-function budget_manager_exportCSV() {
-    io_exportCSV("budget", function () {
-        const array = budget_storage_get();
-        if (!array) {
-            storage_addMessage({ message: "Pas de données à exporter!" });
-            return;
-        }
-        const rows = [
-            ["id", "quoi", "frequence", "combien"]
-        ];
-        array.forEach(e => {
-            rows.push([e.id, e.quoi, e.frequence, util_intToDecimal(e.combien)]);
-        });
+            console.warn("Budget importé avec succés!");
+            location.reload();
+        },
+        exportCSV: function () {
+            io_exportCSV("budget", function () {
+                const array = BudgetStorage().get();
+                if (!array) {
+                    storage_addMessage({ message: "Pas de données à exporter!" });
+                    return;
+                }
+                const rows = [
+                    ["id", "subject", "frequency", "amount"]
+                ];
+                array.forEach(e => {
+                    rows.push([e.id, e.subject, e.frequency, Util().intToDecimal(e.amount)]);
+                });
 
-        return rows;
-    });
-}
+                return rows;
+            });
+        },
+        calculateSumYear: function () {
+            const entier = BudgetManager().calculateSumPerFrequency(1) * 12 +
+                BudgetManager().calculateSumPerFrequency(3) * 4 +
+                BudgetManager().calculateSumPerFrequency(12);
+            return entier;
+        },
+        calculateSumPerFrequency: function (frequency) {
+            const array = BudgetStorage().get();
+            if (!array || array.length == 0) return 0;
+            const filtered = array.filter(e => e.frequency == frequency);
+            if (filtered.length == 0) return 0;
+            const sum = Util().sum(filtered.map(e => e.amount));
+            return sum;
+        },
+        calulateSumMonth: function () {
+            return BudgetManager().calculateSumYear() / 12;
+        },
+        calculateSumMonthProvision: function () {
+            const sumMonthIncomes = 750 * 1000; // à recuper dans storage , import //todo
+            return BudgetManager().calulateSumMonth() - sumMonthIncomes;
+        },
+        calculateSumYearProvision: function () {
+            return BudgetManager().calculateSumMonthProvision() * 12;
+        },
 
-function budget_manager_calculateSumYear() {
-    const entier = budget_manager_calculateSumPerFrequence(1) * 12 +
-        budget_manager_calculateSumPerFrequence(3) * 4 +
-        budget_manager_calculateSumPerFrequence(12);
-    return entier;
-}
-
-function budget_manager_calculateSumPerFrequence(frequence) {
-    const array = budget_storage_get();
-    if (!array || array.length == 0) return 0;
-    const filtered = array.filter(e => e.frequence == frequence);
-    if (filtered.length == 0) return 0;
-    const sum = util_sum(filtered);
-    return sum;
-}
-
-function budget_manager_calulateSumMonth() {
-    return budget_manager_calculateSumYear() / 12;
-}
-
-function budget_manager_calculateSumMonthProvision() {
-    const sumMonthIncomes = 750 * 1000; // à recuper dans storage , import //todo
-    return budget_manager_calulateSumMonth() - sumMonthIncomes;
-}
-
-function budget_manager_calculateSumYearProvision() {
-    return budget_manager_calculateSumMonthProvision() * 12;
-}
-
-function budget_manager_getLastImportDate() {
-    return budget_storage_getLastImportDate();
+    }
 }

@@ -6,45 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K_manager : Compta RDMP</title>
     <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        div.view {
+            display: none;
+        }
+    </style>
+    <script src="dom.js"></script>
 </head>
 
 <body>
-    <div class="container" id="container"></div>
-    <div id="scripts">
-        <script src="dom.js"></script>
-        <script src="util.js"></script>
-        <script src="storage.js"></script>
-        <script src="../common/display.js"></script>
-        <script src="components.js"></script>
-        <script src="io.js"></script>
-
-        <script src="notice_manager.js"></script>
-        <script src="notice_components.js"></script>
-
-        <script src="synthese.js"></script>
-
-        <script src="budget_storage.js"></script>
-        <script src="budget_manager.js"></script>
-        <script src="budget_controller.js"></script>
-        <script src="budget_viewer.js"></script>
-
-        <script src="transactions.js"></script>
-
-        <script src="categories_storage.js"></script>
-        <script src="categories_manager.js"></script>
-        <script src="categories_controller.js"></script>
-        <script src="categories_viewer.js"></script>
-
-        <script src="app_manager.js"></script>
-        <script src="app_controller.js"></script>
-        <script src="app_components.js"></script>
-
-        <script src="test.js"></script>
+    <button onclick="localStorage.clear(); location.reload();">Reset</button><br>
+    <div id="view_importTransactions" class="view">
+        Importer les transactions :
+        <input type="file" accept=".csv" id="inputImportCSVTransactions">
     </div>
-    <script>
-        app_manager_start();
-    </script>
+    <div id="view_importCategories" class="view">
+        Importer les catégories :
+        <input type="file" accept=".csv" id="inputImportCSVCategories">
+    </div>
+    <div id="view_importBudget" class="view">
+        Importer le budget :
+        <input type="file" accept=".csv" id="inputImportCSVBudget">
+    </div>
+    <div id="view_synthese" class="view"></div>
+    <div id="view_transactions" class="view"></div>
+    <div id="view_budget" class="view"></div>
+    <script src="app.js"></script>
 </body>
 
 </html>
