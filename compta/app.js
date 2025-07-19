@@ -37,12 +37,12 @@ function App() {
             const tpc = transactionsPerCategory;
             viewT.innerText += `___TRANSACTIONS par CATEGORY___\n`;
             tpc.forEach(e => {
-                viewT.innerText += `[ ${e.category.name} ]\n`;
+                viewT.innerText += `[ ${e.category.name} ] ==> [ ${Util().intToDecimal(e.category.sum)} ] \n`;
                 e.list.forEach(t => {
                     const amount = Util().intToDecimal(t.amount);
                     viewT.innerText += `\t\xa0 ${amount} <==  \t ${t.subject} --- ( ${t.date} ) \n`;
                 })
-                viewT.innerText += `[ ${Util().intToDecimal(e.category.sum)} ] <== Total \n\n`;
+                viewT.innerText += `[ ${Util().intToDecimal(e.category.sum)} ] <== ${e.category.name} \n\n`;
             })
         }
     }
