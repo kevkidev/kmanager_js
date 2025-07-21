@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="container">
+        <div>
+            <input type="text" id="event_title">
+            Le
+            <input type="number" step="1" min="1" max="31" id="event_day"> .
+            <input type="number" step="1" min="1" max="12" id="event_month"> .
+            <input type="number" step="1" min="2020" max="2121" id="event_year">
+            à
+            <input type="number" step="1" min="0" max="23" id="event_hours"> :
+            <input type="number" step="1" min="0" max="59" id="event_minutes">
+            <button onclick="cal_addEvent()">OK</button>
+            <br>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        document.getElementById("event_year").value = (new Date(Date.now())).getFullYear();
+        document.getElementById("event_month").value = (new Date(Date.now())).getMonth() + 1;
+        document.getElementById("event_minutes").value = 0;
+    </script>
+</body>
+
+</html>
