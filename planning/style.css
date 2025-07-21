@@ -4,6 +4,10 @@
       box-sizing: border-box;
   }
 
+  .hidden {
+      display: none;
+  }
+
   #container {
       padding: 5px;
   }
@@ -26,5 +30,8 @@
       background: none;
       font-weight: bolder;
       background-color: rgb(255, 255, 255);
-      margin-left: 20px;
+  }
+
+  .menu {
+      margin-bottom: 5px;
   }

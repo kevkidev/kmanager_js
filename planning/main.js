@@ -93,8 +93,7 @@ function cal_week({ cal, weekNumber }) {
 }
 
 function displayWeek(weekArray) {
-    let display = "";
-    display += `\n # ${month_getName(weekArray[0].date.getMonth())} ${weekArray[0].date.getFullYear()} S.${weekArray[0].weekNumber}`;
+    let display = `\n # ${month_getName(weekArray[0].date.getMonth())} ${weekArray[0].date.getFullYear()} S.${weekArray[0].weekNumber}`;
     const space = "\xa0\xa0\xa0";
     weekArray.forEach(i => {
         display += `\n  ${day_getName(i.date.getDay())} ${i.date.getDate()} `;
@@ -109,8 +108,7 @@ function displayWeek(weekArray) {
 }
 
 function displayMonth(monthArray) {
-    let display = "";
-    display += `\n # ${month_getName(monthArray[0].date.getMonth())} ${monthArray[0].date.getFullYear()}`;
+    let display = `\n # ${month_getName(monthArray[0].date.getMonth())} ${monthArray[0].date.getFullYear()}`;
     const firstMonthDay = monthArray[0].date.getDay();
     const space = "\xa0\xa0\t";
     let marge = "";
@@ -163,17 +161,20 @@ function cal_addEvent() {
     }
 
     storage_add({ arrayId: "events", newItem: event });
+    location.reload();
 }
 
 // ############################################################################
 
 const now = new Date(Date.now());
-const CAL = cal_build(now.getFullYear());
+const cal = cal_build(now.getFullYear());
 // console.log(cal);
 // console.log(cal_week({ cal, weekNumber: 30 }));
 
-const currentMonth = cal_getMonth({ cal: CAL, month: now.getMonth() });
-const currentWeek = cal_currentWeek({ cal: CAL });
-console.log(displayMonth(currentMonth));
+const currentMonth = cal_getMonth({ cal, month: now.getMonth() });
+const currentWeek = cal_currentWeek({ cal });
+// console.log(displayMonth(currentMonth));
+document.getElementById("month_cal").innerText = displayMonth(currentMonth);
+document.getElementById("current_week").innerText = displayWeek(currentWeek);
 console.log(displayWeek(currentWeek));
 

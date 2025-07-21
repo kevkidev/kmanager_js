@@ -10,7 +10,12 @@
 
 <body>
     <div id="container">
-        <div>
+        <div class="menu">
+            <button id="btn_add_event" onclick="showFormAddEvent(event)">New</button>
+            <button id="btn_show_month" onclick="showMonthCal(event)">Mois</button>
+            <button id="btn_current_week" onclick="showWeek(event)">Today</button>
+        </div>
+        <div id="form_add_event" hidden>
             <input type="text" id="event_title">
             Le
             <input type="number" step="1" min="1" max="31" id="event_day"> .
@@ -22,10 +27,31 @@
             <button onclick="cal_addEvent()">OK</button>
             <br>
         </div>
+        <div id="month_cal" hidden></div>
+        <div id="current_week" hidden></div>
     </div>
 
     <script src="main.js"></script>
     <script>
+        function resetAll() {
+            document.getElementById("current_week").style.display = "none";
+            document.getElementById("month_cal").style.display = "none";
+            document.getElementById("form_add_event").style.display = "none";
+        }
+        function showFormAddEvent(event) {
+            resetAll();
+            document.getElementById("form_add_event").style.display = "block";
+        }
+        function showWeek() {
+            resetAll();
+            document.getElementById("current_week").style.display = "block";
+        }
+
+        function showMonthCal() {
+            resetAll();
+            document.getElementById("month_cal").style.display = "block";
+        }
+
         document.getElementById("event_year").value = (new Date(Date.now())).getFullYear();
         document.getElementById("event_month").value = (new Date(Date.now())).getMonth() + 1;
         document.getElementById("event_minutes").value = 0;
