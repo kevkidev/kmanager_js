@@ -3,19 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Planning</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div id="container">
-        <div id="today"></div><br>
         <div class="menu">
             <button id="btn_add_event" onclick="showFormAddEvent(event)">New</button>
-            <button id="btn_show_month" onclick="showCal(event)">Mois</button>
-            <button id="btn_current_week" onclick="showWeek(event)">Week</button>
+            <button id="btn_show_month" onclick="showCal(event)">Cal</button>
+            <button id="btn_current_week" onclick="showWeek(event)">Planning</button>
         </div>
+        <div id="today"></div><br>
         <div id="form_add_event" hidden>
             Quoi : <br>
             <input type="text" id="event_title"><br>
@@ -55,13 +55,40 @@
                 <div id="month_12"></div>
             </div>
         </div>
-        <div id="current_week"></div>
+        <div id="planning">
+            <div class="btn_mois">
+
+            </div>
+            <pre id="current_week"></pre>
+            <br>
+            <div class="panel">
+                <button onclick="prevWeek()">...Prev</button>
+                <button onclick="action_nextWeek()">Next...</button>
+                <select id="search_mois">
+                    <option value="0">Jan</option>
+                    <option value="1">Fév</option>
+                    <option value="2">Mars</option>
+                    <option value="3">Avr</option>
+                    <option value="4">Mai</option>
+                    <option value="5">Juin</option>
+                    <option value="6">Juil</option>
+                    <option value="7">Août</option>
+                    <option value="8">Sept</option>
+                    <option value="9">Oct</option>
+                    <option value="10">Nov</option>
+                    <option value="11">Déc</option>
+                </select>
+                <input type="number" step="1" min="2020" max="2121" id="search_year">
+                <button onclick="search()">Go</button>
+
+            </div>
+        </div>
     </div>
 
     <script src="main.js"></script>
     <script>
         function resetAll() {
-            document.getElementById("current_week").style.display = "none";
+            document.getElementById("planning").style.display = "none";
             document.getElementById("cal").style.display = "none";
             document.getElementById("form_add_event").style.display = "none";
         }
@@ -71,7 +98,7 @@
         }
         function showWeek() {
             resetAll();
-            document.getElementById("current_week").style.display = "block";
+            document.getElementById("planning").style.display = "block";
         }
 
         function showCal() {
@@ -79,6 +106,7 @@
             document.getElementById("cal").style.display = "block";
         }
 
+        document.getElementById("search_year").value = (new Date(Date.now())).getFullYear();
         document.getElementById("event_year").value = (new Date(Date.now())).getFullYear();
         document.getElementById("event_month").value = (new Date(Date.now())).getMonth() + 1;
         document.getElementById("event_minutes").value = 0;

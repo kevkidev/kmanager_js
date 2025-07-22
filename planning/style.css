@@ -43,6 +43,11 @@
       background-color: rgb(213, 213, 213);
   }
 
+  select {
+      padding: 8px;
+      color: blue;
+  }
+
   .menu {
       margin-bottom: 5px;
   }
@@ -55,4 +60,29 @@
   .three_month>div {
       border: solid black 1px;
       padding: 3px;
+  }
+
+  #today {
+      width: fit-content;
+      padding: 5 px;
+      background-color: rgb(255, 255, 155);
+  }
+
+  .gone {
+      text-decoration: line-through;
+      color: rgb(44, 44, 44);
+  }
+
+  .next {
+      background-color: rgb(226, 255, 182);
+  }
+
+  .strong {
+      font-weight: bold;
+      background-color: rgb(255, 255, 155);
+  }
+
+  .panel {
+      position: fixed;
+      bottom: 0px;
   }

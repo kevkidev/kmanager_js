@@ -71,17 +71,16 @@ function cal_getMonth({ cal, month }) {
     return cal.filter(i => month == i.date.getMonth());
 }
 
-function cal_currentWeek({ cal }) {
-    const now = new Date(Date.now());
-    let firstWeekDate = now.getDate();
-    if (now.getDay() > 1) { // si on est pas lundi ni dimache
-        firstWeekDate = now.getDate() - now.getDay() + 1;
-    } else if (now.getDay() == 0) { // si c'est dimanche
-        firstWeekDate = now.getDate() - 6;
+function cal_weekFromDate({ cal, date }) {
+    let firstWeekDate = date.getDate();
+    if (date.getDay() > 1) { // si on est pas lundi ni dimache
+        firstWeekDate = date.getDate() - date.getDay() + 1;
+    } else if (date.getDay() == 0) { // si c'est dimanche
+        firstWeekDate = date.getDate() - 6;
     }
     const lastWeekDate = firstWeekDate + 6; // lundi + les 6 autres jours
 
-    return cal.filter(i => i.date.getMonth() == now.getMonth()
+    return cal.filter(i => i.date.getMonth() == date.getMonth()
         && i.date.getDate() >= firstWeekDate
         && i.date.getDate() <= lastWeekDate
     )
@@ -104,19 +103,19 @@ function bind_events(cal) {
 
 }
 
-function cal_week({ cal, weekNumber }) {
+function cal_weekFromNumber({ cal, weekNumber }) {
     return cal.filter(i => i.weekNumber == weekNumber);
 }
 
 function displayWeek(weekArray) {
-    let display = `\n __S.${weekArray[0].weekNumber} ${month_getName(weekArray[0].date.getMonth())}. ${weekArray[0].date.getFullYear()}__`;
+    // choisir l'index 6 plutot que 0 pour le cas de la derriere de semaine de dec qui se cheveauche sur janvier. Ainsi on est sur que ce sera janvier et pas decembre
+    let display = `\n <span class="strong">${month_getName(weekArray[6].date.getMonth())}. ${weekArray[6].date.getFullYear()}</span> sem.${weekArray[6].weekNumber}\n`;
     const space = "\xa0";
     weekArray.forEach(i => {
-        display += `\n ${day_getName(i.date.getDay())} ${i.date.getDate()}------------------------------------------------------------`;
+        display += `\n ${day_getName(i.date.getDay())} ${i.date.getDate()}----------------------------------------------------------`;
         if (i.events) {
             i.events.forEach(e => {
-                console.log(e);
-                display += `\n ${space.repeat(parseInt(e.hours))}.${e.hours}:${e.minutes} "${e.title}"`;
+                display += `\n ${space.repeat(parseInt(e.hours))}<span class="next">.${e.hours}:${e.minutes} "${e.title}"</span>`;
             })
         }
 
@@ -185,7 +184,48 @@ function cal_addEvent() {
     }
 }
 
+function action_nextWeek() {
+    const metaWeek = storage_get({ id: "week" });
+    let week;
+    if (metaWeek.weekNumber == 52) {
+        // recuperer une partie de la derniere semaine de décembre
+        const weekPartDec = cal_weekFromNumber({
+            cal: calCurrentYear,
+            weekNumber: parseInt(metaWeek.weekNumber) + 1
+        });
+
+        // recuperer le fin de semaine au debut du mois de janvier de l'année suivante
+        calCurrentYear = cal_buildYear(parseInt(metaWeek.year + 1));
+        metaWeek.weekNumber = 0;
+        const weekPartJan = cal_weekFromNumber({
+            cal: calCurrentYear,
+            weekNumber: parseInt(metaWeek.weekNumber) + 1
+        });
+
+        // fusionner les 2 parties
+        week = weekPartDec.concat(weekPartJan);
+    } else {
+        week = cal_weekFromNumber({
+            cal: calCurrentYear,
+            weekNumber: parseInt(metaWeek.weekNumber) + 1
+        });
+    }
+
+    loadWeek({ week });
+}
+
 // ############################################################################
+
+function loadWeek({ week }) {
+    bind_events(week);
+    document.getElementById("current_week").innerHTML = displayWeek(week);
+    storage_update({
+        id: "week", value: {
+            weekNumber: week[6].weekNumber,
+            year: week[6].date.getFullYear()
+        }
+    })
+}
 
 const now = new Date(Date.now());
 // const now = date_newDate({ day: 14, month: 8, year: 2025 });
@@ -194,20 +234,22 @@ const blankDay = day_checkBankHoliday({ day: now.getDate(), month: (now.getMonth
 if (blankDay) today += ` [ *${blankDay.reason}* ]`;
 document.getElementById("today").innerText = today;
 
-const cal = cal_buildYear(now.getFullYear());
+let calCurrentYear = cal_buildYear(now.getFullYear());
+
 document.getElementById("current_month").innerText =
     displayMonth(
-        cal_getMonth({ cal, month: now.getMonth() })
+        cal_getMonth({ cal: calCurrentYear, month: now.getMonth() })
     )
 for (let i = 0; i < 12; i++) {
     document.getElementById("month_" + (i + 1)).innerText =
         displayMonth(
-            cal_getMonth({ cal, month: i })
+            cal_getMonth({ cal: calCurrentYear, month: i })
         )
 }
 
+loadWeek({
+    week: cal_weekFromDate({ cal: calCurrentYear, date: now }),
+    date: now
+});
 
 
-const currentWeek = cal_currentWeek({ cal });
-bind_events(currentWeek);
-document.getElementById("current_week").innerText = displayWeek(currentWeek);
