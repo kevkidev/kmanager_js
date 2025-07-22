@@ -188,14 +188,12 @@ const currentYearCal = cal_build(now.getFullYear());
 // console.log(cal);
 // console.log(cal_week({ cal, weekNumber: 30 }));
 
-// const currentMonth = cal_getMonth({ cal: currentYearCal, month: now.getMonth() });
+
+const currentMonth = cal_getMonth({ cal: currentYearCal, month: now.getMonth() });
+document.getElementById("month_cal").innerText = displayMonth(currentMonth);
+
 const currentWeek = cal_currentWeek({ cal: currentYearCal });
-console.log(currentWeek);
-
 bind_events(currentWeek);
-
-// console.log(displayMonth(currentMonth));
-// document.getElementById("month_cal").innerText = displayMonth(currentMonth);
 document.getElementById("current_week").innerText = displayWeek(currentWeek);
 console.log(displayWeek(currentWeek));
 

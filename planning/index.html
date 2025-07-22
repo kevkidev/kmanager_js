@@ -18,12 +18,11 @@
         <div id="form_add_event" hidden>
             Quoi : <br>
             <input type="text" id="event_title"><br>
-            Date : <br>
+            Date :
             <input type="number" step="1" min="1" max="31" id="event_day"> .
             <input type="number" step="1" min="1" max="12" id="event_month"> .
             <input type="number" step="1" min="2020" max="2121" id="event_year">
-            <br>
-            Horaire : <br>
+            Horaire :
             <input type="number" step="1" min="0" max="23" id="event_hours"> :
             <input type="number" step="1" min="0" max="59" id="event_minutes">
             <br>
@@ -44,6 +43,7 @@
         function showFormAddEvent(event) {
             resetAll();
             document.getElementById("form_add_event").style.display = "block";
+            document.getElementById("month_cal").style.display = "block";
         }
         function showWeek() {
             resetAll();

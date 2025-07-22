@@ -3,6 +3,7 @@
       padding: 0;
       box-sizing: border-box;
       font-family: monospace;
+      font-size: 10px;
   }
 
   .hidden {
@@ -13,6 +14,10 @@
       padding: 5px;
   }
 
+  #event_title {
+      min-width: 250px;
+  }
+
   input,
   button {
       all: unset;
@@ -20,8 +25,12 @@
       padding-top: 8px;
       padding-bottom: 8px;
       margin-bottom: 5px;
-      border: 1px solid black;
-      min-width: fit-content;
+      min-width: 35px;
+      border: none;
+  }
+
+  input {
+      border-bottom: 1px solid black;
   }
 
   button {
