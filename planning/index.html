@@ -13,17 +13,20 @@
         <div class="menu">
             <button id="btn_add_event" onclick="showFormAddEvent(event)">New</button>
             <button id="btn_show_month" onclick="showMonthCal(event)">Mois</button>
-            <button id="btn_current_week" onclick="showWeek(event)">Today</button>
+            <button id="btn_current_week" onclick="showWeek(event)">Week</button>
         </div>
         <div id="form_add_event" hidden>
-            <input type="text" id="event_title">
-            Le
+            Quoi : <br>
+            <input type="text" id="event_title"><br>
+            Date : <br>
             <input type="number" step="1" min="1" max="31" id="event_day"> .
             <input type="number" step="1" min="1" max="12" id="event_month"> .
             <input type="number" step="1" min="2020" max="2121" id="event_year">
-            à
+            <br>
+            Horaire : <br>
             <input type="number" step="1" min="0" max="23" id="event_hours"> :
             <input type="number" step="1" min="0" max="59" id="event_minutes">
+            <br>
             <button onclick="cal_addEvent()">OK</button>
             <br>
         </div>

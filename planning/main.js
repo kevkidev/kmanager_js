@@ -57,7 +57,7 @@ function cal_build(year) {
 
         for (let d = 1; d <= maxDay; d++) {
             const date = date_newDate({ day: d, month: m, year });
-            cal.push({ weekNumber, date });
+            cal.push({ weekNumber, date, events: [] });
             if (date.getDay() == 0) { // 0 = dimanche
                 weekNumber++;
             }
@@ -74,18 +74,34 @@ function cal_getMonth({ cal, month }) {
 function cal_currentWeek({ cal }) {
     const now = new Date(Date.now());
     let firstWeekDate = now.getDate();
-    if (now.getDay() > 1) {
-        firstWeekDate = now.getDate() - now.getDay()
+    if (now.getDay() > 1) { // si on est pas lundi ni dimache
+        firstWeekDate = now.getDate() - now.getDay() + 1;
+    } else if (now.getDay() == 0) { // si c'est dimanche
+        firstWeekDate = now.getDate() - 6;
     }
-    const lastWeekDate = firstWeekDate + 6;
+    const lastWeekDate = firstWeekDate + 6; // lundi + les 6 autres jours
 
-    return cal.filter(i => {
-        return (
-            i.date.getMonth() == now.getMonth()
-            && i.date.getDate() >= firstWeekDate
-            && i.date.getDate() <= lastWeekDate
-        );
+    return cal.filter(i => i.date.getMonth() == now.getMonth()
+        && i.date.getDate() >= firstWeekDate
+        && i.date.getDate() <= lastWeekDate
+    )
+}
+
+function bind_events(cal) {
+    const events = storage_get({ id: "events" });
+    if (!events) return;
+    events.forEach(e => {
+        const eDate = new Date(e.date);
+        const found = cal.find(i =>
+            i.date.getFullYear() == eDate.getFullYear()
+            && i.date.getDate() == eDate.getDate()
+            && i.date.getMonth() == eDate.getMonth()
+        )
+        if (found) {
+            found.events.push(e);
+        }
     })
+
 }
 
 function cal_week({ cal, weekNumber }) {
@@ -93,22 +109,23 @@ function cal_week({ cal, weekNumber }) {
 }
 
 function displayWeek(weekArray) {
-    let display = `\n # ${month_getName(weekArray[0].date.getMonth())} ${weekArray[0].date.getFullYear()} S.${weekArray[0].weekNumber}`;
-    const space = "\xa0\xa0\xa0";
+    let display = `\n __S.${weekArray[0].weekNumber} ${month_getName(weekArray[0].date.getMonth())}. ${weekArray[0].date.getFullYear()}__`;
+    const space = "\xa0\xa0";
     weekArray.forEach(i => {
-        display += `\n  ${day_getName(i.date.getDay())} ${i.date.getDate()} `;
-        display += `\n \t >${space.repeat(10)} 10:40 aze `;
-        display += `\n \t >${space.repeat(13)} 13:40 qsd `;
-        display += `\n \t >______________________________________________________________________ `;
-        display += `\n \t 00-01-02-03-04-05-06-07-08-09-10-11-12-13-14-15-16-17-18-19-20-21-22-23 `;
-        display += `\n `;
+        display += `\n ${day_getName(i.date.getDay())} ${i.date.getDate()}-------------------------------------------------------------------------------------`;
+        if (i.events) {
+            i.events.forEach(e => {
+                console.log(e);
+                display += `\n ${space.repeat(parseInt(e.hours))}.${e.hours}:${e.minutes} "${e.title}"`;
+            })
+        }
 
     });
     return display;
 }
 
 function displayMonth(monthArray) {
-    let display = `\n # ${month_getName(monthArray[0].date.getMonth())} ${monthArray[0].date.getFullYear()}`;
+    let display = `\n # ${month_getName(monthArray[0].date.getMonth())} ${monthArray[0].date.getFullYear()} `;
     const firstMonthDay = monthArray[0].date.getDay();
     const space = "\xa0\xa0\t";
     let marge = "";
@@ -117,9 +134,9 @@ function displayMonth(monthArray) {
         marge = space.repeat(6);
     }
     display += `\nLu\tMa\tMe\tJe\tVe\tSa\tDi\n`;
-    display += ` ${marge}`;
+    display += ` ${marge} `;
     monthArray.forEach(i => {
-        display += `${i.date.getDate()}\t`;
+        display += `${i.date.getDate()} \t`;
         display += (i.date.getDay() == 0) ? "\n" : "";
     });
     return display;
@@ -167,14 +184,18 @@ function cal_addEvent() {
 // ############################################################################
 
 const now = new Date(Date.now());
-const cal = cal_build(now.getFullYear());
+const currentYearCal = cal_build(now.getFullYear());
 // console.log(cal);
 // console.log(cal_week({ cal, weekNumber: 30 }));
 
-const currentMonth = cal_getMonth({ cal, month: now.getMonth() });
-const currentWeek = cal_currentWeek({ cal });
+// const currentMonth = cal_getMonth({ cal: currentYearCal, month: now.getMonth() });
+const currentWeek = cal_currentWeek({ cal: currentYearCal });
+console.log(currentWeek);
+
+bind_events(currentWeek);
+
 // console.log(displayMonth(currentMonth));
-document.getElementById("month_cal").innerText = displayMonth(currentMonth);
+// document.getElementById("month_cal").innerText = displayMonth(currentMonth);
 document.getElementById("current_week").innerText = displayWeek(currentWeek);
 console.log(displayWeek(currentWeek));
 
