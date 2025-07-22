@@ -97,6 +97,7 @@ function bind_events(cal) {
             && i.date.getMonth() == eDate.getMonth()
         )
         if (found) {
+            found.events = []; // vider avant pour eviter les doublons
             found.events.push(e);
         }
     })
@@ -208,6 +209,40 @@ function action_nextWeek() {
         week = cal_weekFromNumber({
             cal: calCurrentYear,
             weekNumber: parseInt(metaWeek.weekNumber) + 1
+        });
+    }
+
+    loadWeek({ week });
+}
+
+function action_prevWeek() {
+    const metaWeek = storage_get({ id: "week" });
+    let week;
+    if (metaWeek.weekNumber == 2) {
+        // recuperer une partie de la fin de semaine de janv de l'an courrante
+        const weekPartJan = cal_weekFromNumber({
+            cal: calCurrentYear,
+            weekNumber: 1
+        });
+
+        // recuperer le debut de semaine de fin dec de l'an precedente
+        calPrevYear = cal_buildYear(parseInt(metaWeek.year - 1)); // on recupere la partie de week sans changer pas d'année
+        const weekPartDec = cal_weekFromNumber({
+            cal: calPrevYear,
+            weekNumber: 53 // la semaine 53 n'existe pas. Elle est fusionnée avec la semaine 1 de janv
+        });
+
+        // fusionner les 2 parties
+        week = weekPartDec.concat(weekPartJan);
+    }
+    else {
+        if (metaWeek.weekNumber == 1) {
+            metaWeek.weekNumber = 53; // car pas de semaine 0 et 53 - 1 = 52
+            calCurrentYear = cal_buildYear(parseInt(metaWeek.year - 1)); // passer à l'année d'avant
+        }
+        week = cal_weekFromNumber({
+            cal: calCurrentYear,
+            weekNumber: parseInt(metaWeek.weekNumber) - 1
         });
     }
 
