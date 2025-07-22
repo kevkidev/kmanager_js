@@ -46,7 +46,7 @@ function day_getName(value) {
     return ["dim", "lun", "mar", "mer", "jeu", "ven", "sam",][value];
 }
 
-function cal_build(year) {
+function cal_buildYear(year) {
     const cal = [];
     let weekNumber = 1;
     for (let m = 1; m <= 12; m++) {
@@ -110,9 +110,9 @@ function cal_week({ cal, weekNumber }) {
 
 function displayWeek(weekArray) {
     let display = `\n __S.${weekArray[0].weekNumber} ${month_getName(weekArray[0].date.getMonth())}. ${weekArray[0].date.getFullYear()}__`;
-    const space = "\xa0\xa0";
+    const space = "\xa0";
     weekArray.forEach(i => {
-        display += `\n ${day_getName(i.date.getDay())} ${i.date.getDate()}-------------------------------------------------------------------------------------`;
+        display += `\n ${day_getName(i.date.getDay())} ${i.date.getDate()}------------------------------------------------------------`;
         if (i.events) {
             i.events.forEach(e => {
                 console.log(e);
@@ -129,9 +129,10 @@ function displayMonth(monthArray) {
     const firstMonthDay = monthArray[0].date.getDay();
     const space = "\xa0\xa0\t";
     let marge = "";
-    marge = space.repeat(firstMonthDay - 1);
     if (firstMonthDay == 0) {
         marge = space.repeat(6);
+    } else {
+        marge = space.repeat(firstMonthDay - 1);
     }
     display += `\nLu\tMa\tMe\tJe\tVe\tSa\tDi\n`;
     display += ` ${marge} `;
@@ -170,30 +171,43 @@ function cal_addEvent() {
         title: document.getElementById("event_title").value,
         hours: document.getElementById("event_hours").value,
         minutes: document.getElementById("event_minutes").value,
-        date: date_newDate({
-            day: document.getElementById("event_day").value,
-            month: document.getElementById("event_month").value,
-            year: document.getElementById("event_year").value
-        })
+        note: document.getElementById("event_note").value,
     }
 
-    storage_add({ arrayId: "events", newItem: event });
-    location.reload();
+    const day = document.getElementById("event_day").value;
+    const month = document.getElementById("event_month").value;
+    const year = document.getElementById("event_year").value;
+
+    if (event.title && event.hours && event.minutes && day && month && year) {
+        event.date = date_newDate({ day, month, year });
+        storage_add({ arrayId: "events", newItem: event });
+        location.reload();
+    }
 }
 
 // ############################################################################
 
 const now = new Date(Date.now());
-const currentYearCal = cal_build(now.getFullYear());
-// console.log(cal);
-// console.log(cal_week({ cal, weekNumber: 30 }));
+// const now = date_newDate({ day: 14, month: 8, year: 2025 });
+let today = `${day_getName(now.getDay())} ${now.getDate()} ${month_getName(now.getMonth())} ${now.getFullYear()}`;
+const blankDay = day_checkBankHoliday({ day: now.getDate(), month: (now.getMonth() + 1) });
+if (blankDay) today += ` [ *${blankDay.reason}* ]`;
+document.getElementById("today").innerText = today;
+
+const cal = cal_buildYear(now.getFullYear());
+document.getElementById("current_month").innerText =
+    displayMonth(
+        cal_getMonth({ cal, month: now.getMonth() })
+    )
+for (let i = 0; i < 12; i++) {
+    document.getElementById("month_" + (i + 1)).innerText =
+        displayMonth(
+            cal_getMonth({ cal, month: i })
+        )
+}
 
 
-const currentMonth = cal_getMonth({ cal: currentYearCal, month: now.getMonth() });
-document.getElementById("month_cal").innerText = displayMonth(currentMonth);
 
-const currentWeek = cal_currentWeek({ cal: currentYearCal });
+const currentWeek = cal_currentWeek({ cal });
 bind_events(currentWeek);
 document.getElementById("current_week").innerText = displayWeek(currentWeek);
-console.log(displayWeek(currentWeek));
-

@@ -16,6 +16,7 @@
 
   #event_title {
       min-width: 250px;
+      text-align: left;
   }
 
   input,
@@ -31,6 +32,7 @@
 
   input {
       border-bottom: 1px solid black;
+      color: blue;
   }
 
   button {
@@ -43,4 +45,14 @@
 
   .menu {
       margin-bottom: 5px;
+  }
+
+  .three_month {
+      display: flex;
+      gap: 3px;
+  }
+
+  .three_month>div {
+      border: solid black 1px;
+      padding: 3px;
   }
