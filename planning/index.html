@@ -12,7 +12,7 @@
 
 <body>
     <div id="container">
-        <span>Planning v1.1.0-beta (by Kevkidev)</span>
+        <span>Planning v1.2.0-beta (by Kevkidev)</span>
         <div class="menu">
             <button id="btn_add_event" onclick="showFormAddEvent(event)">+</button>
             <button id="btn_current_week" onclick="showWeek(event)">~</button>
@@ -31,7 +31,10 @@
             <input type="number" step="1" min="0" max="59" id="event_minutes" placeholder="min">
             <br>
             Notes: <textarea id="event_note" rows="3" cols="37"></textarea><br>
-            <button onclick="action_addEvent()">OK</button>
+            <button id="btn_addEvent" onclick="action_addEvent()">OK</button>
+            <button id="btn_editEvent1" onclick="action_confirmEditEvent()">OK</button>
+            <button id="btn_copyEvent" onclick="action_eventCopy()">OK</button>
+            <button id="btn_editEvent0" onclick="showWeek()">STOP</button>
             <br>
             <div id="current_month"></div>
         </div>
@@ -65,13 +68,14 @@
             <div class="panel">
                 <select id="select_events" onchange="action_eventDetails()"></select>
                 <button onclick="action_eventEdit()">§</button>
-                <button onclick="action_eventCopy()">||</button>
+                <button onclick="action_eventEdit(true)">||</button>
                 <button onclick="action_eventDelete()">¤</button>
                 <br>
-
                 <button onclick="action_switchWeek(-1)">-1</button>
-                <button onclick="action_switchWeek(-1)">0</button>
+                <button onclick="action_currentWeek()">0</button>
                 <button onclick="action_switchWeek(1)">1+</button>
+                &nbsp;&nbsp;
+                <select id="search_date" onchange="action_search()"></select>
                 <select id="search_month">
                     <option value="1">Jan</option>
                     <option value="2">Fév</option>
@@ -87,7 +91,6 @@
                     <option value="12">Déc</option>
                 </select>
                 <input type="number" step="1" min="2020" max="2121" id="search_year">
-                <button onclick="action_search()">?</button>
             </div>
         </div>
     </div>

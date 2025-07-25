@@ -72,6 +72,14 @@ function loadWeek({ week }) {
 
 const date = date_newFromDate(new Date(Date.now()))
 
+document.getElementById("search_year").value = date.year;
+let options = "";
+for (let i = 1; i <= 28; i++) {
+    const selected = i == 15 ? "selected" : "";
+    options += `<option value="${i}" ${selected}>${i}</option>`
+}
+document.getElementById("search_date").innerHTML = options;
+
 let today = `Aujourd'hui : ${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
 const blankDay = date_isBankHoliday({ day: date.date, month: (date.month + 1) });
 today += blankDay ? ` [ *${blankDay.reason}* ]` : "";
