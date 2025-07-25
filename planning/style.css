@@ -6,19 +6,6 @@
       font-size: 10px;
   }
 
-  .hidden {
-      display: none;
-  }
-
-  #container {
-      padding: 5px;
-  }
-
-  #event_title {
-      min-width: 250px;
-      text-align: left;
-  }
-
   input,
   button {
       all: unset;
@@ -41,11 +28,16 @@
       background: none;
       font-weight: bolder;
       background-color: rgb(213, 213, 213);
+      padding: 15px;
   }
 
   select {
       padding: 8px;
       color: blue;
+  }
+
+  .hidden {
+      display: none;
   }
 
   .menu {
@@ -54,18 +46,11 @@
 
   .three_month {
       display: flex;
-      gap: 3px;
   }
 
   .three_month>div {
-      border: solid black 1px;
-      padding: 3px;
-  }
-
-  #today {
-      width: fit-content;
-      padding: 5 px;
-      background-color: rgb(255, 255, 155);
+      border: solid rgb(214, 214, 214) 1px;
+      padding: 2px;
   }
 
   .gone {
@@ -85,4 +70,19 @@
   .panel {
       position: fixed;
       bottom: 0px;
+  }
+
+  #container {
+      padding: 5px;
+  }
+
+  #event_title {
+      min-width: 250px;
+      text-align: left;
+  }
+
+  #today {
+      width: fit-content;
+      padding: 5 px;
+      background-color: rgb(255, 255, 155);
   }

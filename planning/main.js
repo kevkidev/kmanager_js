@@ -1,290 +1,82 @@
-
-function month_getNumbersOfDay({ monthNumber, isBissextileYear }) {
-    if (monthNumber == 2) { // si année bissextille => fevrier = 29 jours sinon 28
-        return isBissextileYear ? 29 : 28;
-    } else if ([4, 6, 9, 11].includes(monthNumber)) {
-        return 30;
-    } else {
-        return 31;
-    }
-}
-
-function year_checkBissextile({ year }) {
-    // si divisible par 4 et pas par 100
-    // ou si divisible par 400
-    return (year % 4 == 0 && year % 100 !== 0) || (year % 400 == 0);
-}
-
-function day_checkBankHoliday({ day, month }) { // férié
-    const bankHolidays = [
-        { month: 1, day: 1, reason: "Jour de l'an" },
-        { month: 4, day: 21, reason: "Lundi de Pâques" },
-        { month: 5, day: 1, reason: "Fête du travail" },
-        { month: 5, day: 8, reason: "Victoire 1945" },
-        { month: 5, day: 29, reason: "Ascension" },
-        { month: 6, day: 9, reason: "Lundi de Pentecôte" },
-        { month: 7, day: 14, reason: "Fête nationale" },
-        { month: 8, day: 15, reason: "Assomption" },
-        { month: 11, day: 1, reason: "Toussaint" },
-        { month: 11, day: 11, reason: "Armistice 1918" },
-        { month: 12, day: 25, reason: "Jour de Noël" },
-    ];
-
-    return bankHolidays.find(e => e.month == month && e.day == day);
-}
-
-function date_newDate({ day, month, year }) {
-    return new Date(year, month - 1, day);
-}
-
-function month_getName(value) {
-    return ["jan", "fév", "mars", "avr", "mai", "juin", "juil",
-        "août", "sept", "oct", "nov", "déc",][value];
-}
-
-function day_getName(value) {
-    return ["dim", "lun", "mar", "mer", "jeu", "ven", "sam",][value];
-}
-
-function cal_buildYear(year) {
-    const cal = [];
-    let weekNumber = 1;
-    for (let m = 1; m <= 12; m++) {
-        const maxDay = month_getNumbersOfDay({
-            monthNumber: m,
-            isBissextileYear: year_checkBissextile({ year })
-        });
-
-        for (let d = 1; d <= maxDay; d++) {
-            const date = date_newDate({ day: d, month: m, year });
-            cal.push({ weekNumber, date, events: [] });
-            if (date.getDay() == 0) { // 0 = dimanche
-                weekNumber++;
-            }
-        }
-    }
-    return cal;
-}
-
-
-function cal_getMonth({ cal, month }) {
-    return cal.filter(i => month == i.date.getMonth());
-}
-
-function cal_weekFromDate({ cal, date }) {
-    let firstWeekDate = date.getDate();
-    if (date.getDay() > 1) { // si on est pas lundi ni dimache
-        firstWeekDate = date.getDate() - date.getDay() + 1;
-    } else if (date.getDay() == 0) { // si c'est dimanche
-        firstWeekDate = date.getDate() - 6;
-    }
-    const lastWeekDate = firstWeekDate + 6; // lundi + les 6 autres jours
-
-    return cal.filter(i => i.date.getMonth() == date.getMonth()
-        && i.date.getDate() >= firstWeekDate
-        && i.date.getDate() <= lastWeekDate
-    )
-}
-
-function bind_events(cal) {
-    const events = storage_get({ id: "events" });
+function events_bind(cal) {
+    const events = storage_get({ id: storage_ids.EVENTS });
     if (!events) return;
     events.forEach(e => {
-        const eDate = new Date(e.date);
+        const eDate = date_newFromDate(new Date(e.date));
         const found = cal.find(i =>
-            i.date.getFullYear() == eDate.getFullYear()
-            && i.date.getDate() == eDate.getDate()
-            && i.date.getMonth() == eDate.getMonth()
+            i.date.year == eDate.year
+            && i.date.date == eDate.date
+            && i.date.month == eDate.month
         )
         if (found) {
             found.events = []; // vider avant pour eviter les doublons
             found.events.push(e);
         }
     })
+} tests("events_bind", function () {
+    tests_todo();
+})
 
-}
-
-function cal_weekFromNumber({ cal, weekNumber }) {
-    return cal.filter(i => i.weekNumber == weekNumber);
-}
-
-function displayWeek(weekArray) {
-    // choisir l'index 6 plutot que 0 pour le cas de la derriere de semaine de dec qui se cheveauche sur janvier. Ainsi on est sur que ce sera janvier et pas decembre
-    let display = `\n <span class="strong">${month_getName(weekArray[6].date.getMonth())}. ${weekArray[6].date.getFullYear()}</span> sem.${weekArray[6].weekNumber}\n`;
+function displayWeek(week) {
+    // checker si la semaine se chevauche sur 2 mois
+    let month1 = week[1].date.month;
+    let month2 = week[6].date.month;
+    const month1Display = month_getName(month1);
+    const month2Display = month_getName(month2);
+    const monthsDisplay = month1 != month2 ? `${month1Display}/${month2Display}` : month1Display;
+    let display = `\n <span class="strong">${monthsDisplay}. ${week[6].date.year}</span> sem.${week[6].weekNumber}\n`;
     const space = "\xa0";
-    weekArray.forEach(i => {
-        display += `\n ${day_getName(i.date.getDay())} ${i.date.getDate()}----------------------------------------------------------`;
+    week.forEach(i => {
+        display += `\n ${day_getName(i.date.day)} ${i.date.date}.${month_getName(i.date.month)}----------------------------------------------------`;
         if (i.events) {
             i.events.forEach(e => {
                 display += `\n ${space.repeat(parseInt(e.hours))}<span class="next">.${e.hours}:${e.minutes} "${e.title}"</span>`;
             })
         }
-
     });
     return display;
 }
 
-function displayMonth(monthArray) {
-    let display = `\n # ${month_getName(monthArray[0].date.getMonth())} ${monthArray[0].date.getFullYear()} `;
-    const firstMonthDay = monthArray[0].date.getDay();
-    const space = "\xa0\xa0\t";
-    let marge = "";
-    if (firstMonthDay == 0) {
-        marge = space.repeat(6);
-    } else {
-        marge = space.repeat(firstMonthDay - 1);
-    }
+function displayMonth(weeks) {
+    let display = `\n # ${month_getName(weeks[1][0].date.month)} ${weeks[1][0].date.year} `; // on prend fev pour etre sur d'avoir le bon mois et an
     display += `\nLu\tMa\tMe\tJe\tVe\tSa\tDi\n`;
-    display += ` ${marge} `;
-    monthArray.forEach(i => {
-        display += `${i.date.getDate()} \t`;
-        display += (i.date.getDay() == 0) ? "\n" : "";
+    weeks.forEach(w => {
+        w.forEach(o => {
+            display += `${o.date.date} `;
+            display += o.date.date < 10 ? "\xa0" : "";
+            display += o.date.day == 7 ? "\n" : "";
+        })
     });
     return display;
 }
 
-// #####################################################################
-
-function storage_get({ id }) {
-    const found = localStorage.getItem(id);
-    return JSON.parse(found);
-}
-function storage_add({ arrayId, newItem }) {
-    let array = storage_get({ id: arrayId });
-    if (!array) {
-        array = [];
-    }
-    array.push(newItem);
-    storage_update({ id: arrayId, value: array });
-}
-
-function storage_update({ id, value }) {
-    localStorage.removeItem(id);
-    localStorage.setItem(id, JSON.stringify(value));
-}
-
-// #####################################################################
-
-function cal_addEvent() {
-    const event = {
-        id: Date.now(),
-        title: document.getElementById("event_title").value,
-        hours: document.getElementById("event_hours").value,
-        minutes: document.getElementById("event_minutes").value,
-        note: document.getElementById("event_note").value,
-    }
-
-    const day = document.getElementById("event_day").value;
-    const month = document.getElementById("event_month").value;
-    const year = document.getElementById("event_year").value;
-
-    if (event.title && event.hours && event.minutes && day && month && year) {
-        event.date = date_newDate({ day, month, year });
-        storage_add({ arrayId: "events", newItem: event });
-        location.reload();
-    }
-}
-
-function action_nextWeek() {
-    const metaWeek = storage_get({ id: "week" });
-    let week;
-    if (metaWeek.weekNumber == 52) {
-        // recuperer une partie de la derniere semaine de décembre
-        const weekPartDec = cal_weekFromNumber({
-            cal: calCurrentYear,
-            weekNumber: parseInt(metaWeek.weekNumber) + 1
-        });
-
-        // recuperer le fin de semaine au debut du mois de janvier de l'année suivante
-        calCurrentYear = cal_buildYear(parseInt(metaWeek.year + 1));
-        metaWeek.weekNumber = 0;
-        const weekPartJan = cal_weekFromNumber({
-            cal: calCurrentYear,
-            weekNumber: parseInt(metaWeek.weekNumber) + 1
-        });
-
-        // fusionner les 2 parties
-        week = weekPartDec.concat(weekPartJan);
-    } else {
-        week = cal_weekFromNumber({
-            cal: calCurrentYear,
-            weekNumber: parseInt(metaWeek.weekNumber) + 1
-        });
-    }
-
-    loadWeek({ week });
-}
-
-function action_prevWeek() {
-    const metaWeek = storage_get({ id: "week" });
-    let week;
-    if (metaWeek.weekNumber == 2) {
-        // recuperer une partie de la fin de semaine de janv de l'an courrante
-        const weekPartJan = cal_weekFromNumber({
-            cal: calCurrentYear,
-            weekNumber: 1
-        });
-
-        // recuperer le debut de semaine de fin dec de l'an precedente
-        calPrevYear = cal_buildYear(parseInt(metaWeek.year - 1)); // on recupere la partie de week sans changer pas d'année
-        const weekPartDec = cal_weekFromNumber({
-            cal: calPrevYear,
-            weekNumber: 53 // la semaine 53 n'existe pas. Elle est fusionnée avec la semaine 1 de janv
-        });
-
-        // fusionner les 2 parties
-        week = weekPartDec.concat(weekPartJan);
-    }
-    else {
-        if (metaWeek.weekNumber == 1) {
-            metaWeek.weekNumber = 53; // car pas de semaine 0 et 53 - 1 = 52
-            calCurrentYear = cal_buildYear(parseInt(metaWeek.year - 1)); // passer à l'année d'avant
-        }
-        week = cal_weekFromNumber({
-            cal: calCurrentYear,
-            weekNumber: parseInt(metaWeek.weekNumber) - 1
-        });
-    }
-
-    loadWeek({ week });
-}
-
-// ############################################################################
-
+/** Charge les events de la semaine puis l'affiche. */
 function loadWeek({ week }) {
-    bind_events(week);
+    events_bind(week);
     document.getElementById("current_week").innerHTML = displayWeek(week);
-    storage_update({
-        id: "week", value: {
-            weekNumber: week[6].weekNumber,
-            year: week[6].date.getFullYear()
-        }
-    })
+    storage_update({ id: storage_ids.WEEK_LIMITS, value: { day1: week[0].date, day7: week[6].date } });
 }
 
-const now = new Date(Date.now());
-// const now = date_newDate({ day: 14, month: 8, year: 2025 });
-let today = `${day_getName(now.getDay())} ${now.getDate()} ${month_getName(now.getMonth())} ${now.getFullYear()}`;
-const blankDay = day_checkBankHoliday({ day: now.getDate(), month: (now.getMonth() + 1) });
-if (blankDay) today += ` [ *${blankDay.reason}* ]`;
+// ###########################################################################
+
+const date = date_newFromDate(new Date(Date.now()))
+
+let today = `${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
+const blankDay = date_isBankHoliday({ day: date.date, month: (date.month + 1) });
+today += blankDay ? ` [ *${blankDay.reason}* ]` : "";
+
 document.getElementById("today").innerText = today;
 
-let calCurrentYear = cal_buildYear(now.getFullYear());
+let CURRENT_YEAR_CAL = cal_buildYear(date.year);
 
-document.getElementById("current_month").innerText =
-    displayMonth(
-        cal_getMonth({ cal: calCurrentYear, month: now.getMonth() })
+document.getElementById("current_month").innerText = displayMonth(
+    cal_monthWeeks({ cal: CURRENT_YEAR_CAL, month: date.month })
+)
+
+for (let i = 1; i <= 12; i++) {
+    document.getElementById("month_" + i).innerText = displayMonth(
+        cal_monthWeeks({ cal: CURRENT_YEAR_CAL, month: i })
     )
-for (let i = 0; i < 12; i++) {
-    document.getElementById("month_" + (i + 1)).innerText =
-        displayMonth(
-            cal_getMonth({ cal: calCurrentYear, month: i })
-        )
 }
 
-loadWeek({
-    week: cal_weekFromDate({ cal: calCurrentYear, date: now }),
-    date: now
-});
-
-
+loadWeek({ week: cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date }) });

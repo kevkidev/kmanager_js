@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
     <title>Planning</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,6 +14,7 @@
             <button id="btn_add_event" onclick="showFormAddEvent(event)">New</button>
             <button id="btn_show_month" onclick="showCal(event)">Cal</button>
             <button id="btn_current_week" onclick="showWeek(event)">Planning</button>
+            <span>v1.0.0-beta (by Kevkidev)</span>
         </div>
         <div id="today"></div><br>
         <div id="form_add_event" hidden>
@@ -28,10 +29,9 @@
             <input type="number" step="1" min="0" max="59" id="event_minutes">
             <br>
             Note: <textarea id="event_note" rows="3" cols="50"></textarea><br>
-            <button onclick="cal_addEvent()">OK</button>
+            <button onclick="action_addEvent()">OK</button>
             <br>
             <div id="current_month"></div>
-
         </div>
         <div id="cal" hidden>
             <div class="three_month">
@@ -56,36 +56,37 @@
             </div>
         </div>
         <div id="planning">
-            <div class="btn_mois">
-
-            </div>
+            <div class="btn_mois"></div>
             <pre id="current_week"></pre>
             <br>
             <div class="panel">
-                <button onclick="action_prevWeek()">...Prev</button>
-                <button onclick="action_nextWeek()">Next...</button>
-                <select id="search_mois">
-                    <option value="0">Jan</option>
-                    <option value="1">Fév</option>
-                    <option value="2">Mars</option>
-                    <option value="3">Avr</option>
-                    <option value="4">Mai</option>
-                    <option value="5">Juin</option>
-                    <option value="6">Juil</option>
-                    <option value="7">Août</option>
-                    <option value="8">Sept</option>
-                    <option value="9">Oct</option>
-                    <option value="10">Nov</option>
-                    <option value="11">Déc</option>
+                <button onclick="action_switchWeek(-1)">...Prev</button>
+                <button onclick="action_switchWeek(1)">Next...</button>
+                <select id="search_month">
+                    <option value="1">Jan</option>
+                    <option value="2">Fév</option>
+                    <option value="3">Mars</option>
+                    <option value="4">Avr</option>
+                    <option value="5">Mai</option>
+                    <option value="6">Juin</option>
+                    <option value="7">Juil</option>
+                    <option value="8">Août</option>
+                    <option value="9">Sept</option>
+                    <option value="10">Oct</option>
+                    <option value="11">Nov</option>
+                    <option value="12">Déc</option>
                 </select>
                 <input type="number" step="1" min="2020" max="2121" id="search_year">
-                <button onclick="search()">Go</button>
-
+                <button onclick="action_search()">Go</button>
             </div>
         </div>
     </div>
 
+    <script src="tests.js"></script>
+    <script src="core.js"></script>
+    <script src="storage.js"></script>
     <script src="main.js"></script>
+    <script src="controller.js"></script>
     <script>
         function resetAll() {
             document.getElementById("planning").style.display = "none";
@@ -100,16 +101,16 @@
             resetAll();
             document.getElementById("planning").style.display = "block";
         }
-
         function showCal() {
             resetAll();
             document.getElementById("cal").style.display = "block";
         }
-
         document.getElementById("search_year").value = (new Date(Date.now())).getFullYear();
         document.getElementById("event_year").value = (new Date(Date.now())).getFullYear();
         document.getElementById("event_month").value = (new Date(Date.now())).getMonth() + 1;
         document.getElementById("event_minutes").value = 0;
+
+        tests_stats();
     </script>
 </body>
 
