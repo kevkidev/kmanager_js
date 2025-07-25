@@ -6,35 +6,39 @@
       font-size: 10px;
   }
 
-  input,
-  button {
+  button,
+  input {
       all: unset;
       text-align: center;
       padding-top: 8px;
-      padding-bottom: 8px;
       margin-bottom: 5px;
-      min-width: 35px;
-      border: none;
+      min-width: 20px;
+  }
+
+  textarea {
+      all: unset;
+      width: 100%;
   }
 
   input,
   textarea {
-      border-bottom: 1px solid black;
-      color: blue;
+      border-bottom: 1px solid rgb(189, 189, 189);
+      color: rgb(79, 43, 223);
   }
 
   button {
-      padding-right: 10px;
-      padding-left: 10px;
-      background: none;
-      font-weight: bolder;
-      background-color: rgb(213, 213, 213);
-      padding: 15px;
+      background-color: rgb(225, 225, 225);
+      padding: 5px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      margin-right: 5px;
+      border-radius: 3px;
+      font-weight: bold;
   }
 
   select {
       padding: 8px;
-      color: blue;
+      color: rgb(79, 43, 223);
   }
 
   select,
@@ -42,6 +46,7 @@
   input {
       /* pour eviter que IOS zoom la page si < 16px  */
       font-size: 16px;
+      border-radius: 3px;
   }
 
   .hidden {
@@ -86,7 +91,7 @@
   }
 
   #event_title {
-      min-width: 250px;
+      width: 100%;
       text-align: left;
   }
 

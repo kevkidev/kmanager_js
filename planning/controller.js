@@ -1,3 +1,32 @@
+function resetAll() {
+    document.getElementById("planning").style.display = "none";
+    document.getElementById("cal").style.display = "none";
+    document.getElementById("form_add_event").style.display = "none";
+}
+
+function showFormAddEvent(event) {
+    document.getElementById("event_hours").value = null;
+    document.getElementById("event_day").value = null;
+    document.getElementById("event_title").value = null;
+    document.getElementById("event_note").value = null;
+    document.getElementById("event_year").value = (new Date(Date.now())).getFullYear();
+    document.getElementById("event_month").value = (new Date(Date.now())).getMonth() + 1;
+    document.getElementById("event_minutes").value = 0;
+    resetAll();
+    document.getElementById("form_add_event").style.display = "block";
+}
+function showWeek() {
+    resetAll();
+    document.getElementById("planning").style.display = "block";
+}
+function showCal() {
+    resetAll();
+    document.getElementById("cal").style.display = "block";
+}
+
+document.getElementById("search_year").value = (new Date(Date.now())).getFullYear();
+
+
 function action_addEvent() {
     const event = {
         id: Date.now(),
@@ -12,9 +41,18 @@ function action_addEvent() {
     const year = document.getElementById("event_year").value;
 
     if (event.title && event.hours && event.minutes && day && month && year) {
-        event.date = date_new({ day, month, year }).object;
+        const date = date_new({ day, month, year });
+        event.date = date.object;
         storage_add({ arrayId: storage_ids.EVENTS, newItem: event });
-        location.reload();
+
+        if (date.year != CURRENT_YEAR_CAL.year) { // la week dans une autre année
+            CURRENT_YEAR_CAL = cal_buildYear(date.year);
+        }
+        console.log(date.year);
+
+        const week = cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date });
+        loadWeek({ week });
+        showWeek();
     }
 }
 
@@ -27,7 +65,7 @@ function action_switchWeek(direction) {
     const date = new Date(dateRef);
     date.setDate(date.getDate() + direction);
     const switchDate = date_newFromDate(date);
-    if (switchDate.year != currentYear) { // la semaine suivante est dans l'année suivante ou precedante
+    if (switchDate.year != currentYear) { // la next/prev week est dans l'année suivante ou precedante
         CURRENT_YEAR_CAL = cal_buildYear(currentYear + direction);
     }
     const switchWeek = cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date: switchDate });

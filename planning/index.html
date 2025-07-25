@@ -11,25 +11,25 @@
 
 <body>
     <div id="container">
-        <span>Planning v1.0.1-beta (by Kevkidev)</span>
+        <span>Planning v1.0.2-beta (by Kevkidev)</span>
         <div class="menu">
-            <button id="btn_add_event" onclick="showFormAddEvent(event)">New</button>
-            <button id="btn_show_month" onclick="showCal(event)">Cal</button>
-            <button id="btn_current_week" onclick="showWeek(event)">Planning</button>
+            <button id="btn_add_event" onclick="showFormAddEvent(event)">+</button>
+            <button id="btn_show_month" onclick="showCal(event)">#</button>
+            <button id="btn_current_week" onclick="showWeek(event)">!</button>
         </div>
         <div id="today"></div><br>
         <div id="form_add_event" hidden>
             Quoi : <br>
             <input type="text" id="event_title"><br>
-            Date :
-            <input type="number" step="1" min="1" max="31" id="event_day"> .
-            <input type="number" step="1" min="1" max="12" id="event_month"> .
-            <input type="number" step="1" min="2020" max="2121" id="event_year">
-            Horaire :
-            <input type="number" step="1" min="0" max="23" id="event_hours"> :
-            <input type="number" step="1" min="0" max="59" id="event_minutes">
+            Le :
+            <input type="number" step="1" min="2020" max="2121" id="event_year" placeholder="yyyy">.
+            <input type="number" step="1" min="1" max="12" id="event_month" placeholder="m">.
+            <input type="number" step="1" min="1" max="31" id="event_day" placeholder="j">
+            à :
+            <input type="number" step="1" min="0" max="23" id="event_hours" placeholder="h"> :
+            <input type="number" step="1" min="0" max="59" id="event_minutes" placeholder="min">
             <br>
-            Notes: <textarea id="event_note" rows="3" cols="39"></textarea><br>
+            Notes: <textarea id="event_note" rows="3" cols="37"></textarea><br>
             <button onclick="action_addEvent()">OK</button>
             <br>
             <div id="current_month"></div>
@@ -61,8 +61,9 @@
             <pre id="current_week"></pre>
             <br>
             <div class="panel">
-                <button onclick="action_switchWeek(-1)">...Prev</button>
-                <button onclick="action_switchWeek(1)">Next...</button>
+                <button onclick="action_switchWeek(-1)">-1</button>
+                <button onclick="action_switchWeek(-1)">0</button>
+                <button onclick="action_switchWeek(1)">1+</button>
                 <select id="search_month">
                     <option value="1">Jan</option>
                     <option value="2">Fév</option>
@@ -78,7 +79,7 @@
                     <option value="12">Déc</option>
                 </select>
                 <input type="number" step="1" min="2020" max="2121" id="search_year">
-                <button onclick="action_search()">Go</button>
+                <button onclick="action_search()">?</button>
             </div>
         </div>
     </div>
@@ -88,31 +89,6 @@
     <script src="storage.js"></script>
     <script src="main.js"></script>
     <script src="controller.js"></script>
-    <script>
-        function resetAll() {
-            document.getElementById("planning").style.display = "none";
-            document.getElementById("cal").style.display = "none";
-            document.getElementById("form_add_event").style.display = "none";
-        }
-        function showFormAddEvent(event) {
-            resetAll();
-            document.getElementById("form_add_event").style.display = "block";
-        }
-        function showWeek() {
-            resetAll();
-            document.getElementById("planning").style.display = "block";
-        }
-        function showCal() {
-            resetAll();
-            document.getElementById("cal").style.display = "block";
-        }
-        document.getElementById("search_year").value = (new Date(Date.now())).getFullYear();
-        document.getElementById("event_year").value = (new Date(Date.now())).getFullYear();
-        document.getElementById("event_month").value = (new Date(Date.now())).getMonth() + 1;
-        document.getElementById("event_minutes").value = 0;
-
-        tests_stats();
-    </script>
 </body>
 
 </html>

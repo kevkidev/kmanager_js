@@ -1,6 +1,7 @@
 function events_bind(cal) {
     const events = storage_get({ id: storage_ids.EVENTS });
     if (!events) return;
+    cal.forEach(d => d.events = []); // pour vider les events deja presents et eviter les doublons
     events.forEach(e => {
         const eDate = date_newFromDate(new Date(e.date));
         const found = cal.find(i =>
@@ -9,7 +10,6 @@ function events_bind(cal) {
             && i.date.month == eDate.month
         )
         if (found) {
-            found.events = []; // vider avant pour eviter les doublons
             found.events.push(e);
         }
     })
@@ -80,3 +80,5 @@ for (let i = 1; i <= 12; i++) {
 }
 
 loadWeek({ week: cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date }) });
+
+tests_stats();
