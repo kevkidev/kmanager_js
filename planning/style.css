@@ -17,7 +17,8 @@
       border: none;
   }
 
-  input {
+  input,
+  textarea {
       border-bottom: 1px solid black;
       color: blue;
   }
@@ -36,11 +37,19 @@
       color: blue;
   }
 
+  select,
+  textarea,
+  input {
+      /* pour eviter que IOS zoom la page si < 16px  */
+      font-size: 16px;
+  }
+
   .hidden {
       display: none;
   }
 
   .menu {
+      margin-top: 3px;
       margin-bottom: 5px;
   }
 
@@ -84,5 +93,5 @@
   #today {
       width: fit-content;
       padding: 5 px;
-      background-color: rgb(255, 255, 155);
+      background-color: rgb(215, 255, 173);
   }

@@ -27,7 +27,7 @@ function displayWeek(week) {
     let display = `\n <span class="strong">${monthsDisplay}. ${week[6].date.year}</span> sem.${week[6].weekNumber}\n`;
     const space = "\xa0";
     week.forEach(i => {
-        display += `\n ${day_getName(i.date.day)} ${i.date.date}.${month_getName(i.date.month)}----------------------------------------------------`;
+        display += `\n ${day_getName(i.date.day)} ${i.date.date}.${month_getName(i.date.month)}--------------------------------------------------`;
         if (i.events) {
             i.events.forEach(e => {
                 display += `\n ${space.repeat(parseInt(e.hours))}<span class="next">.${e.hours}:${e.minutes} "${e.title}"</span>`;
@@ -61,7 +61,7 @@ function loadWeek({ week }) {
 
 const date = date_newFromDate(new Date(Date.now()))
 
-let today = `${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
+let today = `Aujourd'hui : ${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
 const blankDay = date_isBankHoliday({ day: date.date, month: (date.month + 1) });
 today += blankDay ? ` [ *${blankDay.reason}* ]` : "";
 

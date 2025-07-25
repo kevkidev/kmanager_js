@@ -3,18 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <!-- maximum-scale=1.0, user-scalable=0 pour eviter le auto zoom quand on focus dans un input -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Planning</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div id="container">
+        <span>Planning v1.0.1-beta (by Kevkidev)</span>
         <div class="menu">
             <button id="btn_add_event" onclick="showFormAddEvent(event)">New</button>
             <button id="btn_show_month" onclick="showCal(event)">Cal</button>
             <button id="btn_current_week" onclick="showWeek(event)">Planning</button>
-            <span>v1.0.0-beta (by Kevkidev)</span>
         </div>
         <div id="today"></div><br>
         <div id="form_add_event" hidden>
@@ -28,7 +29,7 @@
             <input type="number" step="1" min="0" max="23" id="event_hours"> :
             <input type="number" step="1" min="0" max="59" id="event_minutes">
             <br>
-            Note: <textarea id="event_note" rows="3" cols="50"></textarea><br>
+            Notes: <textarea id="event_note" rows="3" cols="39"></textarea><br>
             <button onclick="action_addEvent()">OK</button>
             <br>
             <div id="current_month"></div>
