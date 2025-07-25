@@ -10,7 +10,7 @@
   input {
       all: unset;
       text-align: center;
-      padding-top: 8px;
+      padding-top: 15px;
       margin-bottom: 5px;
       min-width: 20px;
   }
@@ -27,7 +27,7 @@
   }
 
   button {
-      background-color: rgb(225, 225, 225);
+      background-color: rgb(204, 204, 204);
       padding: 5px;
       padding-top: 10px;
       padding-bottom: 10px;
@@ -47,6 +47,18 @@
       /* pour eviter que IOS zoom la page si < 16px  */
       font-size: 16px;
       border-radius: 3px;
+  }
+
+  .bigger {
+      font-weight: bolder;
+  }
+
+  .bold {
+      font-weight: bolder;
+  }
+
+  .italic {
+      font-style: italic;
   }
 
   .hidden {
@@ -72,7 +84,7 @@
       color: rgb(44, 44, 44);
   }
 
-  .next {
+  .soon {
       background-color: rgb(226, 255, 182);
   }
 
@@ -84,6 +96,10 @@
   .panel {
       position: fixed;
       bottom: 0px;
+      left: 0px;
+      width: 100%;
+      background-color: rgb(229, 229, 229);
+      padding: 3px;
   }
 
   #container {
@@ -99,4 +115,15 @@
       width: fit-content;
       padding: 5 px;
       background-color: rgb(215, 255, 173);
+  }
+
+  #select_events {
+      max-width: 220px;
+  }
+
+  #event_details {
+      margin: 20px;
+      padding: 5px;
+      border: solid 1px rgb(192, 192, 192);
+      border-radius: 3px;
   }

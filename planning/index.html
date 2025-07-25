@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- maximum-scale=1.0, user-scalable=0 pour eviter le auto zoom quand on focus dans un input -->
+    <!-- maximum-scale=1.0, user-scalable=no pour eviter le auto zoom quand on focus dans un input -->
+    <!-- il est possible qu'il faille passer la police a 16px pour les input à cause du zoom auto sur IOS -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Planning</title>
     <link rel="stylesheet" href="style.css">
@@ -11,11 +12,11 @@
 
 <body>
     <div id="container">
-        <span>Planning v1.0.2-beta (by Kevkidev)</span>
+        <span>Planning v1.1.0-beta (by Kevkidev)</span>
         <div class="menu">
             <button id="btn_add_event" onclick="showFormAddEvent(event)">+</button>
+            <button id="btn_current_week" onclick="showWeek(event)">~</button>
             <button id="btn_show_month" onclick="showCal(event)">#</button>
-            <button id="btn_current_week" onclick="showWeek(event)">!</button>
         </div>
         <div id="today"></div><br>
         <div id="form_add_event" hidden>
@@ -59,8 +60,15 @@
         <div id="planning">
             <div class="btn_mois"></div>
             <pre id="current_week"></pre>
+            <pre id="event_details" hidden></pre>
             <br>
             <div class="panel">
+                <select id="select_events" onchange="action_eventDetails()"></select>
+                <button onclick="action_eventEdit()">§</button>
+                <button onclick="action_eventCopy()">||</button>
+                <button onclick="action_eventDelete()">¤</button>
+                <br>
+
                 <button onclick="action_switchWeek(-1)">-1</button>
                 <button onclick="action_switchWeek(-1)">0</button>
                 <button onclick="action_switchWeek(1)">1+</button>

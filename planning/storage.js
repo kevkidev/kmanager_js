@@ -1,6 +1,7 @@
 const storage_ids = {
     EVENTS: "events", // liste de tous les events
     WEEK_LIMITS: "calYearIndex", // date du premier jour de la semaine
+    EVENTS_BKP: "eventsBkp_"
 }
 
 function storage_get({ id }) {

@@ -59,6 +59,8 @@ function action_addEvent() {
 /** Avance ou recule d'une semaine 
  * @param direction Selon si action next ou prev direction = 1 ou -1 */
 function action_switchWeek(direction) {
+    // masquer les details
+    document.getElementById("event_details").style.display = "none";
     const currentYear = CURRENT_YEAR_CAL.year;
     const weekLimits = storage_get({ id: storage_ids.WEEK_LIMITS });
     const dateRef = direction == -1 ? weekLimits.day1.object : weekLimits.day7.object;
@@ -79,4 +81,57 @@ function action_search() {
     CURRENT_YEAR_CAL = cal_buildYear(year);
     const week = cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date: date_new({ day: 1, month, year }) });
     loadWeek({ week });
+}
+
+function action_eventDetails() {
+    const r = eventReader();
+    if (!r) return;
+    r.divDetails.style.display = "block";
+    let display = "";
+    display += `<span class="italic">Quoi:</span> <span class="bigger soon">"${r.e.title}"</span>\n`;
+    display += `<span class="italic">Date:</span> ${r.weekDay} <span class="soon">${r.d.date} ${r.monthString}</span> (${r.d.date}.${r.d.month}.${r.d.year})\n`;
+    display += `<span class="italic">Horaire:</span> <span class="soon">${r.e.hours}:${r.e.minutes}</span>\n`;
+    display += `<span class="italic">Notes:</span>\n<span class="soon">"${r.e.note}"<span>\n`;
+    r.divDetails.innerHTML = display;
+}
+
+function action_eventDelete() {
+    const r = eventReader();
+    if (!r) return;
+    let display = "";
+    display += `"${r.e.title}"\n`;
+    display += `Date: ${r.weekDay} ${r.d.date} ${r.monthString} (${r.d.date}.${r.d.month}.${r.d.year})\n`;
+    display += `Horaire: ${r.e.hours}:${r.e.minutes}\n`;
+    display += `Notes:\n"${r.e.note}"\n`;
+    // il faut confirmer 2 fois pour effectuer la suppression
+    if (confirm("1/2 Comfirmer pour supprimer l'event:\n\n" + display)) {
+        if (confirm("2/2 Confirmer à nouveau pour supprimer l'event.")) {
+            // creer un bkp des events en cas de besoin
+            storage_update({ id: storage_ids.EVENTS_BKP + Date.now(), value: r.events });
+            r.events.splice(r.eventIndex, 1); // retirer l'event de la liste
+            storage_update({ id: storage_ids.EVENTS, value: r.events });
+            // recharger la week
+            const week = cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date: r.d });
+            loadWeek({ week });
+            // masquer les details
+            r.divDetails.style.display = "none";
+        }
+    }
+}
+
+function eventReader() {
+    const eventId = document.getElementById("select_events").value;
+    const divDetails = document.getElementById("event_details");
+    if (!eventId) {
+        divDetails.style.display = "none";
+        return;
+    }
+    const events = storage_get({ id: storage_ids.EVENTS });
+    const eventIndex = events.findIndex(e => e.id == eventId);
+    const e = events[eventIndex];
+    const date = date_newFromDate(new Date(e.date));
+    const weekDay = day_getName(date.day);
+    const monthString = day_getName(date.month);
+
+    return { events, eventIndex, d: date, weekDay, monthString, e, divDetails }
 }

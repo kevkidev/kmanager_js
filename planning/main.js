@@ -27,10 +27,10 @@ function displayWeek(week) {
     let display = `\n <span class="strong">${monthsDisplay}. ${week[6].date.year}</span> sem.${week[6].weekNumber}\n`;
     const space = "\xa0";
     week.forEach(i => {
-        display += `\n ${day_getName(i.date.day)} ${i.date.date}.${month_getName(i.date.month)}--------------------------------------------------`;
+        display += `\n ${day_getName(i.date.day)} <span class="bold">${i.date.date}.${month_getName(i.date.month)}</span>------------------------------------------------`;
         if (i.events) {
             i.events.forEach(e => {
-                display += `\n ${space.repeat(parseInt(e.hours))}<span class="next">.${e.hours}:${e.minutes} "${e.title}"</span>`;
+                display += `\n ${space.repeat(parseInt(e.hours))}<span class="soon">.${e.hours}:${e.minutes} "${e.title}"</span>`;
             })
         }
     });
@@ -52,9 +52,20 @@ function displayMonth(weeks) {
 
 /** Charge les events de la semaine puis l'affiche. */
 function loadWeek({ week }) {
-    events_bind(week);
+    document.getElementById("event_details").style.display = "none";
+    events_bind(week); // remplir avec les events
     document.getElementById("current_week").innerHTML = displayWeek(week);
     storage_update({ id: storage_ids.WEEK_LIMITS, value: { day1: week[0].date, day7: week[6].date } });
+
+    // remplir les options de select du panel avec les events
+    const options = [`<option value="" selected>?</option>`]; // on peut select cette valeur pour masqué les details
+    week.forEach(d => {
+        d.events.forEach(e => {
+            const date = date_newFromDate(new Date(e.date));
+            options.push(`<option value="${e.id}">${day_getName(date.day)}.${date.date} ${e.hours}:${e.minutes} "${e.title}"</option>`);
+        })
+    })
+    document.getElementById("select_events").innerHTML = options.toString();
 }
 
 // ###########################################################################
