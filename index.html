@@ -8,27 +8,30 @@
 
     <title>K_manager</title>
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div>Kmanager yeah!</div>
-    <script src="app_params.js"></script>
-    <script src="worker.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('worker.js')
-                    .then(registration => {
-                        console.log('Service Worker enregistré avec succès :', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Erreur lors de l’enregistrement du Service Worker :', error);
-                    });
-            });
-        }
+    <div>Kmanager <span id="app_version"></span> (by <span id="app_author"></span>)
+        <script src="worker.js"></script>
+        <script>
+            document.getElementById('app_version').innerText = localStorage.getItem('app_version');
+            document.getElementById('app_author').innerText = localStorage.getItem('app_author');
 
-    </script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('worker.js')
+                        .then(registration => {
+                            console.log('Service Worker enregistré avec succès :', registration.scope);
+                            localStorage.setItem("app_version", APP.version);
+                            localStorage.setItem("app_author", APP.author);
+                        })
+                        .catch(error => {
+                            console.log('Erreur lors de l’enregistrement du Service Worker :', error);
+                        });
+                });
+            }
+
+        </script>
 </body>
 
 </html>

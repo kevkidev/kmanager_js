@@ -1,3 +1,8 @@
+const APP = {
+    version: "v1.5.0-beta",
+    author: "Kevkidev",
+}
+
 const CACHE_NAME = 'kmanager-cache-' + APP.version;
 const FILES_TO_CACHE = [ // liste des fichiers que le service worker doit mettre en cache au moment de l'installation.
     'index.html',

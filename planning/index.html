@@ -12,7 +12,7 @@
 
 <body>
     <div id="container">
-        <div>Planning <span id="appVersion"></span> (by <span id="appAuthor"></span>)
+        <div>Planning <span id="app_version"></span> (by <span id="app_author"></span>)
         </div>
         <div class="menu">
             <button id="btn_add_event" onclick="showFormAddEvent(event)">+</button>
@@ -75,9 +75,9 @@
                 <button onclick="action_switchWeek(-1)">-1</button>
                 <button onclick="action_currentWeek()">0</button>
                 <button onclick="action_switchWeek(1)">1+</button>
-                &nbsp;&nbsp;
+
                 <select id="search_date" onchange="action_search()"></select>
-                <select id="search_month">
+                <select id="search_month" onchange="action_search()">
                     <option value="1">Jan</option>
                     <option value="2">Fév</option>
                     <option value="3">Mars</option>
@@ -91,12 +91,10 @@
                     <option value="11">Nov</option>
                     <option value="12">Déc</option>
                 </select>
-                <input type="number" step="1" min="2020" max="2121" id="search_year">
+                <select id="search_year" onchange="action_search()"></select>
             </div>
         </div>
     </div>
-
-    <script src="../app_params.js"></script>
     <script src="tests.js"></script>
     <script src="core.js"></script>
     <script src="storage.js"></script>

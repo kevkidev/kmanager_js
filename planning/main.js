@@ -84,13 +84,19 @@ function loadWeek({ week }) {
 }
 
 // ###########################################################################
-document.getElementById("appVersion").innerText = APP.version;
-document.getElementById("appAuthor").innerText = APP.author;
+document.getElementById('app_version').innerText = localStorage.getItem('app_version');
+document.getElementById('app_author').innerText = localStorage.getItem('app_author');
 
 const date = date_newFromDate(new Date(Date.now()))
 
-document.getElementById("search_year").value = date.year;
 let options = "";
+for (let i = 1970; i <= 2121; i++) {
+    const selected = i == date.year ? "selected" : "";
+    options += `<option value="${i}" ${selected}>${i}</option>`
+}
+document.getElementById("search_year").innerHTML = options;
+
+options = "";
 for (let i = 1; i <= 28; i++) {
     const selected = i == 15 ? "selected" : "";
     options += `<option value="${i}" ${selected}>${i}</option>`

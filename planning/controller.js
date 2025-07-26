@@ -25,6 +25,7 @@ function showFormAddEvent({ editingEvent, edate }) {
 function showWeek() {
     resetAll();
     document.getElementById("planning").style.display = "block";
+    document.getElementById("search_year").value = (new Date(Date.now())).getFullYear();
 }
 
 function showCal() {
@@ -105,15 +106,8 @@ function action_switchWeek(direction) {
 /** Récupere la premiere semaine du mois recherché. */
 function action_search() {
     const month = parseInt(document.getElementById("search_month").value);
-
     let year = parseInt(document.getElementById("search_year").value);
-    year = (year > 1901) ? year : CURRENT_YEAR_CAL.year; // année actuelle par defaut
-    document.getElementById("search_year").value = year;
-
     let day = parseInt(document.getElementById("search_date").value);
-    day = (day > 28) ? 28 : day; // limité à 28. ca suffit pour trouver la dernier seamine du mois
-    document.getElementById("search_date").value = day; // affiche la limite
-
     CURRENT_YEAR_CAL = cal_buildYear(year);
     const week = cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date: date_new({ day, month, year }) });
     loadWeek({ week });

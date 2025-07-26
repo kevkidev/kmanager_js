@@ -1,5 +1,6 @@
 # Acces offline
 Lancer une fois l'app via ...kmanager/ pour lancer le webworker
+acceder au moins 1 fois a chaque index.html
 
 # Étapes pour ajouter une page web à l’écran d’accueil sur iOS :
 1.Ouvre Safari sur ton iPhone ou iPad.
