@@ -83,25 +83,24 @@ function loadWeek({ week }) {
     document.getElementById("select_events").innerHTML = options.toString();
 }
 
+function filSelectOptions({ selectId, startIndex, endIndex, selectedValue, displayMethod }) {
+    let options = "";
+    for (let i = startIndex; i <= endIndex; i++) {
+        const selected = i == selectedValue ? "selected" : "";
+        options += `<option value="${i}" ${selected}>${(displayMethod) ? displayMethod(i) : i}</option>`
+    }
+    document.getElementById(selectId).innerHTML = options;
+}
+
 // ###########################################################################
 document.getElementById('app_version').innerText = localStorage.getItem('app_version');
 document.getElementById('app_author').innerText = localStorage.getItem('app_author');
 
 const date = date_newFromDate(new Date(Date.now()))
 
-let options = "";
-for (let i = 1970; i <= 2121; i++) {
-    const selected = i == date.year ? "selected" : "";
-    options += `<option value="${i}" ${selected}>${i}</option>`
-}
-document.getElementById("search_year").innerHTML = options;
-
-options = "";
-for (let i = 1; i <= 28; i++) {
-    const selected = i == 15 ? "selected" : "";
-    options += `<option value="${i}" ${selected}>${i}</option>`
-}
-document.getElementById("search_date").innerHTML = options;
+filSelectOptions({ selectId: "search_year", startIndex: 1970, endIndex: 2121, selectedValue: date.year });
+filSelectOptions({ selectId: "search_month", startIndex: 1, endIndex: 12, selectedValue: date.month, displayMethod: prefixWithZero });
+filSelectOptions({ selectId: "search_date", startIndex: 1, endIndex: 28, selectedValue: 15, displayMethod: prefixWithZero });
 
 let today = `Aujourd'hui : ${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
 const blankDay = date_isBankHoliday({ day: date.date, month: date.month });

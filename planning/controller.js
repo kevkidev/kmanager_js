@@ -10,11 +10,12 @@ function resetAll() {
 function showFormAddEvent({ editingEvent, edate }) {
     const e = editingEvent;
     const d = edate;
-    document.getElementById("event_hours").value = e ? e.hours : null;
-    document.getElementById("event_minutes").value = e ? e.minutes : null;
-    document.getElementById("event_year").value = d ? d.year : (new Date(Date.now())).getFullYear();
-    document.getElementById("event_month").value = d ? d.month : (new Date(Date.now())).getMonth() + 1;
-    document.getElementById("event_day").value = d ? d.date : null;
+    filSelectOptions({ selectId: "event_hours", startIndex: 0, endIndex: 23, selectedValue: (e ? e.hours : null), displayMethod: prefixWithZero });
+    filSelectOptions({ selectId: "event_minutes", startIndex: 0, endIndex: 59, selectedValue: (e ? e.minutes : null), displayMethod: prefixWithZero });
+    filSelectOptions({ selectId: "event_year", startIndex: 1970, endIndex: 2121, selectedValue: (d ? d.year : (new Date(Date.now())).getFullYear()) });
+    filSelectOptions({ selectId: "event_month", startIndex: 1, endIndex: 12, selectedValue: (d ? d.month : (new Date(Date.now())).getMonth() + 1), displayMethod: prefixWithZero });
+    filSelectOptions({ selectId: "event_day", startIndex: 1, endIndex: 31, selectedValue: (d ? d.date : null), displayMethod: prefixWithZero });
+
     document.getElementById("event_title").value = e ? e.title : null;
     document.getElementById("event_note").value = e ? e.note : null;
     resetAll();
@@ -136,8 +137,8 @@ function action_eventDetails() {
     r.divDetails.style.display = "block";
     let display = "";
     display += `<span class="italic">Quoi:</span> <span class="bigger soon">"${r.e.title}"</span>\n`;
-    display += `<span class="italic">Date:</span> ${r.weekDay} <span class="soon">${r.d.date} ${r.monthString}</span> (${r.d.date}.${r.d.month}.${r.d.year})\n`;
-    display += `<span class="italic">Horaire:</span> <span class="soon">${r.e.hours}:${r.e.minutes}</span>\n`;
+    display += `<span class="italic">Date:</span> ${r.weekDay} <span class="soon">${prefixWithZero(r.d.date)} ${r.monthString}</span> (${r.d.string})\n`;
+    display += `<span class="italic">Horaire:</span> <span class="soon">${prefixWithZero(r.e.hours)}:${prefixWithZero(r.e.minutes)}</span>\n`;
     display += `<span class="italic">Notes:</span>\n<span class="soon">"${r.e.note}"<span>\n`;
     r.divDetails.innerHTML = display;
 }
@@ -155,8 +156,8 @@ function action_eventDelete() {
     if (!r) return;
     let display = "";
     display += `"${r.e.title}"\n`;
-    display += `Date: ${r.weekDay} ${r.d.date} ${r.monthString} (${r.d.date}.${r.d.month}.${r.d.year})\n`;
-    display += `Horaire: ${r.e.hours}:${r.e.minutes}\n`;
+    display += `Date: ${r.weekDay} ${prefixWithZero(r.d.date)} ${r.monthString} (${r.d.string})\n`;
+    display += `Horaire: ${prefixWithZero(r.e.hours)}:${prefixWithZero(r.e.minutes)}\n`;
     display += `Note:\n"${r.e.note}"\n`;
     // il faut confirmer 2 fois pour effectuer la suppression
     if (confirm("Commencer la suppression de l'event ?\n\n" + display)) {

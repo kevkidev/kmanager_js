@@ -23,13 +23,14 @@
         <div id="form_add_event" hidden>
             Quoi : <br>
             <input type="text" id="event_title"><br>
-            Le :
-            <input type="number" step="1" min="2020" max="2121" id="event_year" placeholder="yyyy">.
-            <input type="number" step="1" min="1" max="12" id="event_month" placeholder="m">.
-            <input type="number" step="1" min="1" max="31" id="event_day" placeholder="j">
-            à :
-            <input type="number" step="1" min="0" max="23" id="event_hours" placeholder="h"> :
-            <input type="number" step="1" min="0" max="59" id="event_minutes" placeholder="min">
+            Date : <br>
+            <select id="event_year"></select>.
+            <select id="event_month"></select>.
+            <select id="event_day"></select>
+            <br>
+            Horaire : <br>
+            <select id="event_hours"></select> :
+            <select id="event_minutes"></select>
             <br>
             Note: <textarea id="event_note" rows="3" cols="37"></textarea><br>
             <button class="btn_edit" id="btn_addEvent" onclick="action_addEvent()">OK</button>
@@ -75,22 +76,9 @@
                 <button onclick="action_switchWeek(-1)">-1</button>
                 <button onclick="action_currentWeek()">0</button>
                 <button onclick="action_switchWeek(1)">1+</button>
-
+                &nbsp;&nbsp;&nbsp;
                 <select id="search_date" onchange="action_search()"></select>
-                <select id="search_month" onchange="action_search()">
-                    <option value="1">Jan</option>
-                    <option value="2">Fév</option>
-                    <option value="3">Mars</option>
-                    <option value="4">Avr</option>
-                    <option value="5">Mai</option>
-                    <option value="6">Juin</option>
-                    <option value="7">Juil</option>
-                    <option value="8">Août</option>
-                    <option value="9">Sept</option>
-                    <option value="10">Oct</option>
-                    <option value="11">Nov</option>
-                    <option value="12">Déc</option>
-                </select>
+                <select id="search_month" onchange="action_search()"></select>
                 <select id="search_year" onchange="action_search()"></select>
             </div>
         </div>
