@@ -102,6 +102,11 @@
       padding: 3px;
   }
 
+  .btn_edit {
+      width: 30px;
+      margin-right: 20px;
+  }
+
   #container {
       padding: 5px;
   }

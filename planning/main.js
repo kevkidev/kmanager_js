@@ -81,7 +81,7 @@ for (let i = 1; i <= 28; i++) {
 document.getElementById("search_date").innerHTML = options;
 
 let today = `Aujourd'hui : ${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
-const blankDay = date_isBankHoliday({ day: date.date, month: (date.month + 1) });
+const blankDay = date_isBankHoliday({ day: date.date, month: date.month });
 today += blankDay ? ` [ *${blankDay.reason}* ]` : "";
 
 document.getElementById("today").innerText = today;

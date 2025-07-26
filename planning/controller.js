@@ -11,7 +11,7 @@ function showFormAddEvent({ editingEvent, edate }) {
     const e = editingEvent;
     const d = edate;
     document.getElementById("event_hours").value = e ? e.hours : null;
-    document.getElementById("event_minutes").value = e ? e.minutes : 0;
+    document.getElementById("event_minutes").value = e ? e.minutes : null;
     document.getElementById("event_year").value = d ? d.year : (new Date(Date.now())).getFullYear();
     document.getElementById("event_month").value = d ? d.month : (new Date(Date.now())).getMonth() + 1;
     document.getElementById("event_day").value = d ? d.date : null;
@@ -19,6 +19,7 @@ function showFormAddEvent({ editingEvent, edate }) {
     document.getElementById("event_note").value = e ? e.note : null;
     resetAll();
     document.getElementById("form_add_event").style.display = "block";
+    document.getElementById("btn_addEvent").style.display = "inline";
 }
 function showWeek() {
     resetAll();
@@ -37,20 +38,29 @@ function action_addEvent() {
         minutes: document.getElementById("event_minutes").value,
         note: document.getElementById("event_note").value,
     }
-
+    event.minutes = (event.minutes) ? event.minutes : 0; // 0 si null
     const day = document.getElementById("event_day").value;
     const month = document.getElementById("event_month").value;
     const year = document.getElementById("event_year").value;
 
-    if (event.title && event.hours && event.minutes && day && month && year) {
-        const date = date_new({ day, month, year });
-        event.date = date.object;
+
+    if (event.title && event.hours && day && month && year) {
+
+        const cal = cal_buildYear(year);
+        const found = cal.dates.find(d => d.date.month == month && d.date.date == day); // vérifier que date existe
+        if (!found) {
+            alert("Erreur de saisie : Cette date n'existe pas!");
+            return;
+        }
+        const dateEvent = date_new({ day, month, year });
+        event.date = dateEvent.object;
         storage_add({ arrayId: storage_ids.EVENTS, newItem: event });
 
-        if (date.year != CURRENT_YEAR_CAL.year) { // la week dans une autre année
-            CURRENT_YEAR_CAL = cal_buildYear(date.year);
+        if (year != CURRENT_YEAR_CAL.year) { // la week dans une autre année
+            CURRENT_YEAR_CAL = cal;
         }
-        const week = cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date });
+
+        const week = cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date: dateEvent });
         loadWeek({ week });
         showWeek();
     }
@@ -141,7 +151,7 @@ function action_eventDelete() {
     display += `"${r.e.title}"\n`;
     display += `Date: ${r.weekDay} ${r.d.date} ${r.monthString} (${r.d.date}.${r.d.month}.${r.d.year})\n`;
     display += `Horaire: ${r.e.hours}:${r.e.minutes}\n`;
-    display += `Notes:\n"${r.e.note}"\n`;
+    display += `Note:\n"${r.e.note}"\n`;
     // il faut confirmer 2 fois pour effectuer la suppression
     if (confirm("Commencer la suppression de l'event ?\n\n" + display)) {
         if (confirm("Confirmer la suppression de l'event.")) {

@@ -150,7 +150,7 @@ function date_new({ day, month, year }) {
         month: object.getMonth() + 1, // on respect la norme ISO 8601 (mois de 1 à 12)
         date: object.getDate(),
         year: object.getFullYear(),
-        string: `${object.getFullYear()}-${object.getMonth()}-${object.getDate()}`,
+        string: `${object.getFullYear()}-${object.getMonth() + 1}-${object.getDate()}`,
     };
 } tests("date_new", function () {
     const data = [

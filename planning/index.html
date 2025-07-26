@@ -30,13 +30,13 @@
             <input type="number" step="1" min="0" max="23" id="event_hours" placeholder="h"> :
             <input type="number" step="1" min="0" max="59" id="event_minutes" placeholder="min">
             <br>
-            Notes: <textarea id="event_note" rows="3" cols="37"></textarea><br>
-            <button id="btn_addEvent" onclick="action_addEvent()">OK</button>
-            <button id="btn_editEvent1" onclick="action_confirmEditEvent()">OK</button>
-            <button id="btn_copyEvent" onclick="action_eventCopy()">OK</button>
-            <button id="btn_editEvent0" onclick="showWeek()">STOP</button>
+            Note: <textarea id="event_note" rows="3" cols="37"></textarea><br>
+            <button class="btn_edit" id="btn_addEvent" onclick="action_addEvent()">OK</button>
+            <button class="btn_edit" id="btn_editEvent1" onclick="action_confirmEditEvent()">OK</button>
+            <button class="btn_edit" id="btn_copyEvent" onclick="action_eventCopy()">OK</button>
+            <button class="btn_edit" id="btn_editEvent0" onclick="showWeek()">STOP</button>
             <br>
-            <div id="current_month"></div>
+            <pre id="current_month"></pre>
         </div>
         <div id="cal" hidden>
             <div class="three_month">
