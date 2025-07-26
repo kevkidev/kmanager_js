@@ -1,6 +1,16 @@
+function prefixWithZero(value) {
+    return (parseInt(value) < 10) ? "0" + value : value;
+}
+
+function events_sort(events) { // l' id est un time stamp donc suffit de sort par id
+    const sorted = events.sort((a, b) => a.timestamp - b.timestamp);
+    return events;
+}
+
 function events_bind(cal) {
-    const events = storage_get({ id: storage_ids.EVENTS });
+    let events = storage_get({ id: storage_ids.EVENTS });
     if (!events) return;
+    events = events_sort(events);
     cal.forEach(d => d.events = []); // pour vider les events deja presents et eviter les doublons
     events.forEach(e => {
         const eDate = date_newFromDate(new Date(e.date));
@@ -24,13 +34,16 @@ function displayWeek(week) {
     const month1Display = month_getName(month1);
     const month2Display = month_getName(month2);
     const monthsDisplay = month1 != month2 ? `${month1Display}/${month2Display}` : month1Display;
-    let display = `\n <span class="strong">${monthsDisplay}. ${week[6].date.year}</span> sem.${week[6].weekNumber}\n`;
+    let display = `\n <span class="strong">${monthsDisplay}. ${week[6].date.year}</span> sem.N°${week[6].weekNumber}\n`;
     const space = "\xa0";
     week.forEach(i => {
-        display += `\n ${day_getName(i.date.day)} <span class="bold">${i.date.date}.${month_getName(i.date.month)}</span>------------------------------------------------`;
+        const d = prefixWithZero(i.date.date);
+        display += `\n ${day_getName(i.date.day)} <span class="bold">${d}.${month_getName(i.date.month)}</span>------------------------------------------------`;
         if (i.events) {
             i.events.forEach(e => {
-                display += `\n ${space.repeat(parseInt(e.hours))}<span class="soon">.${e.hours}:${e.minutes} "${e.title}"</span>`;
+                const h = prefixWithZero(e.hours);
+                const min = prefixWithZero(e.minutes);
+                display += `\n ${space.repeat(parseInt(e.hours))}<span class="soon">.${h}:${min} "${e.title}"</span>`;
             })
         }
     });
@@ -62,13 +75,17 @@ function loadWeek({ week }) {
     week.forEach(d => {
         d.events.forEach(e => {
             const date = date_newFromDate(new Date(e.date));
-            options.push(`<option value="${e.id}">${day_getName(date.day)}.${date.date} ${e.hours}:${e.minutes} "${e.title}"</option>`);
+            const h = prefixWithZero(e.hours);
+            const min = prefixWithZero(e.minutes);
+            options.push(`<option value="${e.id}">${day_getName(date.day)}.${date.date} ${h}:${min} "${e.title}"</option>`);
         })
     })
     document.getElementById("select_events").innerHTML = options.toString();
 }
 
 // ###########################################################################
+document.getElementById("appVersion").innerText = APP.version;
+document.getElementById("appAuthor").innerText = APP.author;
 
 const date = date_newFromDate(new Date(Date.now()))
 

@@ -21,10 +21,12 @@ function showFormAddEvent({ editingEvent, edate }) {
     document.getElementById("form_add_event").style.display = "block";
     document.getElementById("btn_addEvent").style.display = "inline";
 }
+
 function showWeek() {
     resetAll();
     document.getElementById("planning").style.display = "block";
 }
+
 function showCal() {
     resetAll();
     document.getElementById("cal").style.display = "block";
@@ -43,17 +45,27 @@ function action_addEvent() {
     const month = document.getElementById("event_month").value;
     const year = document.getElementById("event_year").value;
 
-
-    if (event.title && event.hours && day && month && year) {
+    if (event.title && day && month && year) {
 
         const cal = cal_buildYear(year);
         const found = cal.dates.find(d => d.date.month == month && d.date.date == day); // vérifier que date existe
         if (!found) {
-            alert("Erreur de saisie : Cette date n'existe pas!");
+            alert("Erreur saisie:\nCette date n'existe pas!");
             return;
         }
+        // vérifier si heure correcte
+        const wrongHours = event.hours < 0 || event.hours > 23;
+        const wrongMinutes = event.minutes < 0 || event.minutes > 59;
+        if (wrongHours || wrongMinutes) {
+            alert("Erreur saisie:\nHoiraire incorrect !");
+            return;
+        }
+
         const dateEvent = date_new({ day, month, year });
         event.date = dateEvent.object;
+        event.date.setHours(event.hours); // inclure l'heure dans l'object pour faciliter le tri par timestamp 
+        event.date.setMinutes(event.minutes); // inclure les minutes dans l'object pour faciliter le tri par timestamp
+        event.timestamp = dateEvent.object.getTime(); // utile pour le tri des events
         storage_add({ arrayId: storage_ids.EVENTS, newItem: event });
 
         if (year != CURRENT_YEAR_CAL.year) { // la week dans une autre année

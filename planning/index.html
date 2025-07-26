@@ -12,7 +12,8 @@
 
 <body>
     <div id="container">
-        <span>Planning v1.2.0-beta (by Kevkidev)</span>
+        <div>Planning <span id="appVersion"></span> (by <span id="appAuthor"></span>)
+        </div>
         <div class="menu">
             <button id="btn_add_event" onclick="showFormAddEvent(event)">+</button>
             <button id="btn_current_week" onclick="showWeek(event)">~</button>
@@ -95,6 +96,7 @@
         </div>
     </div>
 
+    <script src="../app_params.js"></script>
     <script src="tests.js"></script>
     <script src="core.js"></script>
     <script src="storage.js"></script>

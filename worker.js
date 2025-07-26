@@ -1,7 +1,9 @@
-const CACHE_NAME = 'kmanager-cache-v1';
+const CACHE_NAME = 'kmanager-cache-' + APP.version;
 const FILES_TO_CACHE = [ // liste des fichiers que le service worker doit mettre en cache au moment de l'installation.
     'index.html',
     'planning/index.html', // attention : il faut bien mettre le ...index.html dans la bar d'url
+    'compta/index.html', // attention : il faut bien mettre le ...index.html dans la bar d'url
+    'notes/index.html', // attention : il faut bien mettre le ...index.html dans la bar d'url
 ];
 
 // installation
