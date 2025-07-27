@@ -147,7 +147,7 @@
   }
 
   #events {
-      height: 315px;
+      max-height: 283px;
       overflow-y: scroll;
   }
 
@@ -155,4 +155,8 @@
       text-align: left;
       width: 125px;
       margin-left: 3px;
+  }
+
+  #events_search_title {
+      width: 80%;
   }

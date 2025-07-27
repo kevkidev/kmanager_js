@@ -87,13 +87,13 @@
             </div>
         </div>
         <div id="view_events" hidden>
-            <div id="events_infos"></div>
+            <pre id="events_infos"></pre>
+            <input id="events_search_title" onkeyup="showEvents(true)" type="text" placeholder="title">
             <pre id="events"></pre>
             <div class="panel" id="events_search">
                 <select id="events_search_month" onchange="showEvents(true)"></select>
                 <select id="events_search_startYear" onchange="showEvents(true)"></select>
                 <select id="events_search_endYear" onchange="showEvents(true)"></select>
-                <input id="events_search_title" onkeyup="showEvents(true)" type="text" placeholder="title">
             </div>
         </div>
     </div>

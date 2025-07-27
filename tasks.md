@@ -1,7 +1,7 @@
 # DOING
 
-
 # TO DO
+- feat. creer un event recurent tous les X jour, mois ou année
 - fix. afficher cal du mois 
 - fix. afficher cal de l'année
 - feat. lister events par bkp 
@@ -16,6 +16,10 @@
 - enf. verifier couverture des TU 
 
 # DONE
+- fix. affichage list events
+- fix. clavier masque liste quand input => mettre input au dessus de liste
+- feat. mettre en evidence les miinutes divisible par 5 dans le select de la vue add event
+- feat. selectionner 10h par defaut dans le select de la vue add event
 - fix. btn del: remplacer ¤ par X
 - fix. css: btn plus carré
 - fix. prefixZero undefined

@@ -8,12 +8,17 @@ function $(id) {
     return document.getElementById(id);
 }
 
-function fillSelectOptions({ selectId, startIndex, endIndex, selectedValue, displayMethod }) {
+function fillSelectOptions({ selectId, startIndex, endIndex, selectedValue, displayMethod, marker }) {
     let options = "";
     for (let i = startIndex; i <= endIndex; i++) {
         const selected = i == selectedValue ? "selected" : "";
-        options += `<option value="${i}" ${selected}>${(displayMethod) ? displayMethod(i) : i}</option>`
+        let display = (displayMethod) ? displayMethod(i) : i;
+        if (marker) {
+            display = (marker.condition(i)) ? marker.value + "" + display : display;
+        }
+        options += `<option value="${i}" ${selected}>${display}</option>`
     }
+
     $(selectId).innerHTML = options;
 }
 
@@ -30,8 +35,14 @@ function resetAll() {
 function showFormAddEvent({ editingEvent, edate }) {
     const e = editingEvent;
     const d = edate;
-    fillSelectOptions({ selectId: "event_hours", startIndex: 0, endIndex: 23, selectedValue: (e ? e.hours : null), displayMethod: prefixWithZero });
-    fillSelectOptions({ selectId: "event_minutes", startIndex: 0, endIndex: 59, selectedValue: (e ? e.minutes : null), displayMethod: prefixWithZero });
+    fillSelectOptions({ selectId: "event_hours", startIndex: 0, endIndex: 23, selectedValue: (e ? e.hours : 10), displayMethod: prefixWithZero });
+    fillSelectOptions({
+        selectId: "event_minutes", startIndex: 0, endIndex: 59, selectedValue: (e ? e.minutes : null), displayMethod: prefixWithZero,
+        marker: { // on marque les minutes peut commune pour un rdv pour mettre en evidence celle divisible par 5
+            condition: (i) => (i % 5), // si reste => pas divisible par 5 
+            value: "\xa0."
+        }
+    });
     fillSelectOptions({ selectId: "event_year", startIndex: 1970, endIndex: 2121, selectedValue: (d ? d.year : (new Date(Date.now())).getFullYear()) });
     fillSelectOptions({ selectId: "event_month", startIndex: 1, endIndex: 12, selectedValue: (d ? d.month : (new Date(Date.now())).getMonth() + 1), displayMethod: prefixWithZero });
     fillSelectOptions({ selectId: "event_day", startIndex: 1, endIndex: 31, selectedValue: (d ? d.date : ((new Date(Date.now())).getDate())), displayMethod: prefixWithZero });
@@ -107,7 +118,7 @@ function showEvents(search) {
     $("events_infos").innerHTML = infos;
 
     let display = ``;
-    display += `\n<span class="bold bigger">${ref.d.year} ${month_getName(ref.d.month)}<span>`;
+    display += `\n <span class="bold bigger">${ref.d.year} ${month_getName(ref.d.month)}<span>`;
     events.forEach(e => {
         r = eventReader(e);
         d = r.displayElements;
