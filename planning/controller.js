@@ -40,7 +40,7 @@ function showFormAddEvent({ editingEvent, edate }) {
         selectId: "event_minutes", startIndex: 0, endIndex: 59, selectedValue: (e ? e.minutes : null), displayMethod: prefixWithZero,
         marker: { // on marque les minutes peut commune pour un rdv pour mettre en evidence celle divisible par 5
             condition: (i) => (i % 5), // si reste => pas divisible par 5 
-            value: "\xa0."
+            value: ".."
         }
     });
     fillSelectOptions({ selectId: "event_year", startIndex: 1970, endIndex: 2121, selectedValue: (d ? d.year : (new Date(Date.now())).getFullYear()) });
