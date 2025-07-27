@@ -2,8 +2,8 @@
   "name": "Kmanager",
   "short_name": "Kmanager",
   "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#ffffff",
+  "display": "browser",
+  "background_color": "#e5ff8a",
   "theme_color": "#000000",
   "icons": [
     {

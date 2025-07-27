@@ -1,5 +1,5 @@
 const APP = {
-    version: "v1.7.0-beta",
+    version: "v1.7.1-beta",
     author: "Kevkidev",
 }
 
