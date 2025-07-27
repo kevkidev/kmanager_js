@@ -54,6 +54,10 @@ function year_countWeeks(year) {
     });
 });
 
+function prefixWithZero(value) {
+    return (parseInt(value) < 10) ? "0" + value : value;
+}
+
 function month_countDays({ monthNumber, isLeap }) {
     // les mois vont de 1 à 12
     if (monthNumber == 2) { // si année bissextille => fevrier = 29 jours sinon 28

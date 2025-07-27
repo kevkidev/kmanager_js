@@ -1,16 +1,21 @@
-function prefixWithZero(value) {
-    return (parseInt(value) < 10) ? "0" + value : value;
-}
+
 
 function events_sort(events) { // l' id est un time stamp donc suffit de sort par id
     const sorted = events.sort((a, b) => a.timestamp - b.timestamp);
     return events;
 }
 
-function events_bind(cal) {
+/** @returns {array} */
+function getEvents() {
     let events = storage_get({ id: storage_ids.EVENTS });
     if (!events) return;
     events = events_sort(events);
+    return events;
+}
+
+function events_bind(cal) {
+    let events = getEvents();
+    if (!events) return;
     cal.forEach(d => d.events = []); // pour vider les events deja presents et eviter les doublons
     events.forEach(e => {
         const eDate = date_newFromDate(new Date(e.date));
@@ -34,7 +39,8 @@ function displayWeek(week) {
     const month1Display = month_getName(month1);
     const month2Display = month_getName(month2);
     const monthsDisplay = month1 != month2 ? `${month1Display}/${month2Display}` : month1Display;
-    let display = `\n <span class="strong">${monthsDisplay}. ${week[6].date.year}</span> sem.N°${week[6].weekNumber}\n`;
+    let display = "";
+    display += ` <span class="bold bigger">${monthsDisplay}.${week[6].date.year}</span> sem.N°${week[6].weekNumber}`;
     const space = "\xa0";
     week.forEach(i => {
         const d = prefixWithZero(i.date.date);
@@ -83,26 +89,17 @@ function loadWeek({ week }) {
     document.getElementById("select_events").innerHTML = options.toString();
 }
 
-function filSelectOptions({ selectId, startIndex, endIndex, selectedValue, displayMethod }) {
-    let options = "";
-    for (let i = startIndex; i <= endIndex; i++) {
-        const selected = i == selectedValue ? "selected" : "";
-        options += `<option value="${i}" ${selected}>${(displayMethod) ? displayMethod(i) : i}</option>`
-    }
-    document.getElementById(selectId).innerHTML = options;
-}
-
 // ###########################################################################
 document.getElementById('app_version').innerText = localStorage.getItem('app_version');
 document.getElementById('app_author').innerText = localStorage.getItem('app_author');
 
 const date = date_newFromDate(new Date(Date.now()))
 
-filSelectOptions({ selectId: "search_year", startIndex: 1970, endIndex: 2121, selectedValue: date.year });
-filSelectOptions({ selectId: "search_month", startIndex: 1, endIndex: 12, selectedValue: date.month, displayMethod: prefixWithZero });
-filSelectOptions({ selectId: "search_date", startIndex: 1, endIndex: 28, selectedValue: 15, displayMethod: prefixWithZero });
+fillSelectOptions({ selectId: "search_year", startIndex: 1970, endIndex: 2121, selectedValue: date.year });
+fillSelectOptions({ selectId: "search_month", startIndex: 1, endIndex: 12, selectedValue: date.month, displayMethod: prefixWithZero });
+fillSelectOptions({ selectId: "search_date", startIndex: 1, endIndex: 28, selectedValue: 15, displayMethod: prefixWithZero });
 
-let today = `Aujourd'hui : ${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
+let today = `~ ${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
 const blankDay = date_isBankHoliday({ day: date.date, month: date.month });
 today += blankDay ? ` [ *${blankDay.reason}* ]` : "";
 

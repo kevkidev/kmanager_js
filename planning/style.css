@@ -27,7 +27,8 @@
   }
 
   button {
-      background-color: rgb(204, 204, 204);
+      background-color: rgb(199, 199, 199);
+      width: 30px;
       padding: 5px;
       padding-top: 15px;
       padding-bottom: 15px;
@@ -37,7 +38,7 @@
   }
 
   select {
-      padding: 8px;
+      padding: 7px;
       color: rgb(79, 43, 223);
   }
 
@@ -49,12 +50,18 @@
       border-radius: 3px;
   }
 
+  hr {
+      height: 1px;
+      background-color: rgb(196, 196, 196);
+      border: none;
+  }
+
   .bigger {
-      font-weight: bolder;
+      font-size: larger;
   }
 
   .bold {
-      font-weight: bolder;
+      font-weight: bold;
   }
 
   .italic {
@@ -104,11 +111,18 @@
 
   .btn_edit {
       width: 30px;
-      margin-right: 20px;
+      margin-right: 15px;
+      margin-top: 5px;
   }
 
   #container {
       padding: 5px;
+  }
+
+  #current_week {
+      height: 220px;
+      overflow-y: scroll;
+      border: solid 2px #e7e7e7;
   }
 
   #event_title {
@@ -118,17 +132,27 @@
 
   #today {
       width: fit-content;
-      padding: 5 px;
-      background-color: rgb(215, 255, 173);
+      background-color: rgb(198, 250, 255);
   }
 
   #select_events {
-      max-width: 220px;
+      max-width: 190px;
   }
 
   #event_details {
-      margin: 20px;
+      margin-top: 2px;
+      margin-bottom: 90px;
       padding: 5px;
-      border: solid 1px rgb(192, 192, 192);
-      border-radius: 3px;
+      border: solid 1px #e7e7e7;
+  }
+
+  #events {
+      height: 315px;
+      overflow-y: scroll;
+  }
+
+  #events_search_title {
+      text-align: left;
+      width: 125px;
+      margin-left: 3px;
   }

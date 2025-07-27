@@ -15,14 +15,17 @@
         <div>Planning <span id="app_version"></span> (by <span id="app_author"></span>)
         </div>
         <div class="menu">
-            <button id="btn_add_event" onclick="showFormAddEvent(event)">+</button>
-            <button id="btn_current_week" onclick="showWeek(event)">~</button>
-            <button id="btn_show_month" onclick="showCal(event)">#</button>
+            <button id="btn_add_event" onclick="showFormAddEvent({})">+</button>
+            <button id="btn_current_week" onclick="showWeek()">~</button>
+            <button id="btn_show_events" onclick="showEvents()">%</button>
+            <button id="btn_show_month" onclick="showCal()">#</button>
         </div>
-        <div id="today"></div><br>
+        <div id="today" class="bigger bold"></div>
+        <hr>
         <div id="form_add_event" hidden>
             Quoi : <br>
-            <input type="text" id="event_title"><br>
+            <input type="text" id="event_title">
+            <br>
             Date : <br>
             <select id="event_year"></select>.
             <select id="event_month"></select>.
@@ -32,7 +35,8 @@
             <select id="event_hours"></select> :
             <select id="event_minutes"></select>
             <br>
-            Note: <textarea id="event_note" rows="3" cols="37"></textarea><br>
+            Note: <textarea id="event_note" rows="2" cols="37"></textarea>
+            <br>
             <button class="btn_edit" id="btn_addEvent" onclick="action_addEvent()">OK</button>
             <button class="btn_edit" id="btn_editEvent1" onclick="action_confirmEditEvent()">OK</button>
             <button class="btn_edit" id="btn_copyEvent" onclick="action_eventCopy()">OK</button>
@@ -71,23 +75,33 @@
                 <select id="select_events" onchange="action_eventDetails()"></select>
                 <button onclick="action_eventEdit()">§</button>
                 <button onclick="action_eventEdit(true)">||</button>
-                <button onclick="action_eventDelete()">¤</button>
+                <button onclick="action_eventDelete()">X</button>
                 <br>
                 <button onclick="action_switchWeek(-1)">-1</button>
                 <button onclick="action_currentWeek()">0</button>
                 <button onclick="action_switchWeek(1)">1+</button>
-                &nbsp;&nbsp;&nbsp;
+
                 <select id="search_date" onchange="action_search()"></select>
                 <select id="search_month" onchange="action_search()"></select>
                 <select id="search_year" onchange="action_search()"></select>
+            </div>
+        </div>
+        <div id="view_events" hidden>
+            <div id="events_infos"></div>
+            <pre id="events"></pre>
+            <div class="panel" id="events_search">
+                <select id="events_search_month" onchange="showEvents(true)"></select>
+                <select id="events_search_startYear" onchange="showEvents(true)"></select>
+                <select id="events_search_endYear" onchange="showEvents(true)"></select>
+                <input id="events_search_title" onkeyup="showEvents(true)" type="text" placeholder="title">
             </div>
         </div>
     </div>
     <script src="tests.js"></script>
     <script src="core.js"></script>
     <script src="storage.js"></script>
-    <script src="main.js"></script>
     <script src="controller.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>

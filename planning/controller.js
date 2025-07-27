@@ -1,3 +1,22 @@
+function display$(id, display) {
+    const element = document.getElementById(id);
+    element.style.display = (display) ? display : "block";
+    return element;
+}
+
+function $(id) {
+    return document.getElementById(id);
+}
+
+function fillSelectOptions({ selectId, startIndex, endIndex, selectedValue, displayMethod }) {
+    let options = "";
+    for (let i = startIndex; i <= endIndex; i++) {
+        const selected = i == selectedValue ? "selected" : "";
+        options += `<option value="${i}" ${selected}>${(displayMethod) ? displayMethod(i) : i}</option>`
+    }
+    $(selectId).innerHTML = options;
+}
+
 function resetAll() {
     document.getElementById("planning").style.display = "none";
     document.getElementById("cal").style.display = "none";
@@ -5,16 +24,17 @@ function resetAll() {
     document.getElementById("btn_editEvent1").style.display = "none";
     document.getElementById("btn_editEvent0").style.display = "none";
     document.getElementById("btn_copyEvent").style.display = "none";
+    display$("view_events", "none");
 }
 
 function showFormAddEvent({ editingEvent, edate }) {
     const e = editingEvent;
     const d = edate;
-    filSelectOptions({ selectId: "event_hours", startIndex: 0, endIndex: 23, selectedValue: (e ? e.hours : null), displayMethod: prefixWithZero });
-    filSelectOptions({ selectId: "event_minutes", startIndex: 0, endIndex: 59, selectedValue: (e ? e.minutes : null), displayMethod: prefixWithZero });
-    filSelectOptions({ selectId: "event_year", startIndex: 1970, endIndex: 2121, selectedValue: (d ? d.year : (new Date(Date.now())).getFullYear()) });
-    filSelectOptions({ selectId: "event_month", startIndex: 1, endIndex: 12, selectedValue: (d ? d.month : (new Date(Date.now())).getMonth() + 1), displayMethod: prefixWithZero });
-    filSelectOptions({ selectId: "event_day", startIndex: 1, endIndex: 31, selectedValue: (d ? d.date : null), displayMethod: prefixWithZero });
+    fillSelectOptions({ selectId: "event_hours", startIndex: 0, endIndex: 23, selectedValue: (e ? e.hours : null), displayMethod: prefixWithZero });
+    fillSelectOptions({ selectId: "event_minutes", startIndex: 0, endIndex: 59, selectedValue: (e ? e.minutes : null), displayMethod: prefixWithZero });
+    fillSelectOptions({ selectId: "event_year", startIndex: 1970, endIndex: 2121, selectedValue: (d ? d.year : (new Date(Date.now())).getFullYear()) });
+    fillSelectOptions({ selectId: "event_month", startIndex: 1, endIndex: 12, selectedValue: (d ? d.month : (new Date(Date.now())).getMonth() + 1), displayMethod: prefixWithZero });
+    fillSelectOptions({ selectId: "event_day", startIndex: 1, endIndex: 31, selectedValue: (d ? d.date : ((new Date(Date.now())).getDate())), displayMethod: prefixWithZero });
 
     document.getElementById("event_title").value = e ? e.title : null;
     document.getElementById("event_note").value = e ? e.note : null;
@@ -32,6 +52,72 @@ function showWeek() {
 function showCal() {
     resetAll();
     document.getElementById("cal").style.display = "block";
+}
+
+function showEvents(search) {
+    resetAll();
+    display$("view_events");
+
+    let events = getEvents();
+    if (!events) {
+        $("events").innerText = "Aucun event enregistré!";
+        return;
+    }
+
+    let searchInterval;
+    if (search) {
+        const year1 = $("events_search_startYear").value;
+        const year2 = $("events_search_endYear").value;
+        const month = $("events_search_month").value;
+        const title = $("events_search_title").value;
+
+        // si les années sont inversés on cherche quand meme
+        const start = (year1 <= year2) ? year1 : year2;
+        const end = (year1 >= year2) ? year1 : year2;
+
+        searchInterval = `[${prefixWithZero(month)}.${start} ~ 12.${end}]`;
+
+        events = events.filter(e => {
+            const r = eventReader(e);
+            const y = r.d.year;
+            const m = r.d.month;
+            const isDate = (y == start && m >= month) || (y > start && y <= end);
+            return isDate && r.e.title.toLowerCase().includes(title.trim().toLowerCase());
+        });
+    } else {
+        $("events_search_title").value = null;
+    }
+
+    if (events.length <= 0) {
+        $("events").innerHTML = `Pas d'events à cette période!`;
+        return;
+    }
+    let ref = eventReader(events[0]);
+    const last = eventReader(events[events.length - 1]);
+
+    fillSelectOptions({ selectId: "events_search_startYear", startIndex: 1970, endIndex: 2121, selectedValue: ref.d.year });
+    fillSelectOptions({ selectId: "events_search_endYear", startIndex: 1970, endIndex: 2121, selectedValue: last.d.year });
+    fillSelectOptions({ selectId: "events_search_month", startIndex: 1, endIndex: 12, displayMethod: prefixWithZero, selectedValue: ref.d.month });
+
+    const foundInterval = `[${prefixWithZero(ref.d.month)}.${ref.d.year} ~ 12.${last.d.year}]`;
+
+    let infos = ``;
+    infos += ` Recherche entre ${searchInterval ? searchInterval : "[1970 ~ 2121]"}...`;
+    infos += `\n ${events.length} events trouvés entre ${foundInterval}`;
+    $("events_infos").innerHTML = infos;
+
+    let display = ``;
+    display += `\n<span class="bold bigger">${ref.d.year} ${month_getName(ref.d.month)}<span>`;
+    events.forEach(e => {
+        r = eventReader(e);
+        d = r.displayElements;
+        if (r.d.year != ref.d.year || r.d.month != ref.d.month) {
+            display += `\n\n <span class="bold bigger">${r.d.year} ${month_getName(r.d.month)}<span>`;
+            ref = r;
+        }
+        display += `\n .${d.title} ${d.date} ${d.time}`;
+    })
+    $("events").innerHTML = display;
 }
 
 function action_addEvent() {
@@ -114,21 +200,29 @@ function action_search() {
     loadWeek({ week });
 }
 
-function eventReader() {
-    const eventId = document.getElementById("select_events").value;
-    const divDetails = document.getElementById("event_details");
-    if (!eventId) {
+function eventReader(e) {
+    const eventId = (e) ? null : document.getElementById("select_events").value;
+    const divDetails = (e) ? null : document.getElementById("event_details");
+    if (!eventId && !e) {
         divDetails.style.display = "none";
         return;
     }
-    const events = storage_get({ id: storage_ids.EVENTS });
-    const eventIndex = events.findIndex(e => e.id == eventId);
-    const e = events[eventIndex];
+    const events = (e) ? null : storage_get({ id: storage_ids.EVENTS });
+    const eventIndex = (e) ? null : events.findIndex(e => e.id == eventId);
+    e = (e) ? e : events[eventIndex];
+
     const date = date_newFromDate(new Date(e.date));
     const weekDay = day_getName(date.day);
     const monthString = month_getName(date.month);
 
-    return { events, eventIndex, d: date, weekDay, monthString, e, divDetails }
+    const displayElements = {
+        title: `<span class="bold soon">"${e.title}"</span>`,
+        time: `<span class="soon">${prefixWithZero(e.hours)}:${prefixWithZero(e.minutes)}</span>`,
+        date: `${weekDay} <span class="soon">${prefixWithZero(date.date)} ${monthString}</span> (${date.string})`,
+        note: `<span class="soon">"${e.note}"<span>`,
+    }
+
+    return { events, eventIndex, d: date, weekDay, monthString, e, divDetails, displayElements }
 }
 
 function action_eventDetails() {
@@ -136,7 +230,7 @@ function action_eventDetails() {
     if (!r) return;
     r.divDetails.style.display = "block";
     let display = "";
-    display += `<span class="italic">Quoi:</span> <span class="bigger soon">"${r.e.title}"</span>\n`;
+    display += `<span class="italic">Quoi:</span> <span class="bold soon">"${r.e.title}"</span>\n`;
     display += `<span class="italic">Date:</span> ${r.weekDay} <span class="soon">${prefixWithZero(r.d.date)} ${r.monthString}</span> (${r.d.string})\n`;
     display += `<span class="italic">Horaire:</span> <span class="soon">${prefixWithZero(r.e.hours)}:${prefixWithZero(r.e.minutes)}</span>\n`;
     display += `<span class="italic">Notes:</span>\n<span class="soon">"${r.e.note}"<span>\n`;
