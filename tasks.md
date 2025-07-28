@@ -1,6 +1,16 @@
 # DOING
+- fix. design plus ergonomique et plus esthetique
+- feat. vue add : limiter le nombre de char du champ titre pour que rien ne dempasse de la vue week
+- feat. afficher nom complet des jours
+- feat. afficher nom complet des mois
+- feat. pas de confirmation avant de commencer edit ou dubliquer
+- fix. vue week: cliquer sur aujourdh'hui doit reset les select de recherche à la date du jour
+- feat. clic sur un event => vue edition en readonly + menu d'edition (modifier, copier, supprimer)
+- feat. edit event depuis la vue list
 
 # TO DO
+- enf. Corrifger TU cassés
+- enf. verifier que les methode sont pure : ne pas modifier le params => clonner
 - feat. creer un event recurent tous les X jour, mois ou année
 - fix. afficher cal du mois 
 - fix. afficher cal de l'année

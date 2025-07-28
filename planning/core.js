@@ -91,8 +91,8 @@ function month_countDays({ monthNumber, isLeap }) {
 });
 
 function month_getName(monthNumber) {
-    return ["jan", "fév", "mars", "avr", "mai", "juin", "juil",
-        "août", "sept", "oct", "nov", "déc",][monthNumber - 1];
+    return ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet",
+        "Août", "Septembre", "Octobre", "Novembre", "Décembre",][monthNumber - 1];
 } tests("month_getName", function () {
     const data = [
         { month: 1, expected: "jan" },
@@ -256,7 +256,7 @@ function date_isBankHoliday({ day, month }) { // férié
 });
 
 function day_getName(dayNumber) {
-    return ["lun", "mar", "mer", "jeu", "ven", "sam", "dim"][dayNumber - 1];
+    return ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"][dayNumber - 1];
 } tests("day_getName", function () {
     const data = [
         { number: 1, expected: "lun" },

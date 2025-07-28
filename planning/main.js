@@ -13,6 +13,28 @@ function getEvents() {
     return events;
 }
 
+function clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function mapEvent(e) {
+    if (!e) return;
+    const ev = clone(e);
+    ev.date = date_newFromDate(new Date(ev.date));
+    ev.dayName = day_getName(ev.date.day);
+    ev.monthName = month_getName(ev.date.month);
+    return ev;
+}
+
+/** @returns {array} */
+function getEvent(id) {
+    let events = storage_get({ id: storage_ids.EVENTS });
+    if (!events) return;
+    let event = events.find(e => e.id == id);
+    if (event) event.index = events.indexOf(event);
+    return mapEvent(event);
+}
+
 function events_bind(cal) {
     let events = getEvents();
     if (!events) return;
@@ -38,22 +60,36 @@ function displayWeek(week) {
     let month2 = week[6].date.month;
     const month1Display = month_getName(month1);
     const month2Display = month_getName(month2);
-    const monthsDisplay = month1 != month2 ? `${month1Display}/${month2Display}` : month1Display;
-    let display = "";
-    display += ` <span class="bold bigger">${monthsDisplay}.${week[6].date.year}</span> sem.N°${week[6].weekNumber}`;
-    const space = "\xa0";
+    const monthsDisplay = month1 != month2 ? `${month1Display} & ${month2Display}` : month1Display;
+
+    $("week_month").innerText = `${monthsDisplay} ${week[6].date.year}`;
+    $("week_number").innerText = `N°${week[6].weekNumber}`;
+
+    $("week").innerHTML = null; // vider la week
+    let count = 0;
     week.forEach(i => {
-        const d = prefixWithZero(i.date.date);
-        display += `\n ${day_getName(i.date.day)} <span class="bold">${d}.${month_getName(i.date.month)}</span>------------------------------------------------`;
+        count++;
+        $("week").innerHTML += `<div class="form_group" id="week_day_${count}"></div>`;
+        $("week").innerHTML += `<div class="week_events" id="week_events_${count}"></div>`;
+
+        let weekDayHtml = `<span>${day_getName(i.date.day)} ${i.date.date} ${month_getName(i.date.month)}</span>`;
+        weekDayHtml += `<span class="form_label">${prefixWithZero(i.date.date)}/${prefixWithZero(i.date.month)}/${i.date.year}</span>`;
+        $(`week_day_${count}`).innerHTML = weekDayHtml;
+
         if (i.events) {
             i.events.forEach(e => {
                 const h = prefixWithZero(e.hours);
                 const min = prefixWithZero(e.minutes);
-                display += `\n ${space.repeat(parseInt(e.hours))}<span class="soon">.${h}:${min} "${e.title}"</span>`;
+                const marginLeft = (e.hours * 60 + e.minutes * 1) / 23; // x1 pour caster en int
+                const style = `margin-left:${marginLeft}px;`;
+                let html = `<div onclick="showEditView(${e.id})">`;
+                html += `<span style="${style}">${h}:${min}</span>`;
+                html += `<span style="${style}" class="week_events_title">${e.title}</span>`;
+                html += `<div>`;
+                $(`week_events_${count}`).innerHTML += html;
             })
         }
     });
-    return display;
 }
 
 function displayMonth(weeks) {
@@ -71,37 +107,27 @@ function displayMonth(weeks) {
 
 /** Charge les events de la semaine puis l'affiche. */
 function loadWeek({ week }) {
-    document.getElementById("event_details").style.display = "none";
     events_bind(week); // remplir avec les events
-    document.getElementById("current_week").innerHTML = displayWeek(week);
     storage_update({ id: storage_ids.WEEK_LIMITS, value: { day1: week[0].date, day7: week[6].date } });
-
-    // remplir les options de select du panel avec les events
-    const options = [`<option value="" selected>?</option>`]; // on peut select cette valeur pour masqué les details
-    week.forEach(d => {
-        d.events.forEach(e => {
-            const date = date_newFromDate(new Date(e.date));
-            const h = prefixWithZero(e.hours);
-            const min = prefixWithZero(e.minutes);
-            options.push(`<option value="${e.id}">${day_getName(date.day)}.${date.date} ${h}:${min} "${e.title}"</option>`);
-        })
-    })
-    document.getElementById("select_events").innerHTML = options.toString();
+    displayWeek(week);
+    setWeekDateSearch(week[0].date);
+    showWeek();
 }
 
+
+
 // ###########################################################################
-document.getElementById('app_version').innerText = localStorage.getItem('app_version');
+hideAll();
+display$("view_week");
+$('app_version').innerText = localStorage.getItem('app_version');
 document.getElementById('app_author').innerText = localStorage.getItem('app_author');
 
 const date = date_newFromDate(new Date(Date.now()))
+setWeekDateSearch(date);
 
-fillSelectOptions({ selectId: "search_year", startIndex: 1970, endIndex: 2121, selectedValue: date.year });
-fillSelectOptions({ selectId: "search_month", startIndex: 1, endIndex: 12, selectedValue: date.month, displayMethod: prefixWithZero });
-fillSelectOptions({ selectId: "search_date", startIndex: 1, endIndex: 28, selectedValue: 15, displayMethod: prefixWithZero });
-
-let today = `~ ${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
+let today = `${day_getName(date.day)} ${date.date} ${month_getName(date.month)} ${date.year}`;
 const blankDay = date_isBankHoliday({ day: date.date, month: date.month });
-today += blankDay ? ` [ *${blankDay.reason}* ]` : "";
+today += blankDay ? ` ~ (${blankDay.reason})` : "";
 
 document.getElementById("today").innerText = today;
 
@@ -116,7 +142,7 @@ for (let i = 1; i <= 12; i++) {
         cal_monthWeeks({ cal: CURRENT_YEAR_CAL, month: i })
     )
 }
-
 loadWeek({ week: cal_weekFromDate({ cal: CURRENT_YEAR_CAL, date }) });
+
 
 tests_stats();

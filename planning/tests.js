@@ -21,7 +21,7 @@ function it({ condition, desciption, result, expected, args }, debug) {
         if (debug) console.warn(message);
     } else {
         testFailedCounter++;
-        console.error(message);
+        if (DEBUG) console.warn(message);
     }
     return { condition, desciption, result, expected, args };
 }

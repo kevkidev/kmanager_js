@@ -11,97 +11,151 @@
 </head>
 
 <body>
-    <div id="container">
-        <div>Planning <span id="app_version"></span> (by <span id="app_author"></span>)
-        </div>
-        <div class="menu">
-            <button id="btn_add_event" onclick="showFormAddEvent({})">+</button>
-            <button id="btn_current_week" onclick="showWeek()">~</button>
-            <button id="btn_show_events" onclick="showEvents()">%</button>
-            <button id="btn_show_month" onclick="showCal()">#</button>
-        </div>
-        <div id="today" class="bigger bold"></div>
-        <hr>
-        <div id="form_add_event" hidden>
-            Quoi : <br>
-            <input type="text" id="event_title">
-            <br>
-            Date : <br>
-            <select id="event_year"></select>.
-            <select id="event_month"></select>.
-            <select id="event_day"></select>
-            <br>
-            Horaire : <br>
-            <select id="event_hours"></select> :
-            <select id="event_minutes"></select>
-            <br>
-            Note: <textarea id="event_note" rows="2" cols="37"></textarea>
-            <br>
-            <button class="btn_edit" id="btn_addEvent" onclick="action_addEvent()">OK</button>
-            <button class="btn_edit" id="btn_editEvent1" onclick="action_confirmEditEvent()">OK</button>
-            <button class="btn_edit" id="btn_copyEvent" onclick="action_eventCopy()">OK</button>
-            <button class="btn_edit" id="btn_editEvent0" onclick="showWeek()">STOP</button>
-            <br>
-            <pre id="current_month"></pre>
-        </div>
-        <div id="cal" hidden>
-            <div class="three_month">
-                <div id="month_1"></div>
-                <div id="month_2"></div>
-                <div id="month_3"></div>
-            </div>
-            <div class="three_month">
-                <div id="month_4"></div>
-                <div id="month_5"></div>
-                <div id="month_6"></div>
-            </div>
-            <div class="three_month">
-                <div id="month_7"></div>
-                <div id="month_8"></div>
-                <div id="month_9"></div>
-            </div>
-            <div class="three_month">
-                <div id="month_10"></div>
-                <div id="month_11"></div>
-                <div id="month_12"></div>
-            </div>
-        </div>
-        <div id="planning">
-            <div class="btn_mois"></div>
-            <pre id="current_week"></pre>
-            <pre id="event_details" hidden></pre>
-            <br>
-            <div class="panel">
-                <select id="select_events" onchange="action_eventDetails()"></select>
-                <button onclick="action_eventEdit()">§</button>
-                <button onclick="action_eventEdit(true)">||</button>
-                <button onclick="action_eventDelete()">X</button>
-                <br>
-                <button onclick="action_switchWeek(-1)">-1</button>
-                <button onclick="action_currentWeek()">0</button>
-                <button onclick="action_switchWeek(1)">1+</button>
+    <div class="menu">
+        <button class="menu_btn" id="btn_add_event" onclick="showEditView()">+</button>
+        <button class="menu_btn" id="btn_current_week" onclick="showWeek()">~</button>
+        <button class="menu_btn" id="btn_show_events" onclick="showEvents()">:</button>
+        <button class="menu_btn" id="btn_show_month" onclick="showCal()">#</button>
+    </div>
 
-                <select id="search_date" onchange="action_search()"></select>
-                <select id="search_month" onchange="action_search()"></select>
-                <select id="search_year" onchange="action_search()"></select>
+    <div class="center app_title">Planning <span id="app_version"></span> (by <span id="app_author"></span>)</div>
+
+    <div id="today" class="center larger bold tonic_2"></div>
+
+    <div id="event_view" class="">
+        <div class="form">
+            <div class="form_group">
+                <input class="form_input" type="text" maxlength="34" id="event_title" placeholder="Titre">
+            </div>
+
+            <div class="form_group">
+                <span class="form_label">Date</span>
+                <div class="form_select_group">
+                    <select id="event_day"></select>
+                    <span>/</span>
+                    <select id="event_month"></select>
+                    <span>/</span>
+                    <select id="event_year"></select>
+                </div>
+            </div>
+
+            <div class="form_group">
+                <span class="form_label">Horaire</span>
+                <div class="form_select_group">
+                    <select id="event_hours"></select>
+                    <span>:</span>
+                    <select id="event_minutes"></select>
+                </div>
+            </div>
+
+            <div class="form_group">
+                <textarea id="event_note" class="" placeholder="Notes" rows="5"></textarea>
+            </div>
+
+            <div class="center">
+                <pre class="" id="current_month"></pre>
+            </div>
+
+        </div>
+        <div class="form nav" id="event_update_nav">
+            <div class="menu">
+                <button class="form_btn" id="btn_editEventSave">Valider</button>
+                <button class="form_btn form_btn_danger" id="btn_editEventCancel" onclick="showWeek()">Annuler</button>
             </div>
         </div>
-        <div id="view_events" hidden>
-            <pre id="events_infos"></pre>
-            <input id="events_search_title" onkeyup="showEvents(true)" type="text" placeholder="title">
-            <pre id="events"></pre>
-            <div class="panel" id="events_search">
-                <select id="events_search_month" onchange="showEvents(true)"></select>
-                <select id="events_search_startYear" onchange="showEvents(true)"></select>
-                <select id="events_search_endYear" onchange="showEvents(true)"></select>
+        <div class="form nav" id="event_edit_nav">
+            <div class="menu nav">
+                <button class="form_btn" id="btn_editEventCopy">Copier</button>
+                <button class="form_btn form_btn_warning" id="btn_editEventModify">Modifier</button>
+                <button class="form_btn form_btn_danger" id="btn_editEventDelete" class="nav_btn form_btn_danger">Supprimer</button>
             </div>
         </div>
     </div>
+
+    <div id="view_week" class="">
+        <div class="form">
+            <div class="form_group">
+                <div>
+                    <span class="form_label" id="week_number"></span>
+                    <span class="larger" id="week_month"></span>
+                </div>
+
+                <div class="form_select_group">
+                    <select id="search_date" onchange="action_search()"></select>
+                    <span>/</span>
+                    <select id="search_month" onchange="action_search()"></select>
+                    <span>/</span>
+                    <select id="search_year" onchange="action_search()"></select>
+                </div>
+            </div>
+
+            <div class="week" id="week"></div>
+        </div>
+
+        <div class="form nav">
+            <div class="menu">
+                <button class="form_btn" onclick="action_switchWeek(-1)">Avant</button>
+                <button class="form_btn form_btn_warning" onclick="action_currentWeek()">Aujourd'hui</button>
+                <button class="form_btn" onclick="action_switchWeek(1)">Après</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="view_events">
+        <div class="form">
+
+            <div class="form_group">
+                <input id="events_search_title" onkeyup="showEvents(true)" type="text" placeholder="Recherche par titre">
+
+                <div>
+                    <div class="form_select_group" id="events_search">
+                        <span class="filter_label">entre</span>
+                        <select id="events_search_month" onchange="showEvents(true)"></select>
+                        <span>/</span>
+                        <select id="events_search_startYear" onchange="showEvents(true)"></select>
+                        <span class="filter_label">et</span>
+                        <select id="events_search_endYear" onchange="showEvents(true)"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form_group">
+                <pre id="events_infos"></pre>
+            </div>
+
+            <div id="events" class="events"></div>
+        </div>
+    </div>
+
+    <div id="cal">
+        <div class="three_month">
+            <div id="month_1"></div>
+            <div id="month_2"></div>
+            <div id="month_3"></div>
+        </div>
+        <div class="three_month">
+            <div id="month_4"></div>
+            <div id="month_5"></div>
+            <div id="month_6"></div>
+        </div>
+        <div class="three_month">
+            <div id="month_7"></div>
+            <div id="month_8"></div>
+            <div id="month_9"></div>
+        </div>
+        <div class="three_month">
+            <div id="month_10"></div>
+            <div id="month_11"></div>
+            <div id="month_12"></div>
+        </div>
+    </div>
+
     <script src="tests.js"></script>
     <script src="core.js"></script>
     <script src="storage.js"></script>
     <script src="controller.js"></script>
     <script src="main.js"></script>
+
 </body>
 
 </html>
