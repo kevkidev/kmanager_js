@@ -67,27 +67,77 @@ function displayWeek(week) {
 
     $("week").innerHTML = null; // vider la week
     let count = 0;
-    week.forEach(i => {
+    week.forEach(day => {
         count++;
         $("week").innerHTML += `<div class="form_group" id="week_day_${count}"></div>`;
         $("week").innerHTML += `<div class="week_events" id="week_events_${count}"></div>`;
 
-        let weekDayHtml = `<span>${day_getName(i.date.day)} ${i.date.date} ${month_getName(i.date.month)}</span>`;
-        weekDayHtml += `<span class="form_label">${prefixWithZero(i.date.date)}/${prefixWithZero(i.date.month)}/${i.date.year}</span>`;
+        let weekDayHtml = `<span>${day_getName(day.date.day)} ${day.date.date} ${month_getName(day.date.month)}</span>`;
+        weekDayHtml += `<span class="form_label">${prefixWithZero(day.date.date)}/${prefixWithZero(day.date.month)}/${day.date.year}</span>`;
         $(`week_day_${count}`).innerHTML = weekDayHtml;
 
-        if (i.events) {
-            i.events.forEach(e => {
+        if (day.events.length > 0) {
+            // Formater et classer les events au format html
+            const section0to6Array = [];
+            const section7to12Array = [];
+            const section13to17Array = [];
+            const section18to24Array = [];
+
+            day.events.forEach(e => {
                 const h = prefixWithZero(e.hours);
                 const min = prefixWithZero(e.minutes);
-                const marginLeft = (e.hours * 60 + e.minutes * 1) / 23; // x1 pour caster en int
-                const style = `margin-left:${marginLeft}px;`;
-                let html = `<div onclick="showEditView(${e.id})">`;
-                html += `<span style="${style}">${h}:${min}</span>`;
-                html += `<span style="${style}" class="week_events_title">${e.title}</span>`;
-                html += `<div>`;
-                $(`week_events_${count}`).innerHTML += html;
+
+                const isSunrise = (e.hours <= 6);
+                const isMoorning = (e.hours >= 7 && e.hours <= 12);
+                const isAfternoon = (e.hours >= 13 && e.hours <= 17);
+                const isNight = (e.hours >= 18);
+
+                let htmlEvent = ``;
+                htmlEvent += `<div class="week_event" onclick="showEditView(${e.id})">`;
+                {
+                    htmlEvent += `<span>${h}:${min}</span>`;
+                    htmlEvent += `<span class="week_events_title">${e.title}</span>`;
+                }
+                htmlEvent += `</div>`;
+
+                // classer les events par matin, matinée, apres-midi ou soir
+                if (isSunrise) section0to6Array.push(htmlEvent);
+                if (isMoorning) section7to12Array.push(htmlEvent);
+                if (isAfternoon) section13to17Array.push(htmlEvent);
+                if (isNight) section18to24Array.push(htmlEvent);
             })
+
+            // placer les events dans la sections matin ou aprem
+            function htmlQuaterSection(name) {
+                let html = "";
+                html += `<div class="quarter_day_header">`;
+                {
+                    html += `<span class="color_fg2">${name}</span>`;
+                }
+                html += `</div>`;
+                return html;
+            }
+
+            let html = "";
+            if (section0to6Array.length > 0) {
+                html += htmlQuaterSection("Aube");
+                section0to6Array.forEach(e => { html += e });
+            }
+            if (section7to12Array.length > 0) {
+                html += htmlQuaterSection("Matin");
+                section7to12Array.forEach(e => { html += e });
+            }
+            if (section13to17Array.length > 0) {
+                html += htmlQuaterSection("Après-midi");
+                section13to17Array.forEach(e => { html += e });
+            }
+            if (section18to24Array.length > 0) {
+                html += htmlQuaterSection("Soir");
+                section18to24Array.forEach(e => { html += e });
+            }
+
+            // afficher
+            $(`week_events_${count}`).innerHTML += html;
         }
     });
 }

@@ -13,8 +13,8 @@ function fillSelectOptions({ selectId, startIndex, endIndex, selectedValue, disp
     for (let i = startIndex; i <= endIndex; i++) {
         const selected = i == selectedValue ? "selected" : "";
         let display = (displayMethod) ? displayMethod(i) : i;
-        const clazz = (marker && marker.condition(i)) ? marker.class : "";
-        options += `<option class="${clazz}" value="${i}" ${selected}>${display}</option>`
+        display = (marker && marker.condition(i)) ? marker.value + display : display;
+        options += `<option value="${i}" ${selected}>${display}</option>`;
     }
     $(selectId).innerHTML = options;
 }
@@ -36,13 +36,7 @@ function showEditView(eventId, action) {
     let d = (e) ? e.date : null;
 
     fillSelectOptions({ selectId: "event_hours", startIndex: 0, endIndex: 23, selectedValue: (e ? e.hours : 9), displayMethod: prefixWithZero });
-    fillSelectOptions({
-        selectId: "event_minutes", startIndex: 0, endIndex: 59, selectedValue: (e ? e.minutes : null), displayMethod: prefixWithZero,
-        marker: { // on marque les minutes peut commune pour un rdv pour mettre en evidence celle divisible par 5
-            condition: (i) => !(i % 5), // si reste => pas divisible par 5 
-            class: "bold x-larger"
-        }
-    });
+    fillSelectOptions({ selectId: "event_minutes", startIndex: 0, endIndex: 59, selectedValue: (e ? e.minutes : null), displayMethod: prefixWithZero, });
     fillSelectOptions({ selectId: "event_year", startIndex: 1970, endIndex: 2121, selectedValue: (d ? d.year : (new Date(Date.now())).getFullYear()) });
     fillSelectOptions({ selectId: "event_month", startIndex: 1, endIndex: 12, selectedValue: (d ? d.month : (new Date(Date.now())).getMonth() + 1), displayMethod: prefixWithZero });
     fillSelectOptions({ selectId: "event_day", startIndex: 1, endIndex: 31, selectedValue: (d ? d.date : ((new Date(Date.now())).getDate())), displayMethod: prefixWithZero });
@@ -109,14 +103,15 @@ function showEvents(search) {
         const start = (year1 <= year2) ? year1 : year2;
         const end = (year1 >= year2) ? year1 : year2;
 
-        searchInterval = `[${prefixWithZero(month)}.${start} ~ 12.${end}]`;
+        searchInterval = `${prefixWithZero(month)}/${start} et ${end}`;
 
         events = events.filter(e => {
-            const r = eventReader(e);
-            const y = r.d.year;
-            const m = r.d.month;
+            // const r = eventReader(e);
+            const ev = mapEvent(e);
+            const y = ev.date.year;
+            const m = ev.date.month;
             const isDate = (y == start && m >= month) || (y > start && y <= end);
-            return isDate && r.e.title.toLowerCase().includes(title.trim().toLowerCase());
+            return isDate && ev.title.toLowerCase().includes(title.trim().toLowerCase());
         });
     } else { // fin recherche
         $("events_search_title").value = null; // champs de recherche par titre
@@ -135,46 +130,56 @@ function showEvents(search) {
     fillSelectOptions({ selectId: "events_search_endYear", startIndex: 1970, endIndex: 2121, selectedValue: last.date.year });
     fillSelectOptions({ selectId: "events_search_month", startIndex: 1, endIndex: 12, displayMethod: prefixWithZero, selectedValue: first.date.month });
 
-    const foundInterval = `${prefixWithZero(first.date.month)}/${first.date.year} et 12/${last.date.year}`;
+    const foundInterval = `${prefixWithZero(first.date.month)}/${first.date.year} et ${last.date.year}`;
 
     let infos = ``;
-    infos += `# Recherche effectuées entre ${searchInterval ? searchInterval : "1970 et 2121"}...`;
+    infos += `# Recherche entre ${searchInterval ? searchInterval : "1970 et 2121"}`;
     infos += `\n# ${events.length} events trouvés entre ${foundInterval}`;
     $("events_infos").innerHTML = infos;
 
-    // liste par mois les events trouvés
-    let display = ``;
-    display += `<div class="form_group">`;
-    display += `<span class="">${first.date.year} ${month_getName(first.date.month)}</span>`;
-    display += `<span class="form_label">${prefixWithZero(first.date.month)}/${first.date.year}</span>`;
-    display += `</div>`;
+    function _htmlHeader(date) {
+        let html = ``;
+        html += `<div class="form_group">`;
+        {
+            html += `<span class="">${date.year} ${month_getName(date.month)}</span>`;
+            html += `<span class="form_label">${prefixWithZero(date.month)}/${date.year}</span>`;
+        }
+        html += `</div>`;
+        return html;
+    }
 
+    function _htmlEvent(ev) {
+        let html = `<div class="event" onclick="showEditView(${ev.id})">`;
+        {
+            html += `<div class="event_date">`;
+            {
+                html += `<span>${ev.dayName} ${prefixWithZero(ev.date.date)} à ${prefixWithZero(ev.hours)}:${prefixWithZero(ev.minutes)}</span>`;
+                html += `<span>${prefixWithZero(ev.date.date)}/${prefixWithZero(ev.date.month)}/${prefixWithZero(ev.date.year)}</span>`;
+            }
+            html += `</div>`;
+            html += `<span class="week_events_title">${ev.title} </span>`;
+        }
+        html += `</div>`;
+        return html;
+    }
+
+    let array = [{ header: _htmlHeader(first.date), events: [] }];
     events.forEach(e => {
         const ev = mapEvent(e);
-
         if (ev.date.year != first.date.year || ev.date.month != first.date.month) { // si le mois change on affiche un nouveau groupe
-            display += `</div>`; // fermer la div des events
-            display += `<div class="form_group">`;
-            {
-                display += `<span class="">${ev.date.year} ${month_getName(ev.date.month)}</span>`;
-            }
-            display += `</div>`;
-            first = ev;
+            array.push({ header: _htmlHeader(ev.date), events: [] });
+            first = clone(ev);
         }
-
-        // afficher la listes des events du mois
-        display += `<div class="event" onclick="showEditView(${e.id})">`; // ouvrir la div des events
-        display += `<div class="event_date">`;
-        {
-            display += `<span>${ev.dayName} ${prefixWithZero(ev.date.date)} à ${prefixWithZero(ev.hours)}:${prefixWithZero(ev.minutes)}</span>`;
-            display += `<span>${prefixWithZero(ev.date.date)}/${prefixWithZero(ev.date.month)}/${prefixWithZero(ev.date.year)}</span>`;
-        }
-        display += `</div>`;
-        display += `<span class="week_events_title">${ev.title} </span>`;
+        array[array.length - 1].events.push(_htmlEvent(ev));
     })
 
-    display += `</div>`; // fermer la derniere div d'events
-    $("events").innerHTML += display;
+    // assembler les elements dans la vue
+    array.forEach(h => {
+        $("events").innerHTML += h.header;
+        h.events.forEach(e => {
+            $("events").innerHTML += e;
+        })
+    })
 }
 
 function action_addEvent() {

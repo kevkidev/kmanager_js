@@ -1,4 +1,38 @@
 # DOING
+
+
+# TO DO
+- fix. afficher cal du mois 
+- fix. afficher cal de l'année
+
+- feat. import csv 
+- feat. exporter csv events + bkp
+- feat. lister events par bkp 
+- feat. delete bkp
+- feat. exporter event sur une periode
+- feat. button + et - pour incrementer la date
+- feat. selectionner 1 jour dans le cal sous le form add met à jour la date des select
+- feat. lier le module notes aux rdv
+
+- enf. Corrifger TU cassés
+- enf. verifier que les methode sont pure : ne pas modifier le params => clonner
+- enf. refacto avec toggleDisplay$
+- enf. refact avec eventREader.displayElements
+- enf. TU controlleur et main
+- enf. verifier couverture des TU 
+- enf. refacto en mode composant
+
+# DONE
+
+v1.11.0-beta planning
+- feat. section aube, matin, aprem soir pour chaque jour
+- fix. clic dans list doit editier le bon event
+- fix. clic plus facilement sur event de list
+- fix. grossir nav du bas en hauteur
+- feat. creer un event recurent tous les X jour, mois ou année
+- feat. retirer le marker dans les options de minutes
+- enf. passer manifest en standalone
+
 - fix. design plus ergonomique et plus esthetique
 - feat. vue add : limiter le nombre de char du champ titre pour que rien ne dempasse de la vue week
 - feat. afficher nom complet des jours
@@ -8,24 +42,6 @@
 - feat. clic sur un event => vue edition en readonly + menu d'edition (modifier, copier, supprimer)
 - feat. edit event depuis la vue list
 
-# TO DO
-- enf. Corrifger TU cassés
-- enf. verifier que les methode sont pure : ne pas modifier le params => clonner
-- feat. creer un event recurent tous les X jour, mois ou année
-- fix. afficher cal du mois 
-- fix. afficher cal de l'année
-- feat. lister events par bkp 
-- feat. delete bkp
-- feat. exporter csv events + bkp
-- feat. trigger export : btn, delete/edit, 
-- feat. import csv
-- enf. refacto avec toggleDisplay$
-- feat. lier le module notes aux rdv
-- enf. refact avec eventREader.displayElements
-- enf. TU controlleur et main
-- enf. verifier couverture des TU 
-
-# DONE
 - fix. affichage list events
 - fix. clavier masque liste quand input => mettre input au dessus de liste
 - feat. mettre en evidence les miinutes divisible par 5 dans le select de la vue add event
